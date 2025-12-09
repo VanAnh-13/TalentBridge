@@ -61,11 +61,12 @@ public class Job extends BaseEntity {
     @ToString.Exclude
     private List<Resume> resumes;
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("job-threads")
-    @ToString.Exclude
-    @Builder.Default
-    private List<Thread> threads = new ArrayList<>();
+    // TODO: Uncomment when Thread entity is created
+    // @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @JsonManagedReference("job-threads")
+    // @ToString.Exclude
+    // @Builder.Default
+    // private List<Thread> threads = new ArrayList<>();
 
     public Job(String name, String location, Double salary, Integer quantity, Level level, String description, Instant startDate, Instant endDate, Boolean active) {
         this.name = name;

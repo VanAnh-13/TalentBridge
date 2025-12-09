@@ -60,9 +60,43 @@ VALUES
     ('Get Resume List', '/resumes', 'GET', 'RESUME', NOW(), NOW(), 'system', 'system'),
     ('Update Resume Status', '/resumes/status', 'PUT', 'RESUME', NOW(), NOW(), 'system', 'system'),
     
+    -- Resume Self Management (USER)
+    ('Create Resume', '/resumes', 'POST', 'RESUME', NOW(), NOW(), 'system', 'system'),
+    ('Get Self Resumes', '/resumes/me', 'GET', 'RESUME', NOW(), NOW(), 'system', 'system'),
+    ('Delete Self Resume', '/resumes/me/jobs/{jobId}', 'DELETE', 'RESUME', NOW(), NOW(), 'system', 'system'),
+    ('Update Self Resume File', '/resumes/me/file/{id}', 'PUT', 'RESUME', NOW(), NOW(), 'system', 'system'),
+    ('Get Resume File', '/resumes/file/{id}', 'GET', 'RESUME', NOW(), NOW(), 'system', 'system'),
+    
     -- Subscriber Management (ADMIN ONLY)
     ('Get Subscriber List', '/subscribers', 'GET', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system'),
-    ('Delete Subscriber', '/subscribers/{id}', 'DELETE', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system');
+    ('Delete Subscriber', '/subscribers/{id}', 'DELETE', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system'),
+    
+    -- Subscriber Self Management (USER)
+    ('Get Self Subscriber', '/subscribers/me', 'GET', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system'),
+    ('Create Self Subscriber', '/subscribers/me', 'POST', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system'),
+    ('Update Self Subscriber', '/subscribers/me', 'PUT', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system'),
+    ('Delete Self Subscriber', '/subscribers/me', 'DELETE', 'SUBSCRIBER', NOW(), NOW(), 'system', 'system'),
+    
+    -- RECRUITER Page Access Permission
+    ('Access Recruiter Dashboard', '/recruiter', 'GET', 'RECRUITER', NOW(), NOW(), 'system', 'system'),
+    ('Get Self Company', '/companies/me', 'GET', 'COMPANY', NOW(), NOW(), 'system', 'system'),
+    ('Update Self Company', '/companies/me', 'PUT', 'COMPANY', NOW(), NOW(), 'system', 'system'),
+    ('Create Self Company', '/companies/me', 'POST', 'COMPANY', NOW(), NOW(), 'system', 'system'),
+    ('Get Self Company Users', '/companies/me/users', 'GET', 'COMPANY', NOW(), NOW(), 'system', 'system'),
+    ('Add Self Company User', '/companies/me/users', 'POST', 'COMPANY', NOW(), NOW(), 'system', 'system'),
+    ('Update Self Company User', '/companies/me/users', 'PUT', 'COMPANY', NOW(), NOW(), 'system', 'system'),
+    ('Get Company Resumes', '/resumes/company', 'GET', 'RESUME', NOW(), NOW(), 'system', 'system'),
+    ('Get Company Jobs', '/jobs/company', 'GET', 'JOB', NOW(), NOW(), 'system', 'system'),
+    ('Create Company Job', '/jobs/company', 'POST', 'JOB', NOW(), NOW(), 'system', 'system'),
+    ('Update Company Job', '/jobs/company/{id}', 'PUT', 'JOB', NOW(), NOW(), 'system', 'system'),
+    ('Delete Company Job', '/jobs/company/{id}', 'DELETE', 'JOB', NOW(), NOW(), 'system', 'system'),
+    
+    -- ADMIN Page Access Permission
+    ('Access Admin Dashboard', '/admin', 'GET', 'ADMIN', NOW(), NOW(), 'system', 'system')
+ON DUPLICATE KEY UPDATE
+    name = VALUES(name),
+    module = VALUES(module),
+    updated_at = NOW();
 
 -- =====================================================
 -- Assign Permissions to ADMIN Role (ALL PERMISSIONS)
@@ -83,20 +117,43 @@ SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'RECRUITER'
 AND p.api_path IN (
+    -- Recruiter page access
+    '/recruiter',
+    -- Self Company management
+    '/companies/me', '/companies/me/users',
     -- Company management
     '/companies', '/companies/{id}',
-    -- Job management  
-    '/jobs', '/jobs/{id}',
-    -- Resume viewing
-    '/resumes', '/resumes/status'
+    -- Job management (self company)
+    '/jobs', '/jobs/{id}', '/jobs/company', '/jobs/company/{id}',
+    -- Resume viewing (company)
+    '/resumes', '/resumes/status', '/resumes/company',
+    -- Skills
+    '/skills'
 )
 ON DUPLICATE KEY UPDATE
     role_id = VALUES(role_id),
     permission_id = VALUES(permission_id);
 
 -- =====================================================
--- USER Role has no admin permissions (can only access public endpoints)
+-- Assign Permissions to USER Role
 -- =====================================================
+INSERT INTO roles_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r, permissions p
+WHERE r.name = 'USER'
+AND p.api_path IN (
+    -- Subscriber self management
+    '/subscribers/me',
+    -- Resume self management
+    '/resumes',
+    '/resumes/me',
+    '/resumes/me/jobs/{jobId}',
+    '/resumes/me/file/{id}',
+    '/resumes/file/{id}'
+)
+ON DUPLICATE KEY UPDATE
+    role_id = VALUES(role_id),
+    permission_id = VALUES(permission_id);
 
 -- =====================================================
 -- Create Default Admin User
@@ -115,3 +172,12 @@ ON DUPLICATE KEY UPDATE
     role_id = VALUES(role_id),
     updated_at = NOW(),
     modified_by = VALUES(modified_by);
+
+-- =====================================================
+-- Create Test Recruiter User
+-- =====================================================
+INSERT INTO users (email, name, password, dob, address, gender, role_id, company_id, created_at, updated_at, created_by, modified_by)
+SELECT 'testrecruiter@talentbridge.com', 'Test Recruiter', '', '1990-01-01', 'Test Address', 'MALE', id, NULL, NOW(), NOW(), 'system', 'system'
+FROM roles WHERE name = 'RECRUITER'
+ON DUPLICATE KEY UPDATE updated_at = NOW();
+

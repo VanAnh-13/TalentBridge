@@ -23,7 +23,7 @@ public class AuthConfiguration {
     @Value("${jwt.secret}")
     private String jwtKey;
 
-    public static final MacAlgorithm MAC_ALGORITHM = MacAlgorithm.HS512;
+    public static final MacAlgorithm MAC_ALGORITHM = MacAlgorithm.HS256;
 
     @Bean
     public AuthenticationManager authenticationManager(

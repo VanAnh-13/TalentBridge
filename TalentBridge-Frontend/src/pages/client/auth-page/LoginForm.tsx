@@ -84,9 +84,17 @@ export default function LoginPage() {
 
                 {/* Password Field */}
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Mật khẩu <span className="text-orange-500">*</span>
-                  </label>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      Mật khẩu <span className="text-orange-500">*</span>
+                    </label>
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-orange-500 transition-colors duration-200 hover:text-orange-600 hover:underline"
+                    >
+                      Quên mật khẩu?
+                    </Link>
+                  </div>
                   <input
                     type="password"
                     name="password"

@@ -63,6 +63,17 @@ export const refreshToken = createAsyncThunk(
 
 export const getErrorMessage = (err: unknown, message: string): string => {
   let res = message;
-  if (axios.isAxiosError(err)) res = err.response?.data.message || message;
+  if (axios.isAxiosError(err)) {
+    const status = err.response?.status;
+
+    if (status === 413) {
+      return "File bạn tải lên vượt quá dung lượng cho phép. Vui lòng chọn file nhỏ hơn hoặc nén lại trước khi gửi.";
+    }
+
+    const data = err.response?.data as any;
+    if (data?.message && typeof data.message === "string") {
+      res = data.message;
+    }
+  }
   return res;
 };

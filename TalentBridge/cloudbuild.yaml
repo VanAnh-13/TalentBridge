@@ -1,11 +1,11 @@
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:$BUILD_ID', '-t', 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:latest', '.']
   
   # Push the container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:$COMMIT_SHA']
+    args: ['push', 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:latest']
   
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -15,7 +15,7 @@ steps:
       - 'deploy'
       - 'talentbridge'
       - '--image'
-      - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:$COMMIT_SHA'
+      - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:latest'
       - '--region'
       - 'asia-southeast1'
       - '--platform'
@@ -23,7 +23,7 @@ steps:
       - '--allow-unauthenticated'
 
 images:
-  - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:$COMMIT_SHA'
+  - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge:latest'
 
 options:
   machineType: 'E2_HIGHCPU_8'

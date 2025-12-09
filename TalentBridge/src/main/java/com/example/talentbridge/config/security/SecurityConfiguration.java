@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -39,7 +38,10 @@ public class SecurityConfiguration {
             "/v3/api-docs/**",
 
             // ACTUATOR
-            "/actuator/**"
+            "/actuator/**",
+
+            // SETUP (TEMPORARY - REMOVE AFTER USE)
+            "/setup/**"
     };
 
     @Bean
@@ -68,6 +70,5 @@ public class SecurityConfiguration {
 
         return httpSecurity.build();
     }
-
 
 }

@@ -92,7 +92,7 @@ const menuItems: MenuItem[] = [
         title: "Quyền quản trị",
         url: "/admin/access-control/permission",
         icon: KeyRound,
-        permission: "GET /permissions/*",
+        permission: "GET /permissions",
       },
       {
         title: "Cấu hình",

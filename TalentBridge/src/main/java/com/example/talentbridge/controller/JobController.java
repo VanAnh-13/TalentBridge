@@ -52,10 +52,10 @@ public class JobController {
 
     @GetMapping
     @ApiMessage(value = "Get Job list")
-    @PreAuthorize("hasAuthority('GET /jobs') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Job list",
-            description = "Required permission: <b>GET /jobs</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<?> findAllJobs(
@@ -77,10 +77,10 @@ public class JobController {
 
     @GetMapping("/{id}")
     @ApiMessage(value = "Get Job by id")
-    @PreAuthorize("hasAuthority('GET /jobs/{id}') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Job by id",
-            description = "Required permission: <b>GET /jobs/{id}</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<?> findJobById(@PathVariable Long id) {
@@ -89,10 +89,10 @@ public class JobController {
 
     @GetMapping("/companies/{id}")
     @ApiMessage(value = "Get Job by Company")
-    @PreAuthorize("hasAuthority('GET /jobs/companies/{id}') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Job by Company",
-            description = "Required permission: <b>GET /jobs/companies/{id}</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<?> findJobByCompanyId(@PathVariable Long id) {

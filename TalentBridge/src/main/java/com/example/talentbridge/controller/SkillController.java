@@ -45,10 +45,10 @@ public class SkillController {
 
     @GetMapping
     @ApiMessage(value = "Get Skill list")
-    @PreAuthorize("hasAuthority('GET /skills') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Skill list",
-            description = "Required permission: <b>GET /skills</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<PageResponseDto<DefaultSkillResponseDto>> findAllSkills(
@@ -70,10 +70,10 @@ public class SkillController {
 
     @GetMapping("/{id}")
     @ApiMessage(value = "Get Skill by id")
-    @PreAuthorize("hasAuthority('GET /skills/{id}') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Skill by id",
-            description = "Required permission: <b>GET /skills/{id}</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<DefaultSkillResponseDto> findSkillById(@PathVariable Long id) {

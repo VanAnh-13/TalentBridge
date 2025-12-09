@@ -141,3 +141,23 @@ export interface CompanyIdForUser {
 export interface RoleIdForUser {
   id: number;
 }
+
+
+// =============================
+// PASSWORD RESET INTERFACES
+// =============================
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface TokenValidationResponse {
+  valid: boolean;
+  message: string;
+  errorCode?: string;
+}

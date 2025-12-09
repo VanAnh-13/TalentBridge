@@ -67,10 +67,10 @@ public class CompanyController {
 
     @GetMapping
     @ApiMessage(value = "Get Company list")
-    @PreAuthorize("hasAuthority('GET /companies') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Company list",
-            description = "Required permission: <b>GET /companies</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<?> findAllCompanies(
@@ -92,10 +92,10 @@ public class CompanyController {
 
     @GetMapping("/with-jobs-count")
     @ApiMessage(value = "Get Company list with job count")
-    @PreAuthorize("hasAuthority('GET /companies/with-jobs-count') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Company list with job count",
-            description = "Required permission: <b>GET /companies/with-jobs-count</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<?> findAllCompaniesWithJobsCount(
@@ -117,10 +117,10 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     @ApiMessage(value = "Get Company by id")
-    @PreAuthorize("hasAuthority('GET /companies/{id}') OR isAnonymous()")
+    @PreAuthorize("permitAll()")
     @Operation(
             summary = "Get Company by id",
-            description = "Required permission: <b>GET /companies/{id}</b>"
+            description = "Public endpoint - no permission required"
     )
     @SecurityRequirements()
     public ResponseEntity<DefaultCompanyResponseDto> findCompanyById(@PathVariable Long id) {

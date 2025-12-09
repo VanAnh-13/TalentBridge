@@ -54,12 +54,12 @@ describe('Job Page Tests', () => {
     it('should navigate between pages', () => {
       // Check first page
       cy.get('[data-testid="page-1"]').should('have.class', 'active')
-      
+
       // Go to second page
       cy.get('[data-testid="page-2"]').click()
       cy.wait(500)
       cy.get('[data-testid="page-2"]').should('have.class', 'active')
-      
+
       // Check that job cards are different
       cy.get('[data-testid="job-card"]').first().invoke('text').then((firstPageJob) => {
         cy.get('[data-testid="page-1"]').click()
@@ -133,7 +133,7 @@ describe('Job Details Tests', () => {
       // Mock logged in state
       cy.window().then((win) => {
         win.localStorage.setItem('access_token', 'mock-token')
-        win.localStorage.setItem('user', JSON.stringify({ 
+        win.localStorage.setItem('user', JSON.stringify({
           email: 'test@example.com',
           permissions: ['POST /resumes']
         }))
@@ -148,7 +148,7 @@ describe('Job Details Tests', () => {
       // Mock logged in state
       cy.window().then((win) => {
         win.localStorage.setItem('access_token', 'mock-token')
-        win.localStorage.setItem('user', JSON.stringify({ 
+        win.localStorage.setItem('user', JSON.stringify({
           email: 'test@example.com',
           permissions: ['POST /resumes']
         }))
@@ -196,12 +196,12 @@ describe('Job Details Tests', () => {
           }
         }
       })
-      
+
       cy.window().then((win) => {
         win.localStorage.setItem('access_token', 'mock-token')
       })
       cy.reload()
-      
+
       cy.get('[data-testid="apply-button"]').should('be.disabled')
       cy.get('[data-testid="already-applied-message"]').should('be.visible')
     })

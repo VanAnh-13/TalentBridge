@@ -52,9 +52,8 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className={`group flex h-auto items-center gap-3 px-3 py-2 transition-colors ${
-            blackTheme ? "hover:bg-blue-300" : "hover:bg-orange-300"
-          }`}
+          className={`group flex h-auto items-center gap-3 px-3 py-2 transition-colors ${blackTheme ? "hover:bg-blue-300" : "hover:bg-orange-300"
+            }`}
         >
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9 ring-2 ring-blue-100 transition-all group-hover:ring-orange-200">

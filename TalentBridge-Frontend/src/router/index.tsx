@@ -4,6 +4,8 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 // CLIENT PAGE
 import RootPage from "@/pages/client";
 import AuthPage from "@/pages/client/auth-page";
+import ForgotPasswordPage from "@/pages/client/auth-page/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/client/auth-page/ResetPasswordPage";
 import HomePage from "@/pages/client/home-page";
 import CompanyClientPage from "@/pages/client/company-page";
 import CompanyDetailsClientPage from "@/pages/client/company-details-page";
@@ -54,6 +56,8 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to={"/home"} /> },
       { path: "home", element: <HomePage /> },
       { path: "auth", element: <AuthPage /> },
+      { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
       { path: "companies", element: <CompanyClientPage /> },
       { path: "companies/:id", element: <CompanyDetailsClientPage /> },
       { path: "jobs", element: <JobClientPage /> },

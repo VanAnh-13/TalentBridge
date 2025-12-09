@@ -18,11 +18,9 @@ build/
 .next/
 out/
 
-# Environment files  
-.env
+# Environment files (keep .env for production build)
 .env.local
 .env.development
-.env.production
 
 # IDE files
 .vscode/

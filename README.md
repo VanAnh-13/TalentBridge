@@ -1,183 +1,261 @@
-# 🚀 TalentBridge - Hệ thống Tuyển dụng IT
+# TalentBridge
 
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-green.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-18.3-blue.svg)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+A full-stack job recruitment platform connecting employers with job seekers. Built with Spring Boot and React.
 
-## 📋 Giới thiệu
+## Features
 
-TalentBridge là một nền tảng tuyển dụng IT chuyên nghiệp, kết nối nhà tuyển dụng với ứng viên IT tài năng. Hệ thống được xây dựng với công nghệ hiện đại, bảo mật cao và giao diện thân thiện.
+### For Job Seekers
+- Browse and search job listings by skills, location, and salary
+- View company profiles and their open positions
+- Create account and manage profile
+- Upload resumes and apply to jobs
+- Subscribe to job alerts based on preferred skills
+- Manage multiple sessions across devices
 
-**Demo Live**: 
-- 🌐 Frontend: https://talentbridge-frontend-273039906673.asia-southeast1.run.app
-- 🔧 Backend API: https://talentbridge-273039906673.asia-southeast1.run.app
+### For Recruiters
+- Create and manage company profile
+- Post job listings with required skills and salary ranges
+- Review candidate resumes and applications
+- Invite team members to manage company jobs
+- Track application status
 
-## ✨ Tính năng chính
+### For Administrators
+- Full user management (create, update, delete)
+- Company oversight and management
+- Role and permission configuration
+- System-wide job and resume management
+- Access control with granular permissions
 
-### Dành cho Ứng viên
-- 🔍 Tìm kiếm việc làm theo kỹ năng, vị trí, mức lương
-- 📝 Quản lý hồ sơ và CV online
-- 📨 Ứng tuyển nhanh chóng
-- 🔔 Nhận thông báo việc làm phù hợp qua email
-
-### Dành cho Nhà tuyển dụng
-- 📢 Đăng tin tuyển dụng
-- 👥 Quản lý ứng viên và CV
-- 📊 Thống kê và báo cáo tuyển dụng
-- 🏢 Quản lý thông tin công ty
-
-### Dành cho Admin
-- 👤 Quản lý người dùng và phân quyền
-- 🏢 Quản lý công ty
-- 💼 Quản lý công việc
-- 📈 Dashboard thống kê hệ thống
-
-## 🛠 Công nghệ sử dụng
+## Tech Stack
 
 ### Backend
-- **Java 21** & **Spring Boot 3.5.5**
-- **Spring Security** & **JWT** - Xác thực và phân quyền
-- **Spring Data JPA** & **Hibernate** - ORM
-- **MySQL 8.0** - Database chính
-- **Redis** - Caching và session
-- **Google Cloud Storage** - Lưu trữ file
-- **Spring Boot Mail** - Gửi email
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Spring Boot | 3.5.5 | Application framework |
+| Java | 21 | Language |
+| Spring Security | - | Authentication & Authorization |
+| Spring Data JPA | - | ORM / Data access |
+| H2 / MySQL | - | Database (dev / prod) |
+| Redis | - | Caching (production) |
+| SpringDoc OpenAPI | 2.8.9 | API documentation |
+| Lombok | - | Boilerplate reduction |
+| Thymeleaf | - | Email templates |
+| Google Cloud Storage | - | File storage |
 
 ### Frontend
-- **React 18.3** & **TypeScript 5.6**
-- **Vite** - Build tool
-- **TailwindCSS** - Styling
-- **Shadcn/ui** - Component library
-- **React Router v6** - Routing
-- **Axios** - HTTP client
-- **React Query** - State management
-- **React Hook Form** & **Zod** - Form validation
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 19 | UI framework |
+| TypeScript | 5.8 | Language |
+| Vite | 6 | Build tool |
+| Tailwind CSS | 4 | Styling |
+| Redux Toolkit | - | State management |
+| React Router | 7 | Routing |
+| Axios | - | HTTP client |
+| Radix UI | - | UI primitives |
+| React Quill | - | Rich text editor |
+| Vitest | - | Unit testing |
+| Cypress | - | E2E testing |
 
-### DevOps & Cloud
-- **Google Cloud Platform**
-  - Cloud Run - Hosting
-  - Cloud SQL - Database
-  - Cloud Storage - File storage
-  - Artifact Registry - Docker images
-- **Docker** - Containerization
-- **GitHub Actions** - CI/CD
-
-## 📁 Cấu trúc dự án
+## Project Structure
 
 ```
-do_an_chuyen_nganh/
-├── TalentBridge/                 # Backend Spring Boot
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/            # Source code Java
-│   │   │   └── resources/       # Config files & SQL
-│   │   └── test/                # Unit tests
-│   ├── Dockerfile
-│   └── pom.xml
+├── TalentBridge/                    # Backend
+│   ├── src/main/java/.../
+│   │   ├── controller/              # REST endpoints
+│   │   ├── service/                 # Business logic
+│   │   ├── repository/              # Data access
+│   │   ├── model/                   # JPA entities
+│   │   ├── dto/                     # Request/Response objects
+│   │   ├── config/                  # Spring configuration
+│   │   ├── advice/                  # Exception handlers
+│   │   └── util/                    # Utilities
+│   ├── src/main/resources/
+│   │   ├── application.properties   # Dev config
+│   │   ├── application-prod.properties
+│   │   └── templates/               # Email templates
+│   └── init-db/                     # SQL scripts
 │
-├── TalentBridge-Frontend/        # Frontend React
-│   ├── src/
-│   │   ├── components/          # Reusable components
-│   │   ├── pages/               # Page components
-│   │   ├── lib/                 # Utilities
-│   │   └── types/               # TypeScript types
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.ts
-│
-└── README.md
+└── TalentBridge-Frontend/           # Frontend
+    └── src/
+        ├── components/
+        │   ├── ui/                  # Reusable UI (shadcn/ui)
+        │   └── custom/              # App-specific components
+        ├── pages/
+        │   ├── client/              # Public pages
+        │   ├── admin/               # Admin dashboard
+        │   ├── recruiter/           # Recruiter portal
+        │   └── user/                # User account
+        ├── services/                # API modules
+        ├── features/                # Redux slices
+        ├── types/                   # TypeScript definitions
+        └── lib/                     # Axios client, utils
 ```
 
-## 🚀 Cài đặt và Chạy
+## Getting Started
 
-### Yêu cầu hệ thống
-- Java 21+
+### Prerequisites
+
+- Java 21 (JDK)
 - Node.js 18+
-- MySQL 8.0+
-- Redis (optional)
-- Maven 3.8+
+- npm or yarn
+- Docker (optional, for containerized setup)
 
-### Backend
+### Environment Setup
+
+1. Copy the environment template:
+```bash
+cd TalentBridge
+cp .env.example .env
+```
+
+2. Update `.env` with your configuration:
+```env
+# Required
+JWT_SECRET=your-secure-secret-key-at-least-256-bits
+
+# Optional - Database (defaults to H2 for dev)
+DB_NAME=talentbridge
+DB_USER=your_user
+DB_PASSWORD=your_password
+
+# Optional - Email
+MAIL_HOST=smtp.gmail.com
+MAIL_USERNAME=your_email
+MAIL_PASSWORD=your_app_password
+
+# Optional - Google Cloud Storage
+GCS_PROJECT_ID=your_project
+GCS_BUCKET_NAME=your_bucket
+```
+
+### Running Locally
+
+#### Backend
 
 ```bash
-# Clone repository
-git clone https://github.com/VanAnh-13/do_an_chuyen_nganh.git
-cd do_an_chuyen_nganh/TalentBridge
+cd TalentBridge
 
-# Copy environment variables
-cp .env.example .env
+# Run with Maven wrapper
+./mvnw spring-boot:run
 
-# Cấu hình database trong .env
-DB_NAME=talentbridge
-DB_USER=root
-DB_PASSWORD=yourpassword
-
-# Build và chạy với Maven
-mvn clean install
-mvn spring-boot:run
-
-# Hoặc chạy với Docker
-docker-compose up -d
+# Or on Windows
+mvnw.cmd spring-boot:run
 ```
 
-Backend sẽ chạy tại: http://localhost:8080
+Backend runs at `http://localhost:8080`
 
-### Frontend
+#### Frontend
 
 ```bash
 cd TalentBridge-Frontend
 
-# Cài đặt dependencies
+# Install dependencies
 npm install
 
-# Copy environment variables
-cp .env.example .env
-
-# Cấu hình API URL trong .env
-VITE_API_URL=http://localhost:8080
-
-# Chạy development server
+# Start dev server
 npm run dev
 ```
 
-Frontend sẽ chạy tại: http://localhost:5173
+Frontend runs at `http://localhost:3000`
 
-## 📊 Database
-
-### Khởi tạo Database
-
-```sql
--- Tạo database
-CREATE DATABASE talentbridge;
-
--- Import schema và data mẫu
-mysql -u root -p talentbridge < TalentBridge/src/main/resources/data.sql
-mysql -u root -p talentbridge < TalentBridge/src/main/resources/all-fake-data.sql
-```
-
-### Tài khoản test
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@talentbridge.vn | password123 |
-| Recruiter | hr.fpt@fpt.com.vn | password123 |
-| User | nguyenvan@gmail.com | password123 |
-
-## 🐳 Docker Deployment
-
-### Build và chạy với Docker Compose
+### Running with Docker
 
 ```bash
-# Development environment
+cd TalentBridge
+
+# Start all services
 docker-compose up -d
 
-# Production environment
-docker-compose -f docker-compose.prod.yml up -d
+# View logs
+docker-compose logs -f
 ```
 
-### Build Docker images riêng
+## Development
+
+### Backend Commands
+
+```bash
+cd TalentBridge
+
+./mvnw spring-boot:run           # Run dev server
+./mvnw test                      # Run all tests
+./mvnw test -Dtest=ClassName     # Run specific test
+./mvnw package                   # Build JAR
+./mvnw package -DskipTests       # Build without tests
+./mvnw clean install             # Clean build
+```
+
+### Frontend Commands
+
+```bash
+cd TalentBridge-Frontend
+
+npm run dev              # Start dev server (port 3000)
+npm run build            # Production build
+npm run preview          # Preview production build
+npm run test             # Run tests (single run)
+npm run test:watch       # Run tests (watch mode)
+npm run test:coverage    # Run tests with coverage
+npm run lint             # ESLint check
+```
+
+## API Documentation
+
+When the backend is running, access:
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
+### API Response Format
+
+```json
+{
+  "statusCode": 200,
+  "message": "Success",
+  "data": { ... },
+  "errorCode": null
+}
+```
+
+### Authentication
+
+The API uses JWT Bearer tokens:
+
+```
+Authorization: Bearer <access_token>
+```
+
+Tokens are obtained via `/api/v1/auth/login` and refreshed via `/api/v1/auth/refresh`.
+
+## Testing
+
+### Backend Testing
+
+- **Unit Tests**: JUnit 5 + Mockito
+- **Integration Tests**: Spring Test
+- **Property-Based Tests**: jqwik
+
+```bash
+./mvnw test
+```
+
+### Frontend Testing
+
+- **Unit Tests**: Vitest + fast-check (property-based)
+- **E2E Tests**: Cypress
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npx cypress open
+```
+
+## Deployment
+
+### Docker Build
 
 ```bash
 # Backend
@@ -186,105 +264,43 @@ docker build -t talentbridge-backend .
 
 # Frontend
 cd TalentBridge-Frontend
-docker build -t talentbridge-frontend .
+docker build --build-arg API_BASE_URL=https://api.example.com -t talentbridge-frontend .
 ```
 
-## ☁️ Google Cloud Deployment
-
-### Deploy lên Cloud Run
+### Google Cloud Platform
 
 ```bash
-# Login GCP
-gcloud auth login
-gcloud config set project YOUR_PROJECT_ID
-
-# Deploy backend
-cd TalentBridge
-gcloud builds submit --config cloudbuild.yaml
-
-# Deploy frontend
-cd TalentBridge-Frontend
-gcloud builds submit --config cloudbuild.yaml
+# Deploy using Cloud Build
+gcloud builds submit --config=cloudbuild.yaml
 ```
 
-## 🧪 Testing
-
-### Backend Tests
+### Kubernetes
 
 ```bash
-cd TalentBridge
-mvn test
-
-# Run với coverage
-mvn test jacoco:report
+kubectl apply -f TalentBridge/k8s/deployment.yml
 ```
 
-### Frontend Tests
+## Configuration
 
+### Backend Profiles
+
+- `default` - H2 in-memory database, simple cache
+- `prod` - MySQL, Redis cache, GCS storage
+
+Activate with:
 ```bash
-cd TalentBridge-Frontend
-
-# Unit tests
-npm run test
-
-# E2E tests với Cypress
-npm run cypress:open
+./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
-## 📝 API Documentation
+### Key Configuration Options
 
-API documentation có sẵn tại: http://localhost:8080/swagger-ui.html
+| Property | Description | Default |
+|----------|-------------|---------|
+| `jwt.access-token-expiration` | Access token TTL (seconds) | 300 |
+| `jwt.refresh-token-expiration` | Refresh token TTL (seconds) | 86400 |
+| `spring.servlet.multipart.max-file-size` | Max upload size | 10MB |
+| `app.cors.allowed-origins` | CORS origins | localhost:3000,5173 |
 
-### Các endpoint chính:
+## License
 
-#### Authentication
-- `POST /api/v1/auth/login` - Đăng nhập
-- `POST /api/v1/auth/register` - Đăng ký
-- `POST /api/v1/auth/refresh` - Refresh token
-- `POST /api/v1/auth/logout` - Đăng xuất
-
-#### Companies
-- `GET /companies` - Danh sách công ty
-- `GET /companies/{id}` - Chi tiết công ty
-- `POST /companies` - Tạo công ty mới
-- `PUT /companies/{id}` - Cập nhật công ty
-
-#### Jobs
-- `GET /jobs` - Danh sách việc làm
-- `GET /jobs/{id}` - Chi tiết việc làm
-- `POST /jobs` - Đăng tin tuyển dụng
-- `PUT /jobs/{id}` - Cập nhật tin tuyển dụng
-
-#### Resumes
-- `GET /resumes` - Danh sách CV
-- `POST /resumes/upload` - Upload CV
-- `POST /resumes/apply` - Ứng tuyển
-
-## 👥 Team Development
-
-**Nhóm 15** - Đại học Công nghệ Thông tin
-
-### Thành viên:
-- **Lê Văn Anh** - Team Lead & Backend Developer
-- **[Thành viên 2]** - Frontend Developer
-- **[Thành viên 3]** - UI/UX Designer
-- **[Thành viên 4]** - Database & DevOps
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Liên hệ
-
-- Email: levananh13062004@gmail.com
-- GitHub: [@VanAnh-13](https://github.com/VanAnh-13)
-
-## 🙏 Lời cảm ơn
-
-- Giảng viên hướng dẫn: [Tên giảng viên]
-- Khoa Công nghệ Thông tin - Đại học [Tên trường]
-- Cộng đồng Spring Boot và React
-
----
-
-⭐ **Nếu thấy hữu ích, hãy cho project một Star nhé!** ⭐
+This project is for educational purposes.
