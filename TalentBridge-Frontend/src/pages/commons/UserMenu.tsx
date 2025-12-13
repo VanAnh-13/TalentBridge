@@ -127,37 +127,41 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
           </Link>
         </DropdownMenuItem>
 
-        <HasPermission perm={"GET /subscribers/me"}>
-          <DropdownMenuItem>
-            <Link
-              to={"/user/subscriber"}
-              className="flex cursor-pointer items-center gap-3 rounded-lg"
-            >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                <Mail className="h-4 w-4 text-gray-600" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-medium">Đăng ký thông báo</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-        </HasPermission>
+        {user?.role !== "ADMIN" && (
+          <HasPermission perm={"GET /subscribers/me"}>
+            <DropdownMenuItem>
+              <Link
+                to={"/user/subscriber"}
+                className="flex cursor-pointer items-center gap-3 rounded-lg"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100">
+                  <Mail className="h-4 w-4 text-gray-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium">Đăng ký thông báo</p>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+          </HasPermission>
+        )}
 
-        <HasPermission perm={"POST /resumes"}>
-          <DropdownMenuItem>
-            <Link
-              to={"/user/resumes"}
-              className="flex cursor-pointer items-center gap-3 rounded-lg"
-            >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                <Briefcase className="h-4 w-4 text-gray-600" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-medium">Hồ sơ tuyển dụng</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-        </HasPermission>
+        {user?.role !== "ADMIN" && (
+          <HasPermission perm={"POST /resumes"}>
+            <DropdownMenuItem>
+              <Link
+                to={"/user/resumes"}
+                className="flex cursor-pointer items-center gap-3 rounded-lg"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100">
+                  <Briefcase className="h-4 w-4 text-gray-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium">Hồ sơ tuyển dụng</p>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+          </HasPermission>
+        )}
 
         <DropdownMenuItem>
           <Link
@@ -173,21 +177,23 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
           </Link>
         </DropdownMenuItem>
 
-        <HasPermission perm={"GET /recruiter"}>
-          <DropdownMenuItem>
-            <Link
-              to={"/recruiter"}
-              className="flex cursor-pointer items-center gap-3 rounded-lg"
-            >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-500">
-                <Briefcase className="h-4 w-4 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-medium">Tuyển dụng</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-        </HasPermission>
+        {user?.role !== "ADMIN" && (
+          <HasPermission perm={"GET /recruiter"}>
+            <DropdownMenuItem>
+              <Link
+                to={"/recruiter"}
+                className="flex cursor-pointer items-center gap-3 rounded-lg"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-500">
+                  <Briefcase className="h-4 w-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium">Tuyển dụng</p>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+          </HasPermission>
+        )}
 
         <HasPermission perm={"GET /admin"}>
           <DropdownMenuItem>

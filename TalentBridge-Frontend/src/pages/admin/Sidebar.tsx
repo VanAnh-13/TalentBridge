@@ -106,8 +106,8 @@ const menuItems: MenuItem[] = [
 
 export function AdminSidebar() {
   const { pathname } = useLocation();
-  const permissions =
-    useAppSelector((state) => state.auth.user?.permissions) ?? [];
+  const { user } = useAppSelector((state) => state.auth);
+  const permissions = user?.permissions ?? [];
 
   // ======================================================================================================
   // Quản lý trạng thái mở rộng (expand/collapse) của các menu cha trong sidebar
@@ -201,7 +201,9 @@ export function AdminSidebar() {
               {menuItems
                 .filter(
                   (item) =>
-                    !item.permission || permissions.includes(item.permission),
+                    !item.permission ||
+                    permissions.includes(item.permission) ||
+                    user?.role === "ADMIN",
                 )
                 .map((item) => {
                   const isActive = isItemActive(item);
@@ -210,7 +212,8 @@ export function AdminSidebar() {
                   const filteredChildren = item.children?.filter(
                     (child) =>
                       !child.permission ||
-                      permissions.includes(child.permission),
+                      permissions.includes(child.permission) ||
+                      user?.role === "ADMIN",
                   );
 
                   return (

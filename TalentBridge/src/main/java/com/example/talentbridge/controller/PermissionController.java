@@ -26,16 +26,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/permissions")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('GET /permissions/*')")
 public class PermissionController {
 
     private final PermissionService permissionService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('POST /permissions')")
     @ApiMessage(value = "Create Permission")
     @Operation(
             summary = "Create Permission",
-            description = "Required permission: <b>'GET /permissions/*</b>"
+            description = "Required permission: <b>'POST /permissions</b>"
     )
     public DefaultPermissionResponseDto savePermission(
             @Valid @RequestBody DefaultPermissionRequestDto defaultPermissionRequestDto
@@ -45,10 +45,11 @@ public class PermissionController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('GET /permissions')")
     @ApiMessage("Get Permission list")
     @Operation(
             summary = "Get Permission list",
-            description = "Required permission: <b>'GET /permissions/*</b>"
+            description = "Required permission: <b>'GET /permissions</b>"
     )
     public ResponseEntity<?> findAllPermissions(
             @Filter Specification<Permission> spec,
@@ -68,10 +69,11 @@ public class PermissionController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('GET /permissions')")
     @ApiMessage("Get all Permissions (no pagination)")
     @Operation(
             summary = "Get all Permissions (no pagination)",
-            description = "Required permission: <b>'GET /permissions/*</b>"
+            description = "Required permission: <b>'GET /permissions</b>"
     )
     public ResponseEntity<?> findAllPermissionsNoPaging(
             @Filter Specification<Permission> spec
@@ -84,10 +86,11 @@ public class PermissionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('PUT /permissions/{id}')")
     @ApiMessage(value = "Update Permission")
     @Operation(
             summary = "Update Permission",
-            description = "Required permission: <b>'GET /permissions/*</b>"
+            description = "Required permission: <b>'PUT /permissions/{id}</b>"
     )
     public DefaultPermissionResponseDto updatePermissionById(
             @Valid @RequestBody DefaultPermissionRequestDto defaultPermissionRequestDto,
@@ -97,10 +100,11 @@ public class PermissionController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE /permissions/{id}')")
     @ApiMessage(value = "Delete Permission")
     @Operation(
             summary = "Delete Permission",
-            description = "Required permission: <b>'GET /permissions/*</b>"
+            description = "Required permission: <b>'DELETE /permissions/{id}</b>"
     )
     public DefaultPermissionResponseDto deletePermissionById(
             @PathVariable Long id
@@ -108,3 +112,4 @@ public class PermissionController {
         return permissionService.deletePermission(id);
     }
 }
+

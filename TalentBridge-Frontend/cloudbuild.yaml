@@ -1,63 +1,20 @@
-# Cloud Build configuration for Vite React app
-# Build Docker image and deploy to Cloud Run
+steps:
+  # Build the container image with build-arg
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'build'
+      - '--build-arg'
+      - 'VITE_API_URL=${_VITE_API_URL}'
+      - '-t'
+      - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge-frontend:latest'
+      - '.'
+  
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge-frontend:latest']
 
 substitutions:
-  _API_BASE_URL: "https://talentbridge-273039906673.asia-southeast1.run.app"  # Backend URL đã xác nhận
-  _REGION: "asia-southeast1"
-  _REPO: "talentbridge"
-  _SERVICE_NAME: "talentbridge-frontend"
+  _VITE_API_URL: 'http://localhost:8080' # Default value
 
-steps:
-  # Build Docker image với API_BASE_URL
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-f'
-      - 'Dockerfile'
-      - '-t'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:$BUILD_ID'
-      - '-t'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:latest'
-      - '--build-arg'
-      - 'API_BASE_URL=${_API_BASE_URL}'
-      - '.'
-    id: 'build-image'
-
-  # Push image lên Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:$BUILD_ID'
-    id: 'push-image'
-
-  # Deploy lên Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - '${_SERVICE_NAME}'
-      - '--image'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:$BUILD_ID'
-      - '--region'
-      - '${_REGION}'
-      - '--platform'
-      - 'managed'
-      - '--allow-unauthenticated'  # Public access cho frontend
-      - '--port'
-      - '8080'
-      - '--memory'
-      - '256Mi'
-      - '--cpu'
-      - '1'
-      - '--max-instances'
-      - '10'
-    id: 'deploy-cloud-run'
-
-# Images để push lên Artifact Registry
 images:
-  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:$BUILD_ID'
-  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:latest'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+  - 'asia-southeast1-docker.pkg.dev/$PROJECT_ID/talentbridge/talentbridge-frontend:latest'

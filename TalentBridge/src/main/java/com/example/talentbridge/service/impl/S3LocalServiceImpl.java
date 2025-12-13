@@ -3,6 +3,7 @@ package com.example.talentbridge.service.impl;
 import com.example.talentbridge.advice.exception.S3UploadException;
 import com.example.talentbridge.service.S3Service;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,16 +22,14 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
-@ConditionalOnProperty(
-        prefix = "storage",
-        name = "type",
-        havingValue = "local",
-        matchIfMissing = true
-)
+@ConditionalOnProperty(prefix = "storage", name = "type", havingValue = "local", matchIfMissing = true)
 public class S3LocalServiceImpl implements S3Service {
 
     private static final String UPLOAD_DIR = "uploads";
-    
+
+    @Value("${app.base-url:http://localhost:8080}")
+    private String baseUrl;
+
     public S3LocalServiceImpl() {
         // Create uploads directory if it doesn't exist
         try {
@@ -65,8 +64,8 @@ public class S3LocalServiceImpl implements S3Service {
             log.info("Uploaded file locally: {}", key);
 
             if (getUrl) {
-                // Return a local file URL
-                return String.format("file:///%s/%s", UPLOAD_DIR, key);
+                // Return a HTTP URL
+                return String.format("%s/%s/%s", baseUrl, UPLOAD_DIR, key);
             } else {
                 return key;
             }
@@ -86,7 +85,7 @@ public class S3LocalServiceImpl implements S3Service {
             // Parse folder and filename from key
             Path keyPath = Paths.get(key);
             Path folderPath = Paths.get(UPLOAD_DIR);
-            
+
             if (keyPath.getParent() != null) {
                 folderPath = Paths.get(UPLOAD_DIR, keyPath.getParent().toString());
                 if (!Files.exists(folderPath)) {
@@ -101,7 +100,7 @@ public class S3LocalServiceImpl implements S3Service {
             log.info("Uploaded file locally: {}", key);
 
             if (getUrl) {
-                return String.format("file:///%s/%s", UPLOAD_DIR, key);
+                return String.format("%s/%s/%s", baseUrl, UPLOAD_DIR, key);
             } else {
                 return key;
             }
@@ -113,13 +112,14 @@ public class S3LocalServiceImpl implements S3Service {
 
     @Override
     public String generatePresignedUrl(String key, Duration expireDuration) {
-        // For local files, just return the file path
+        // For local files, return the HTTP URL
+        // We check existence but in a static resource context we just return the link
         Path filePath = Paths.get(UPLOAD_DIR, key);
         if (Files.exists(filePath)) {
-            return String.format("file:///%s/%s", UPLOAD_DIR, key);
+            return String.format("%s/%s/%s", baseUrl, UPLOAD_DIR, key);
         } else {
             log.warn("File not found for presigned URL: {}", key);
-            return String.format("file:///%s/%s", UPLOAD_DIR, key);
+            return String.format("%s/%s/%s", baseUrl, UPLOAD_DIR, key);
         }
     }
 
@@ -130,8 +130,11 @@ public class S3LocalServiceImpl implements S3Service {
                 return;
             }
 
-            // Extract key from local URL
-            String key;
+            // Extract key from URL
+            // Format: http://localhost:8080/uploads/{key}
+            // or old format file:///...
+            String key = null;
+
             if (fileUrl.startsWith("file:///")) {
                 String path = fileUrl.substring("file:///".length());
                 if (path.startsWith(UPLOAD_DIR + "/")) {
@@ -139,11 +142,14 @@ public class S3LocalServiceImpl implements S3Service {
                 } else {
                     key = path;
                 }
-            } else {
-                key = fileUrl;
+            } else if (fileUrl.contains("/" + UPLOAD_DIR + "/")) {
+                int index = fileUrl.indexOf("/" + UPLOAD_DIR + "/");
+                key = fileUrl.substring(index + ("/" + UPLOAD_DIR + "/").length());
             }
 
-            deleteFileByKey(key);
+            if (key != null) {
+                deleteFileByKey(key);
+            }
         } catch (Exception e) {
             log.error("Error deleting file by URL: {}", e.getMessage());
             throw new S3UploadException("Lỗi khi xóa file: " + e.getMessage());

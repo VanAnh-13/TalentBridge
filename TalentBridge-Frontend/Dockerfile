@@ -12,7 +12,9 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build application (reads VITE_API_URL from .env file)
+# Build application (reads VITE_API_URL from .env file or environment)
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 # Production stage

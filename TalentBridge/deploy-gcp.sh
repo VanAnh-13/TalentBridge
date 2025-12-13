@@ -26,6 +26,12 @@ gcloud artifacts repositories create $APP_NAME \
     --description="TalentBridge Docker repository" \
     2>/dev/null || echo "Repository already exists"
 
+# Create GCS Bucket
+echo "Creating GCS Bucket..."
+BUCKET_NAME="talentbridge-files"
+gcloud storage buckets create gs://$BUCKET_NAME --location=$REGION 2>/dev/null || echo "Bucket already exists"
+
+
 # Build and push Docker image
 echo "Building Docker image..."
 IMAGE_URL="$REGION-docker.pkg.dev/$PROJECT_ID/$APP_NAME/$APP_NAME:latest"
@@ -98,7 +104,7 @@ gcloud run deploy $APP_NAME \
     --set-env-vars="JWT_REFRESH_TOKEN_EXPIRATION=86400" \
     --set-env-vars="GCS_PROJECT_ID=$PROJECT_ID" \
     --set-env-vars="GCS_BUCKET_NAME=talentbridge-files" \
-    --set-env-vars="GCS_CREDENTIALS_PATH=/app/gcs-credentials.json" \
+    --set-env-vars="STORAGE_TYPE=gcs" \
     --add-cloudsql-instances=$SQL_CONNECTION
 
 # Get service URL
