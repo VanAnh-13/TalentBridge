@@ -13,16 +13,14 @@ public class SkipPathBearerTokenResolver implements BearerTokenResolver {
     // Paths that require authentication (should NOT skip token)
     private final List<String> authenticatedPaths = List.of(
             "/companies/me",
-            "/jobs/me"
-    );
+            "/jobs/me");
 
     // Paths that are public (skip token resolution)
     private final List<String> skipPaths = List.of(
             "/auth/login",
             "/auth/logout",
             "/auth/register",
-            "/auth/refresh-token"
-    );
+            "/auth/refresh-token");
 
     @Override
     public String resolve(HttpServletRequest request) {
@@ -41,7 +39,7 @@ public class SkipPathBearerTokenResolver implements BearerTokenResolver {
                 return null;
             }
         }
-        
+
         return delegate.resolve(request);
     }
 }

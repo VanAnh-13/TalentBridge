@@ -35,7 +35,8 @@ public class TestHelper {
         return objectMapper.readTree(response).get("data").get("access_token").asText();
     }
 
-    public static String getUserToken(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password) throws Exception {
+    public static String getUserToken(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password)
+            throws Exception {
         UserLoginRequestDto loginDto = new UserLoginRequestDto();
         loginDto.setEmail(email);
         loginDto.setPassword(password);
@@ -50,7 +51,8 @@ public class TestHelper {
         return objectMapper.readTree(response).get("data").get("access_token").asText();
     }
 
-    public static Long createJobForCompany(MockMvc mockMvc, ObjectMapper objectMapper, String token, Long companyId) throws Exception {
+    public static Long createJobForCompany(MockMvc mockMvc, ObjectMapper objectMapper, String token, Long companyId)
+            throws Exception {
         JobRequestDto jobDto = new JobRequestDto();
         jobDto.setName("Test Job " + System.currentTimeMillis());
         jobDto.setLocation("Test Location");
@@ -61,12 +63,12 @@ public class TestHelper {
         jobDto.setStartDate(Instant.now());
         jobDto.setEndDate(Instant.now().plus(30, ChronoUnit.DAYS));
         jobDto.setActive(true);
-        
+
         // Set company
         JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
         company.setId(companyId);
         jobDto.setCompany(company);
-        
+
         // Set skills
         JobRequestDto.SkillId skill1 = new JobRequestDto.SkillId();
         skill1.setId(1L);

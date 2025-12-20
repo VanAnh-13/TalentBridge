@@ -92,7 +92,10 @@ VALUES
     ('Delete Company Job', '/jobs/company/{id}', 'DELETE', 'JOB', NOW(), NOW(), 'system', 'system'),
     
     -- ADMIN Page Access Permission
-    ('Access Admin Dashboard', '/admin', 'GET', 'ADMIN', NOW(), NOW(), 'system', 'system')
+    ('Access Admin Dashboard', '/admin', 'GET', 'ADMIN', NOW(), NOW(), 'system', 'system'),
+    
+    -- Statistics Dashboard (ADMIN ONLY)
+    ('Get Dashboard Statistics', '/statistics', 'GET', 'STATISTICS', NOW(), NOW(), 'system', 'system')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     module = VALUES(module),
