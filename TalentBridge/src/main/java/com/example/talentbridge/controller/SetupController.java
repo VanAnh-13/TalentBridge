@@ -88,7 +88,7 @@ public class SetupController {
             // Try testadmin
             admin = userRepository.findByEmail("testadmin@talentbridge.com").orElse(null);
         }
-        
+
         if (admin == null) {
             response.put("success", false);
             response.put("message", "Admin account not found");

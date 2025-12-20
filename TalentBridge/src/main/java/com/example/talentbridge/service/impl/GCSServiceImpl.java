@@ -16,11 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-        prefix = "storage",
-        name = "type",
-        havingValue = "gcs"
-)
+@ConditionalOnProperty(prefix = "storage", name = "type", havingValue = "gcs")
 public class GCSServiceImpl implements S3Service {
 
     private final Storage storage;
@@ -43,7 +39,8 @@ public class GCSServiceImpl implements S3Service {
 
             if (getUrl)
                 return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
-            else return key;
+            else
+                return key;
         } catch (IOException e) {
             throw new S3UploadException("Lỗi khi đọc dữ liệu từ tệp");
         } catch (Exception e) {
@@ -66,7 +63,8 @@ public class GCSServiceImpl implements S3Service {
 
             if (getUrl)
                 return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
-            else return key;
+            else
+                return key;
         } catch (IOException e) {
             throw new S3UploadException("Lỗi khi đọc dữ liệu từ tệp logo");
         } catch (Exception e) {
@@ -75,24 +73,27 @@ public class GCSServiceImpl implements S3Service {
     }
 
     @Override
-    @Cacheable(
-            cacheNames = "presign",
-            key = "#key + ':' + #expireDuration.seconds"
-    )
+    @Cacheable(cacheNames = "presign", key = "#key + ':' + #expireDuration.seconds")
     public String generatePresignedUrl(String key, Duration expireDuration) {
+        // Return null for invalid keys to prevent API crashes
+        if (key == null || key.isBlank()) {
+            return null;
+        }
+
         try {
             BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(gcsBucketName, key)).build();
-            
+
             URL signedUrl = storage.signUrl(
                     blobInfo,
                     expireDuration.toMinutes(),
                     TimeUnit.MINUTES,
-                    Storage.SignUrlOption.withV4Signature()
-            );
-            
+                    Storage.SignUrlOption.withV4Signature());
+
             return signedUrl.toString();
         } catch (Exception e) {
-            throw new S3UploadException("Lỗi khi tạo presigned URL: " + e.getMessage());
+            // Fallback to public URL if signing fails (for Cloud Run without private key)
+            System.err.println("Warning: Failed to sign URL, using public URL. Key: " + key + " - " + e.getMessage());
+            return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
         }
     }
 

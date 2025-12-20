@@ -12,10 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Configuration
-@ConditionalOnProperty(
-        name = {"gcs.project-id", "gcs.bucket-name"},
-        matchIfMissing = false
-)
+@ConditionalOnProperty(name = { "gcs.project-id", "gcs.bucket-name" }, matchIfMissing = false)
 public class GCSConfig {
 
     @Value("${gcs.project-id}")
@@ -30,13 +27,13 @@ public class GCSConfig {
     @Bean
     public Storage storage() throws IOException {
         GoogleCredentials credentials;
-        
-        // Try to load from file first, fallback to Application Default Credentials (for Cloud Run)
+
+        // Try to load from file first, fallback to Application Default Credentials (for
+        // Cloud Run)
         if (credentialsPath != null && !credentialsPath.isEmpty()) {
             try {
                 credentials = GoogleCredentials.fromStream(
-                        new FileInputStream(credentialsPath)
-                );
+                        new FileInputStream(credentialsPath));
             } catch (Exception e) {
                 // Use Application Default Credentials (works on GCP)
                 credentials = GoogleCredentials.getApplicationDefault();

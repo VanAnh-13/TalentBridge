@@ -56,8 +56,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
 
     @Override
     public UserSessionResponseDto handleRegister(
-            UserRegisterRequestDto userRegisterRequestDto
-    ) {
+            UserRegisterRequestDto userRegisterRequestDto) {
         if (userRepository.existsByEmail(userRegisterRequestDto.getEmail()))
             throw new DataIntegrityViolationException("Email đã tồn tại");
 
@@ -69,8 +68,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                 passwordEncoder.encode(userRegisterRequestDto.getPassword()),
                 userRegisterRequestDto.getDob(),
                 userRegisterRequestDto.getAddress(),
-                userRegisterRequestDto.getGender()
-        );
+                userRegisterRequestDto.getGender());
 
         Role role;
         if (userRegisterRequestDto.isRecruiter())
@@ -93,8 +91,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         // EXTRACT PRINCIPAL AND CREDENTIAL FROM REQUEST INTO TOKEN
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 userLoginRequestDto.getEmail(),
-                userLoginRequestDto.getPassword()
-        );
+                userLoginRequestDto.getPassword());
 
         // VERIFY TOKEN + SAVE AUTHENTICATION INTO CONTEXT
         Authentication authentication = authenticationManager.authenticate(token);
@@ -120,8 +117,9 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         return ResponseCookie
                 .from("refresh_token", "")
                 .httpOnly(true)
+                .secure(true)
                 .path("/")
-                .sameSite("Strict")
+                .sameSite("None")
                 .maxAge(0)
                 .build();
     }
@@ -137,7 +135,6 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
 
         if (!refreshTokenRedisService.validateToken(refreshToken, userId))
             throw new BadJwtException(null);
-
 
         if (!user.getEmail().equalsIgnoreCase(email))
             throw new BadJwtException(null);
@@ -179,8 +176,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                 user.getGender(),
                 user.getLogoUrl(),
                 user.getCreatedAt(),
-                user.getUpdatedAt()
-        );
+                user.getUpdatedAt());
     }
 
     @Override
@@ -235,8 +231,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                 role.getName(),
                 permissions,
                 user.getLogoUrl(),
-                user.getUpdatedAt().toString()
-        );
+                user.getUpdatedAt().toString());
     }
 
     private UserSessionResponseDto mapToUserInformation(String email) {
@@ -246,7 +241,6 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         User user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
-
 
         return mapToUserInformation(user);
     }
@@ -274,8 +268,9 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", refreshToken)
                 .httpOnly(true)
+                .secure(true)
                 .path("/")
-                .sameSite("Strict")
+                .sameSite("None")
                 .maxAge(refreshTokenExpiration)
                 .build();
         // ================================================
@@ -286,10 +281,8 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
 
         AuthTokenResponseDto authTokenResponseDto = new AuthTokenResponseDto(
                 mapToUserInformation(user),
-                accessToken
-        );
+                accessToken);
         // ================================================
-
 
         return new AuthResult(authTokenResponseDto, responseCookie);
     }
@@ -319,6 +312,5 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
 
         return res;
     }
-
 
 }
