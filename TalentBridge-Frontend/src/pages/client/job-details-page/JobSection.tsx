@@ -2,7 +2,6 @@
 
 import type { Job } from "@/types/job";
 import {
-  Building2,
   MapPin,
   CalendarDays,
   DollarSign,
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge.tsx";
 import RichTextPreview from "@/components/custom/RichText/index-preview.tsx";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { formatISO, formatSalary } from "@/utils/convertHelper.ts";
 import { levelColors, levelLabels } from "@/utils/tagColorMapper.ts";
 
@@ -34,11 +34,10 @@ const JobSection = ({ job }: JobSectionProps) => {
                 {levelLabels[job.level]}
               </Badge>
               <div
-                className={`rounded-full px-3 py-1 text-sm font-medium ${
-                  job.active
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                }`}
+                className={`rounded-full px-3 py-1 text-sm font-medium ${job.active
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+                  }`}
               >
                 {job.active ? "Đang tuyển dụng" : "Đã đóng"}
               </div>
@@ -48,17 +47,13 @@ const JobSection = ({ job }: JobSectionProps) => {
 
         {/* Company Info */}
         <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border bg-white">
-            {job.company.logoUrl ? (
-              <img
-                src={job.company.logoUrl || "/placeholder.svg"}
-                alt={job.company.name}
-                className="h-full w-full object-contain"
-              />
-            ) : (
-              <Building2 className="h-8 w-8 text-gray-600" />
-            )}
-          </div>
+          <CompanyLogo
+            src={job.company.logoUrl}
+            alt={job.company.name}
+            companyName={job.company.name}
+            size="lg"
+            className="overflow-hidden border bg-white"
+          />
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
               {job.company.name}

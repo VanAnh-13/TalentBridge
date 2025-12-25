@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { X, Building2, MapPin, Calendar, Edit, Trash2 } from "lucide-react";
+import { X, MapPin, Calendar, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { formatISO } from "@/utils/convertHelper.ts";
 import RichTextPreview from "@/components/custom/RichText/index-preview";
 
@@ -46,9 +47,8 @@ export function CompanyDetailsSidebar({
     <>
       {/* Backdrop */}
       <div
-        className={`z-[100] bg-black/30 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
+        className={`z-[100] bg-black/30 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"
+          }`}
         style={{
           position: "fixed",
           top: 0,
@@ -63,9 +63,8 @@ export function CompanyDetailsSidebar({
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 right-0 z-[101] h-full w-96 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 z-[101] h-full w-96 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         style={{
           position: "fixed",
           height: "100vh",
@@ -87,17 +86,12 @@ export function CompanyDetailsSidebar({
               {/* Company Logo & Name */}
               <div className="space-y-4 text-center">
                 <div className="flex justify-center">
-                  {company.logoUrl ? (
-                    <img
-                      src={company.logoUrl}
-                      alt={`${company.name} logo`}
-                      className="h-20 w-20 rounded-lg border object-contain"
-                    />
-                  ) : (
-                    <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-blue-100">
-                      <Building2 className="h-10 w-10 text-blue-600" />
-                    </div>
-                  )}
+                  <CompanyLogo
+                    src={company.logoUrl}
+                    alt={`${company.name} logo`}
+                    companyName={company.name}
+                    size="xl"
+                  />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">

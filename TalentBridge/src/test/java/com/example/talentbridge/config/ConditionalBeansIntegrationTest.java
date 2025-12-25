@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests to verify conditional bean loading based on configuration properties
  */
 @SpringBootTest
+@ActiveProfiles("test")
 @TestPropertySource(properties = {
         "spring.cache.type=simple"
 })

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table.tsx";
 import { EmptyState } from "@/components/custom/EmptyState.tsx";
 import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { formatISO } from "@/utils/convertHelper.ts";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
 import {
@@ -96,13 +97,13 @@ export function ResumeTable({
               <TableRow key={resume.id}>
                 <TableCell className="text-center">{resume.id}</TableCell>
                 <TableCell className="text-center">
-                  {resume.company.logoUrl && (
-                    <img
-                      src={resume.company.logoUrl}
-                      alt={resume.company.name}
-                      className="h-14 w-14 rounded-md border bg-white object-contain shadow-sm"
-                    />
-                  )}
+                  <CompanyLogo
+                    src={resume.company.logoUrl}
+                    alt={resume.company.name}
+                    companyName={resume.company.name}
+                    size="lg"
+                    className="h-14 w-14 shadow-sm"
+                  />
                 </TableCell>
                 <TableCell className="max-w-[200px] text-center break-all whitespace-normal">
                   {resume.company.name}

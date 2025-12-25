@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
 import PDFViewer from "@/components/custom/PDFViewer";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { FileX, MapPin, Sparkles } from "lucide-react";
 import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
 import JobInfoDialog from "./JobInfoDialog";
@@ -35,13 +36,13 @@ export default function ResumeCard({
       <Card className="flex flex-col transition-shadow duration-200 hover:shadow-md">
         <CardHeader>
           <div className="flex items-center gap-4">
-            {resume.company.logoUrl && (
-              <img
-                src={resume.company.logoUrl}
-                alt={resume.company.name}
-                className="h-14 w-14 rounded-md border bg-white object-contain shadow-sm"
-              />
-            )}
+            <CompanyLogo
+              src={resume.company.logoUrl}
+              alt={resume.company.name}
+              companyName={resume.company.name}
+              size="lg"
+              className="h-14 w-14 shadow-sm"
+            />
             <div>
               <CardTitle className="text-lg leading-tight font-semibold">
                 {resume.job.name}

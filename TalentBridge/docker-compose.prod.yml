@@ -59,7 +59,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       
       # Database Configuration
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${DB_NAME:-talentbridge}?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME:-talentbridge}?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-talentbridge_user}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
       

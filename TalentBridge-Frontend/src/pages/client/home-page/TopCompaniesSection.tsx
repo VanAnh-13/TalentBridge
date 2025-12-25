@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/custom/EmptyState";
 import LoadingSpinner from "@/components/custom/LoadingSpinner";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { findAllCompanies } from "@/services/companyApi";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
@@ -64,11 +65,14 @@ const TopCompaniesSection = () => {
               key={company.id}
               className="rounded-xl border p-5 text-center transition hover:shadow-md"
             >
-              <img
-                src={company.logoUrl}
-                alt={company.name}
-                className="mx-auto mb-3 h-16 w-16 object-contain"
-              />
+              <div className="mx-auto mb-3 flex justify-center">
+                <CompanyLogo
+                  src={company.logoUrl}
+                  alt={company.name}
+                  companyName={company.name}
+                  size="lg"
+                />
+              </div>
               <h3 className="mb-1 h-[100px] text-lg font-semibold text-gray-800">
                 {company.name}
               </h3>

@@ -8,12 +8,12 @@ import {
   BadgeDollarSign,
   Layers3,
   Users,
-  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog.tsx";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { formatISO } from "@/utils/convertHelper.ts";
 import type { Job } from "@/types/job";
 import RichTextPreview from "@/components/custom/RichText/index-preview.tsx";
@@ -56,9 +56,8 @@ export function JobDetailsSidebar({
     <>
       {/* Backdrop */}
       <div
-        className={`z-[100] bg-black/30 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
+        className={`z-[100] bg-black/30 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"
+          }`}
         style={{
           position: "fixed",
           top: 0,
@@ -73,9 +72,8 @@ export function JobDetailsSidebar({
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 right-0 z-[101] h-screen w-96 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 z-[101] h-screen w-96 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {job && (
           <div className="flex h-full flex-col">
@@ -105,19 +103,13 @@ export function JobDetailsSidebar({
                   </label>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
-                  <div>
-                    {job.company.logoUrl ? (
-                      <img
-                        src={job.company.logoUrl}
-                        alt={`${job.company.name} logo`}
-                        className="h-10 w-10 rounded-lg border object-contain"
-                      />
-                    ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                        <Building2 className="h-5 w-5 text-blue-600" />
-                      </div>
-                    )}
-                  </div>
+                  <CompanyLogo
+                    src={job.company.logoUrl}
+                    alt={`${job.company.name} logo`}
+                    companyName={job.company.name}
+                    size="sm"
+                    className="h-10 w-10"
+                  />
                   <div>{job.company.name}</div>
                 </div>
               </div>

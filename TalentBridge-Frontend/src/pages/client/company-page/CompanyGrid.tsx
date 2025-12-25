@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getFirstLineFromHtml } from "@/utils/convertHelper.ts";
 import LoadingSpinner from "@/components/custom/LoadingSpinner";
 import { EmptyState } from "@/components/custom/EmptyState";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { useNavigate } from "react-router-dom";
 
 type CompanyGridProps = {
@@ -41,17 +42,13 @@ const CompanyGrid = ({ isLoading, companies }: CompanyGridProps) => {
           <CardContent className="p-6">
             <div className="mb-4 flex items-start justify-between">
               <div className="flex min-w-0 flex-1 items-center gap-3">
-                <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden bg-gray-100">
-                  {company.logoUrl ? (
-                    <img
-                      src={company.logoUrl || "/placeholder.svg"}
-                      alt={`${company.name} logo`}
-                      className="h-full w-full object-contain"
-                    />
-                  ) : (
-                    <Building2 className="h-6 w-6 text-gray-600" />
-                  )}
-                </div>
+                <CompanyLogo
+                  src={company.logoUrl}
+                  alt={`${company.name} logo`}
+                  companyName={company.name}
+                  size="lg"
+                  className="flex-shrink-0 overflow-hidden bg-gray-100"
+                />
 
                 <div className="min-w-0 flex-1">
                   <h3 className="text-md line-clamp-2 font-semibold text-gray-900">

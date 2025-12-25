@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import LoadingSpinner from "@/components/custom/LoadingSpinner";
 import { EmptyState } from "@/components/custom/EmptyState";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { useNavigate } from "react-router-dom";
 import { formatISO, formatSalary } from "@/utils/convertHelper.ts";
 import { levelColors, levelLabels } from "@/utils/tagColorMapper.ts";
@@ -58,17 +59,13 @@ const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
             </div>
 
             <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
-                {job.company.logoUrl ? (
-                  <img
-                    src={job.company.logoUrl}
-                    alt={`${job.company.name} logo`}
-                    className="h-full w-full object-contain"
-                  />
-                ) : (
-                  <Building2 className="h-6 w-6 text-gray-600" />
-                )}
-              </div>
+              <CompanyLogo
+                src={job.company.logoUrl}
+                alt={`${job.company.name} logo`}
+                companyName={job.company.name}
+                size="md"
+                className="flex-shrink-0 overflow-hidden bg-gray-100"
+              />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-gray-900">
                   {job.company.name}

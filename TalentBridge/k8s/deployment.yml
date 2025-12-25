@@ -275,7 +275,7 @@ spec:
               name: talentbridge-config
               key: SPRING_PROFILES_ACTIVE
         - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mariadb://talentbridge-mariadb:3306/talentbridge"
+          value: "jdbc:mysql://talentbridge-mysql:3306/talentbridge"
         - name: SPRING_DATASOURCE_USERNAME
           value: "talentbridge_user"
         - name: SPRING_DATASOURCE_PASSWORD

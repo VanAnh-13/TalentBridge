@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
 import { EmptyState } from "@/components/custom/EmptyState";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import { formatISO } from "@/utils/convertHelper.ts";
 import LoadingSpinner from "@/components/custom/LoadingSpinner";
 import HasPermission from "@/pages/commons/HasPermission.tsx";
@@ -90,26 +91,20 @@ export function CompanyTable({
               return (
                 <TableRow
                   key={company.id}
-                  className={`cursor-pointer transition-colors duration-200 ${
-                    isActive ? "bg-muted/40" : "hover:bg-muted/50"
-                  }`}
+                  className={`cursor-pointer transition-colors duration-200 ${isActive ? "bg-muted/40" : "hover:bg-muted/50"
+                    }`}
                   onClick={() => onViewDetails(company)}
                 >
                   <TableCell className="text-center font-medium">
                     {company.id}
                   </TableCell>
                   <TableCell className="flex items-center justify-center font-medium">
-                    {company.logoUrl ? (
-                      <img
-                        src={company.logoUrl}
-                        alt={`${company.name} logo`}
-                        className="h-20 w-20 rounded-lg border object-contain"
-                      />
-                    ) : (
-                      <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-blue-100">
-                        <Building2 className="h-10 w-10 text-blue-600" />
-                      </div>
-                    )}
+                    <CompanyLogo
+                      src={company.logoUrl}
+                      alt={`${company.name} logo`}
+                      companyName={company.name}
+                      size="xl"
+                    />
                   </TableCell>
                   <TableCell className="w-[200px] text-center break-all whitespace-normal">
                     {company.name}

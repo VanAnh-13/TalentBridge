@@ -15,6 +15,7 @@ import type { CompanySummary } from "@/types/job";
 import { findAllCompanies } from "@/services/companyApi.ts";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
 import Pagination from "@/components/custom/Pagination.tsx";
+import { CompanyLogo } from "@/components/custom/CompanyLogo";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { EmptyState } from "@/components/custom/EmptyState.tsx";
 import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
@@ -106,17 +107,12 @@ const CompanySelection = ({
         {selectedCompany && (
           <div className="mb-3 flex min-h-[100px] items-center justify-between rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
             <div className="flex items-center gap-3">
-              {selectedCompany.logoUrl ? (
-                <img
-                  src={selectedCompany.logoUrl}
-                  alt={`${selectedCompany.name} logo`}
-                  className="h-16 w-16 rounded-lg border object-contain"
-                />
-              ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-blue-100">
-                  <Building2 className="h-10 w-10 text-blue-600" />
-                </div>
-              )}
+              <CompanyLogo
+                src={selectedCompany.logoUrl}
+                alt={`${selectedCompany.name} logo`}
+                companyName={selectedCompany.name}
+                size="lg"
+              />
               <div>
                 <span className="font-semibold text-gray-900">
                   {selectedCompany.name}
@@ -201,17 +197,13 @@ const CompanySelection = ({
                     onClick={() => onAddCompany(company)}
                   >
                     <div className="flex items-center gap-3">
-                      {company.logoUrl ? (
-                        <img
-                          src={company.logoUrl}
-                          alt={`${company.name} logo`}
-                          className="h-10 w-10 rounded-lg border object-contain"
-                        />
-                      ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                          <Building2 className="h-5 w-5 text-blue-600" />
-                        </div>
-                      )}
+                      <CompanyLogo
+                        src={company.logoUrl}
+                        alt={`${company.name} logo`}
+                        companyName={company.name}
+                        size="sm"
+                        className="h-10 w-10"
+                      />
                       <div className="flex-1">
                         <h4 className="font-semibold break-all whitespace-normal">
                           {company.name}

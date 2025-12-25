@@ -72,7 +72,7 @@ const CompanyManagerRecruiterPage = () => {
         Chỉnh sửa thông tin công ty
       </Button>
 
-      <CompanySection company={company} jobsCount={0} isRecruiter={true} />
+      <CompanySection company={company} jobsCount={0} />
 
       <CompanyForm
         isLoading={isLoading}
