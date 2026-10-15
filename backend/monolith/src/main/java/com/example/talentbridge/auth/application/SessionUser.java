@@ -20,7 +20,10 @@ public record SessionUser(String email, String name, Long id, String companyId, 
                 user.getUpdatedAt() == null ? null : user.getUpdatedAt().toString());
     }
 
-    /** Field order and names are part of the token format the frontend reads. */
+    /**
+     * The {@code user} claim of the access token. Permissions are not repeated here: they are the token's own
+     * {@code permissions} claim (a token travels in every request header and must stay small).
+     */
     public Map<String, Object> asClaim() {
         Map<String, Object> claim = new LinkedHashMap<>();
         claim.put("email", email);
@@ -28,7 +31,6 @@ public record SessionUser(String email, String name, Long id, String companyId, 
         claim.put("id", id);
         claim.put("companyId", companyId);
         claim.put("role", role);
-        claim.put("permissions", permissions);
         claim.put("logoUrl", logoUrl);
         claim.put("updatedAt", updatedAt);
         return claim;

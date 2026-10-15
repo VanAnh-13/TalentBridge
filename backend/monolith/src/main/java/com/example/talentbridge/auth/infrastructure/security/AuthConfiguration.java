@@ -1,5 +1,6 @@
 package com.example.talentbridge.auth.infrastructure.security;
 
+import com.example.talentbridge.shared.security.AccessTokensOnly;
 import com.example.talentbridge.shared.security.TokenClaimNames;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -12,7 +13,10 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 
-/** This application issues the tokens: it signs with the private key and verifies with the public one locally. */
+/**
+ * This application issues the tokens: it signs with the private key and verifies with the public one locally.
+ * The {@link JwtDecoder} bean guards the APIs and accepts access tokens only.
+ */
 @Configuration
 public class AuthConfiguration {
 
@@ -36,7 +40,8 @@ public class AuthConfiguration {
         NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(key.publicKey())
                 .signatureAlgorithm(SIGNATURE_ALGORITHM)
                 .build();
-        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefaultWithIssuer(issuer)));
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefaultWithIssuer(issuer),
+                new AccessTokensOnly()));
         return decoder;
     }
 }

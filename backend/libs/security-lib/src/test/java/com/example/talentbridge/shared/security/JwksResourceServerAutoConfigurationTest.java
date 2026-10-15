@@ -64,7 +64,12 @@ class JwksResourceServerAutoConfigurationTest {
     }
 
     private static String token(RSAKey signer, String issuer, long ttlMillis) throws Exception {
+        return token(signer, issuer, ttlMillis, "access");
+    }
+
+    private static String token(RSAKey signer, String issuer, long ttlMillis, String use) throws Exception {
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .claim("token_use", use)
                 .subject("a@b.com").issuer(issuer)
                 .claim("user", Map.of("id", 42, "email", "a@b.com"))
                 .claim("permissions", List.of("GET /notifications"))
@@ -86,6 +91,8 @@ class JwksResourceServerAutoConfigurationTest {
             assertThrows(JwtException.class, () -> decoder.decode(token(stranger, TokenClaimNames.DEFAULT_ISSUER, 60_000)));
             assertThrows(JwtException.class, () -> decoder.decode(token(key, "someone-else", 60_000)));
             assertThrows(JwtException.class, () -> decoder.decode(token(key, TokenClaimNames.DEFAULT_ISSUER, -120_000)));
+            assertThrows(JwtException.class, () -> decoder.decode(token(key, TokenClaimNames.DEFAULT_ISSUER, 60_000, "refresh")),
+                    "a refresh token is not a bearer token");
             assertThat(fetches.get()).isPositive();
         });
     }

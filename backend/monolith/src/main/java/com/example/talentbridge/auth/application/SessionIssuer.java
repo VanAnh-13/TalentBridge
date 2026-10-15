@@ -28,7 +28,7 @@ class SessionIssuer {
         SessionUser user = SessionUser.from(account);
         TokenClaims claims = new TokenClaims(user.email(), user.asClaim(), user.permissions());
 
-        String refreshToken = tokenIssuer.issue(claims, Duration.ofSeconds(refreshTokenSeconds));
+        String refreshToken = tokenIssuer.issueRefresh(user.email(), Duration.ofSeconds(refreshTokenSeconds));
         refreshTokens.save(refreshToken, account.user().getId(), device, Duration.ofSeconds(refreshTokenSeconds));
 
         return new AuthSession(user, tokenIssuer.issue(claims, Duration.ofSeconds(accessTokenSeconds)), refreshToken);

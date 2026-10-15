@@ -1,5 +1,6 @@
 package com.example.talentbridge.shared.security.autoconfigure;
 
+import com.example.talentbridge.shared.security.AccessTokensOnly;
 import com.example.talentbridge.shared.security.TokenClaimNames;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -30,7 +31,8 @@ public class JwksResourceServerAutoConfiguration {
         NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri)
                 .jwsAlgorithm(SignatureAlgorithm.RS256)
                 .build();
-        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefaultWithIssuer(issuer)));
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefaultWithIssuer(issuer),
+                new AccessTokensOnly()));
         return decoder;
     }
 }

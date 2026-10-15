@@ -65,6 +65,54 @@ class JwksTest {
         assertNotNull(((Map<?, ?>) jwt.getClaim("user")).get("id"));
     }
 
+    @Test @DisplayName("tokens stay small: permissions appear once; the refresh cookie carries no permissions and fits a browser cookie")
+    void tokenSizes() throws Exception {
+        var login = mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/auth/login")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"test-admin@talentbridge.com\",\"password\":\"Admin@123456\","
+                                + "\"sessionMetaRequest\":{\"deviceName\":\"t\",\"deviceType\":\"t\",\"userAgent\":\"t\"}}"))
+                .andExpect(status().isOk()).andReturn().getResponse();
+        String refresh = login.getCookie("refresh_token").getValue();
+        String access = objectMapper.readTree(login.getContentAsString()).get("data").get("accessToken").asText();
+
+        // the administrator holds every permission: the worst case
+        assertTrue(refresh.length() < 1024, "refresh cookie is " + refresh.length() + " chars");
+        assertTrue(("refresh_token=" + refresh).length() < 4096, "browsers drop cookies over 4 KB");
+        var refreshClaims = SignedJWT.parse(refresh).getJWTClaimsSet();
+        assertEquals("refresh", refreshClaims.getStringClaim("token_use"));
+        assertNull(refreshClaims.getClaim("permissions"));
+        assertNull(refreshClaims.getClaim("user"));
+
+        var accessClaims = SignedJWT.parse(access).getJWTClaimsSet();
+        assertEquals("access", accessClaims.getStringClaim("token_use"));
+        assertFalse(((Map<?, ?>) accessClaims.getClaim("user")).containsKey("permissions"), "permissions are listed once");
+        assertFalse(((List<?>) accessClaims.getClaim("permissions")).isEmpty());
+    }
+
+    @Test @DisplayName("a refresh token is not a bearer token, and an access token cannot refresh a session")
+    void tokenUsesDoNotMix() throws Exception {
+        var login = mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/auth/login")
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"test-admin@talentbridge.com\",\"password\":\"Admin@123456\","
+                                + "\"sessionMetaRequest\":{\"deviceName\":\"t\",\"deviceType\":\"t\",\"userAgent\":\"t\"}}"))
+                .andExpect(status().isOk()).andReturn().getResponse();
+        String refresh = login.getCookie("refresh_token").getValue();
+        String access = objectMapper.readTree(login.getContentAsString()).get("data").get("accessToken").asText();
+
+        mockMvc.perform(get("/auth/me").header("Authorization", "Bearer " + refresh)).andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/auth/me").header("Authorization", "Bearer " + access)).andExpect(status().isOk());
+
+        String meta = "{\"deviceName\":\"t\",\"deviceType\":\"t\",\"userAgent\":\"t\"}";
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/auth/refresh-token")
+                        .cookie(new jakarta.servlet.http.Cookie("refresh_token", access))
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(meta))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/auth/refresh-token")
+                        .cookie(new jakarta.servlet.http.Cookie("refresh_token", refresh))
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(meta))
+                .andExpect(status().isOk());
+    }
+
     @Test @DisplayName("a token signed with a shared secret (the old HS512 scheme) or tampered with is refused")
     void refusesForeignTokens() throws Exception {
         JWTClaimsSet claims = new JWTClaimsSet.Builder().subject("test-admin@talentbridge.com").issuer("talentbridge-auth")

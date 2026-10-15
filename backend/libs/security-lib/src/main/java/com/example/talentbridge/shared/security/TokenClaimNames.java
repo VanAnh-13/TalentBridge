@@ -12,6 +12,11 @@ public final class TokenClaimNames {
     /** Snapshot of the user: id, email, name, companyId, role, ... */
     public static final String USER = "user";
 
+    /** {@link #ACCESS} or {@link #REFRESH}; a token without it is treated as an access token. */
+    public static final String TOKEN_USE = "token_use";
+    public static final String ACCESS = "access";
+    public static final String REFRESH = "refresh";
+
     private TokenClaimNames() {
     }
 }
