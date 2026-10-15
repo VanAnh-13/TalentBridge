@@ -17,3 +17,8 @@ import { createSkillUseCases } from "@/features/skill/application/skillUseCases"
 import { HttpSkillRepository } from "@/features/skill/infrastructure/HttpSkillRepository";
 
 export const skills = createSkillUseCases(new HttpSkillRepository());
+
+import { createSubscriberUseCases } from "@/features/subscriber/application/subscriberUseCases";
+import { HttpSubscriberRepository } from "@/features/subscriber/infrastructure/HttpSubscriberRepository";
+
+export const subscribers = createSubscriberUseCases(new HttpSubscriberRepository());

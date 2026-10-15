@@ -1,15 +1,7 @@
 import { errorMessage } from "@/shared/domain/errors";
-import {
-  deleteSelfSubscriber,
-  findSelfSubscriber,
-  saveSelfSubscriber,
-  updateSelfSubscriber,
-} from "@/services/subscriberApi";
-import type { SkillSummary } from "@/types/job";
-import type {
-  DefaultSubscriberRequestDto,
-  DefaultSubscriberResponseDto,
-} from "@/types/subscriber";
+import { subscribers } from "@/app/container";
+import type { SkillRef } from "@/features/skill/domain/skill";
+import type { Subscriber } from "../../domain/subscriber";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -41,14 +33,14 @@ import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConf
 const UserSubscriberPage = () => {
   // Data
   const [subscriber, setSubscriber] =
-    useState<DefaultSubscriberResponseDto | null>();
+    useState<Subscriber | null>();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   // Form State
-  const [selectedSkills, setSelectedSkills] = useState<SkillSummary[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<SkillRef[]>([]);
 
   // =========================================================
   // Handle Fetching
@@ -56,14 +48,13 @@ const UserSubscriberPage = () => {
   const fetchSubscriber = async () => {
     try {
       setIsChecking(true);
-      const res = await findSelfSubscriber();
-      const subscriberData = res.data.data;
+      const subscriberData = await subscribers.mine();
       setSubscriber(subscriberData);
 
       // Set selected skills from subscriber data
       if (subscriberData?.skills) {
         setSelectedSkills(
-          subscriberData.skills.map((skill: SkillSummary) => ({
+          subscriberData.skills.map((skill: SkillRef) => ({
             id: skill.id,
             name: skill.name,
           })),
@@ -93,22 +84,16 @@ const UserSubscriberPage = () => {
     try {
       setIsLoading(true);
 
-      const data: DefaultSubscriberRequestDto = {
-        skills: selectedSkills.map((s) => s.id),
-      };
-
-      let res;
       const isUpdate = !!subscriber;
+      const saved = await subscribers.save(
+        selectedSkills.map((s) => s.id),
+        isUpdate,
+      );
+      toast.success(
+        isUpdate ? "Cập nhật đăng ký thành công" : "Đăng ký nhận thông báo thành công",
+      );
 
-      if (isUpdate) {
-        res = await updateSelfSubscriber(data);
-        toast.success("Cập nhật đăng ký thành công");
-      } else {
-        res = await saveSelfSubscriber(data);
-        toast.success("Đăng ký nhận thông báo thành công");
-      }
-
-      setSubscriber(res.data.data);
+      setSubscriber(saved);
       setIsEditing(false);
     } catch (err) {
       toast.error(errorMessage(err, "Thao tác thất bại"));
@@ -124,7 +109,7 @@ const UserSubscriberPage = () => {
     try {
       setIsLoading(true);
 
-      await deleteSelfSubscriber();
+      await subscribers.unsubscribe();
       setSubscriber(null);
       setSelectedSkills([]);
       setIsEditing(false);
@@ -139,7 +124,7 @@ const UserSubscriberPage = () => {
   // =========================================================
   // Skill selection handler
   // =========================================================
-  const addSkill = (skill: SkillSummary) => {
+  const addSkill = (skill: SkillRef) => {
     const exists = selectedSkills.some((s) => s.id === skill.id);
     if (exists) return;
 
@@ -147,7 +132,7 @@ const UserSubscriberPage = () => {
     setSelectedSkills(updated);
   };
 
-  const removeSkill = (skill: SkillSummary) => {
+  const removeSkill = (skill: SkillRef) => {
     const updated = selectedSkills.filter((s) => s.id !== skill.id);
     setSelectedSkills(updated);
   };
@@ -160,7 +145,7 @@ const UserSubscriberPage = () => {
     // Reset selected skills to current subscriber skills
     if (subscriber?.skills) {
       setSelectedSkills(
-        subscriber.skills.map((skill: SkillSummary) => ({
+        subscriber.skills.map((skill: SkillRef) => ({
           id: skill.id,
           name: skill.name,
         })),
@@ -173,7 +158,7 @@ const UserSubscriberPage = () => {
     // Reset selected skills to current subscriber skills
     if (subscriber?.skills) {
       setSelectedSkills(
-        subscriber.skills.map((skill: SkillSummary) => ({
+        subscriber.skills.map((skill: SkillRef) => ({
           id: skill.id,
           name: skill.name,
         })),
@@ -233,7 +218,7 @@ const UserSubscriberPage = () => {
                 Kỹ năng đã đăng ký ({subscriber.skills?.length || 0})
               </h4>
               <div className="flex flex-wrap gap-2">
-                {subscriber.skills?.map((skill: SkillSummary) => (
+                {subscriber.skills?.map((skill: SkillRef) => (
                   <Badge
                     key={skill.id}
                     variant="outline"

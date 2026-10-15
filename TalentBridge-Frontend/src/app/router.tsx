@@ -28,7 +28,7 @@ import PermissionManagerPage from "@/pages/admin/access-control-page/permission-
 import RoleManagerPage from "@/pages/admin/access-control-page/role-page";
 import UserManagerPage from "@/pages/admin/user-page/user-manager-page";
 import UserUpsertPage from "@/pages/admin/user-page/user-upsert-page";
-import UserSubscriberPage from "@/pages/user/user-subscriber-page";
+import { SubscriberPage } from "@/features/subscriber";
 
 // RECRUITER PAGE
 import RecruiterPage from "@/pages/recruiter";
@@ -73,7 +73,7 @@ const router = createBrowserRouter([
                 to="/user"
                 requiredPermission="GET /subscribers/me"
               >
-                <UserSubscriberPage />
+                <SubscriberPage />
               </ProtectedRoute>
             ),
           },
