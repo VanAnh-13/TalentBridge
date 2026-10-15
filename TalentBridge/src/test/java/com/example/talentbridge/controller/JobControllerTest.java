@@ -1,6 +1,6 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.dto.request.job.JobRequestDto;
+import com.example.talentbridge.job.presentation.JobRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,24 +57,24 @@ public class JobControllerTest {
     @Order(1)
     @DisplayName("JOB_01: Tạo job mới với thông tin hợp lệ")
     void testCreateJobWithValidData() throws Exception {
-        JobRequestDto jobDto = new JobRequestDto();
+        JobRequest jobDto = new JobRequest();
         jobDto.setName("Software Engineer Position");
         jobDto.setLocation("Ho Chi Minh City");
         jobDto.setDescription("We are looking for a talented software engineer");
         jobDto.setSalary(1500.0);
         jobDto.setQuantity(3);
-        jobDto.setLevel(com.example.talentbridge.model.constant.Level.MIDDLE);
+        jobDto.setLevel(com.example.talentbridge.job.domain.Level.MIDDLE);
         jobDto.setStartDate(Instant.now());
         jobDto.setEndDate(Instant.now().plus(60, ChronoUnit.DAYS));
         jobDto.setActive(true);
         
         // Assuming company with ID 1 exists
-        JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
+        JobRequest.CompanyId company = new JobRequest.CompanyId();
         company.setId(companyId);
         jobDto.setCompany(company);
         
         // Assuming skill with ID 1 exists
-        JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
+        JobRequest.SkillId skill = new JobRequest.SkillId();
         skill.setId(skillId);
         jobDto.setSkills(Arrays.asList(skill));
 
@@ -96,22 +96,22 @@ public class JobControllerTest {
     @Order(2)
     @DisplayName("JOB_02: Tạo job với salary âm (expect fail)")
     void testCreateJobWithNegativeSalary() throws Exception {
-        JobRequestDto jobDto = new JobRequestDto();
+        JobRequest jobDto = new JobRequest();
         jobDto.setName("Invalid Job");
         jobDto.setLocation("Test Location");
         jobDto.setDescription("Test Description");
         jobDto.setSalary(-1000.0);
         jobDto.setQuantity(1);
-        jobDto.setLevel(com.example.talentbridge.model.constant.Level.INTERN);
+        jobDto.setLevel(com.example.talentbridge.job.domain.Level.INTERN);
         jobDto.setStartDate(Instant.now());
         jobDto.setEndDate(Instant.now().plus(30, ChronoUnit.DAYS));
         jobDto.setActive(true);
         
-        JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
+        JobRequest.CompanyId company = new JobRequest.CompanyId();
         company.setId(companyId);
         jobDto.setCompany(company);
         
-        JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
+        JobRequest.SkillId skill = new JobRequest.SkillId();
         skill.setId(skillId);
         jobDto.setSkills(Arrays.asList(skill));
 
@@ -149,22 +149,22 @@ public class JobControllerTest {
     @Order(5)
     @DisplayName("JOB_05: Cập nhật thông tin job")
     void testUpdateJob() throws Exception {
-        JobRequestDto updateDto = new JobRequestDto();
+        JobRequest updateDto = new JobRequest();
         updateDto.setName("Updated Software Engineer Position");
         updateDto.setLocation("Ha Noi");
         updateDto.setDescription("Updated description");
         updateDto.setSalary(2000.0);
         updateDto.setQuantity(5);
-        updateDto.setLevel(com.example.talentbridge.model.constant.Level.SENIOR);
+        updateDto.setLevel(com.example.talentbridge.job.domain.Level.SENIOR);
         updateDto.setStartDate(Instant.now());
         updateDto.setEndDate(Instant.now().plus(90, ChronoUnit.DAYS));
         updateDto.setActive(true);
         
-        JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
+        JobRequest.CompanyId company = new JobRequest.CompanyId();
         company.setId(companyId);
         updateDto.setCompany(company);
         
-        JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
+        JobRequest.SkillId skill = new JobRequest.SkillId();
         skill.setId(skillId);
         updateDto.setSkills(Arrays.asList(skill));
 
@@ -182,22 +182,22 @@ public class JobControllerTest {
     @DisplayName("JOB_06: Đóng/mở job tuyển dụng")
     void testToggleJobStatus() throws Exception {
         // First, deactivate the job
-        JobRequestDto updateDto = new JobRequestDto();
+        JobRequest updateDto = new JobRequest();
         updateDto.setName("Software Engineer Position");
         updateDto.setLocation("Ho Chi Minh City");
         updateDto.setDescription("Test Description");
         updateDto.setSalary(1500.0);
         updateDto.setQuantity(3);
-        updateDto.setLevel(com.example.talentbridge.model.constant.Level.MIDDLE);
+        updateDto.setLevel(com.example.talentbridge.job.domain.Level.MIDDLE);
         updateDto.setStartDate(Instant.now());
         updateDto.setEndDate(Instant.now().plus(60, ChronoUnit.DAYS));
         updateDto.setActive(false); // Deactivate
         
-        JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
+        JobRequest.CompanyId company = new JobRequest.CompanyId();
         company.setId(companyId);
         updateDto.setCompany(company);
         
-        JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
+        JobRequest.SkillId skill = new JobRequest.SkillId();
         skill.setId(skillId);
         updateDto.setSkills(Arrays.asList(skill));
 

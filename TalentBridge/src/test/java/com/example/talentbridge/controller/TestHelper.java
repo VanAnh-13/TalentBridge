@@ -1,7 +1,7 @@
 package com.example.talentbridge.controller;
 
 import com.example.talentbridge.dto.request.auth.UserLoginRequestDto;
-import com.example.talentbridge.dto.request.job.JobRequestDto;
+import com.example.talentbridge.job.presentation.JobRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -53,24 +53,24 @@ public class TestHelper {
     }
 
     public static Long createJobForCompany(MockMvc mockMvc, ObjectMapper objectMapper, String token, Long companyId, Long skillId) throws Exception {
-        JobRequestDto jobDto = new JobRequestDto();
+        JobRequest jobDto = new JobRequest();
         jobDto.setName("Test Job " + System.currentTimeMillis());
         jobDto.setLocation("Test Location");
         jobDto.setDescription("Test Job Description");
         jobDto.setSalary(2000.0);
         jobDto.setQuantity(5);
-        jobDto.setLevel(com.example.talentbridge.model.constant.Level.FRESHER);
+        jobDto.setLevel(com.example.talentbridge.job.domain.Level.FRESHER);
         jobDto.setStartDate(Instant.now());
         jobDto.setEndDate(Instant.now().plus(30, ChronoUnit.DAYS));
         jobDto.setActive(true);
         
         // Set company
-        JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
+        JobRequest.CompanyId company = new JobRequest.CompanyId();
         company.setId(companyId);
         jobDto.setCompany(company);
         
         // Set skills
-        JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
+        JobRequest.SkillId skill = new JobRequest.SkillId();
         skill.setId(skillId);
         jobDto.setSkills(Arrays.asList(skill));
 

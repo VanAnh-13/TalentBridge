@@ -33,7 +33,7 @@ public class CompanyControllerTest {
     private com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository skillRepository;
 
     @Autowired
-    private com.example.talentbridge.repository.JobRepository jobRepository;
+    private com.example.talentbridge.job.infrastructure.persistence.JobJpaRepository jobRepository;
 
     private String adminToken;
     private Long companyId;

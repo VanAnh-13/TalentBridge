@@ -1,6 +1,6 @@
 package com.example.talentbridge.skill.infrastructure.persistence;
 
-import com.example.talentbridge.model.Job;
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
 import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaEntity;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
@@ -30,7 +30,7 @@ public class SkillJpaEntity extends BaseEntity {
 
     @ManyToMany(mappedBy = "skills")
     @ToString.Exclude
-    private List<Job> jobs;
+    private List<JobJpaEntity> jobs;
 
     @ManyToMany(mappedBy = "skills", cascade = CascadeType.ALL)
     @ToString.Exclude

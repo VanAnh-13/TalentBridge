@@ -1,6 +1,6 @@
 package com.example.talentbridge.company.infrastructure.persistence;
 
-import com.example.talentbridge.model.Job;
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
 import com.example.talentbridge.model.User;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -44,7 +44,7 @@ public class CompanyJpaEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Job> jobs;
+    private List<JobJpaEntity> jobs;
 
     @OneToOne
     @JoinColumn(name = "owner_id", unique = true)

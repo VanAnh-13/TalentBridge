@@ -3,7 +3,7 @@ package com.example.talentbridge.dto.response.resume;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.model.constant.Level;
+import com.example.talentbridge.job.domain.Level;
 
 import java.util.List;
 

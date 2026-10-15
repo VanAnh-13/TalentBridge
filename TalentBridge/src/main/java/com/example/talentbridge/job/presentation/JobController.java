@@ -1,24 +1,26 @@
-package com.example.talentbridge.controller;
+package com.example.talentbridge.job.presentation;
 
-import com.turkraft.springfilter.boot.Filter;
+import com.example.talentbridge.job.application.CreateJob;
+import com.example.talentbridge.job.application.DeleteJob;
+import com.example.talentbridge.job.application.GetJob;
+import com.example.talentbridge.job.application.SearchJobs;
+import com.example.talentbridge.job.application.UpdateJob;
+import com.example.talentbridge.shared.domain.query.FilterExpression;
+import com.example.talentbridge.shared.presentation.ApiMessage;
+import com.example.talentbridge.shared.presentation.PageRequests;
+import com.example.talentbridge.shared.presentation.PageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import com.example.talentbridge.shared.presentation.ApiMessage;
-import com.example.talentbridge.dto.request.job.JobRequestDto;
-import com.example.talentbridge.shared.presentation.PageResponseDto;
-import com.example.talentbridge.dto.response.job.JobResponseDto;
-import com.example.talentbridge.model.Job;
-import com.example.talentbridge.service.JobService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Job")
 @RestController
@@ -26,7 +28,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class JobController {
 
-    private final JobService jobService;
+    private final CreateJob createJob;
+    private final UpdateJob updateJob;
+    private final DeleteJob deleteJob;
+    private final GetJob getJob;
+    private final SearchJobs searchJobs;
 
     @PostMapping
     @ApiMessage(value = "Create Job")
@@ -35,8 +41,8 @@ public class JobController {
             summary = "Create Job",
             description = "Required permission: <b>POST /jobs</b>"
     )
-    public ResponseEntity<?> saveJob(@Valid @RequestBody JobRequestDto jobRequestDto) {
-        return ResponseEntity.ok(jobService.saveJob(jobRequestDto, false));
+    public ResponseEntity<JobResponse> saveJob(@Valid @RequestBody JobRequest request) {
+        return ResponseEntity.ok(JobResponse.from(createJob.execute(request.toData())));
     }
 
     @PostMapping("/company")
@@ -46,8 +52,8 @@ public class JobController {
             summary = "Create Job for current user's company",
             description = "Required permission: <b>POST /jobs/company</b>"
     )
-    public ResponseEntity<?> saveJobForRecruiterPage(@Valid @RequestBody JobRequestDto jobRequestDto) {
-        return ResponseEntity.ok(jobService.saveJob(jobRequestDto, true));
+    public ResponseEntity<JobResponse> saveJobForRecruiterPage(@Valid @RequestBody JobRequest request) {
+        return ResponseEntity.ok(JobResponse.from(createJob.executeForCurrentUser(request.toData())));
     }
 
     @GetMapping
@@ -58,21 +64,12 @@ public class JobController {
             description = "Required permission: <b>GET /jobs</b>"
     )
     @SecurityRequirements()
-    public ResponseEntity<?> findAllJobs(
-            @Filter Specification<Job> spec,
+    public ResponseEntity<PageResponseDto<JobResponse>> findAllJobs(
+            @RequestParam(value = "filter", required = false) String filter,
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        Page<JobResponseDto> page = jobService.findAllJobs(spec, pageable);
-
-        PageResponseDto<JobResponseDto> res = new PageResponseDto<>(
-                page.getContent(),
-                pageable.getPageNumber() + 1,
-                pageable.getPageSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
-
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(PageResponseDto.from(
+                searchJobs.execute(FilterExpression.of(filter), PageRequests.from(pageable)).map(JobResponse::from)));
     }
 
     @GetMapping("/{id}")
@@ -83,8 +80,8 @@ public class JobController {
             description = "Required permission: <b>GET /jobs/{id}</b>"
     )
     @SecurityRequirements()
-    public ResponseEntity<?> findJobById(@PathVariable Long id) {
-        return ResponseEntity.ok(jobService.findJobById(id));
+    public ResponseEntity<JobResponse> findJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(JobResponse.from(getJob.execute(id)));
     }
 
     @GetMapping("/companies/{id}")
@@ -95,8 +92,8 @@ public class JobController {
             description = "Required permission: <b>GET /jobs/companies/{id}</b>"
     )
     @SecurityRequirements()
-    public ResponseEntity<?> findJobByCompanyId(@PathVariable Long id) {
-        return ResponseEntity.ok(jobService.findJobByCompanyId(id));
+    public ResponseEntity<List<JobResponse>> findJobByCompanyId(@PathVariable Long id) {
+        return ResponseEntity.ok(searchJobs.ofCompany(id).stream().map(JobResponse::summaryFrom).toList());
     }
 
     @GetMapping("/company")
@@ -106,21 +103,13 @@ public class JobController {
             summary = "Get Job list for current user's company",
             description = "Required permission: <b>GET /jobs/company</b>"
     )
-    public ResponseEntity<?> findAllJobsForRecruiterCompany(
-            @Filter Specification<Job> spec,
+    public ResponseEntity<PageResponseDto<JobResponse>> findAllJobsForRecruiterCompany(
+            @RequestParam(value = "filter", required = false) String filter,
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        Page<JobResponseDto> page = jobService.findAllJobsForRecruiterCompany(spec, pageable);
-
-        PageResponseDto<JobResponseDto> res = new PageResponseDto<>(
-                page.getContent(),
-                pageable.getPageNumber() + 1,
-                pageable.getPageSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
-
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(PageResponseDto.from(
+                searchJobs.executeForCurrentUser(FilterExpression.of(filter), PageRequests.from(pageable))
+                        .map(JobResponse::from)));
     }
 
     @PutMapping("/{id}")
@@ -130,11 +119,11 @@ public class JobController {
             summary = "Update Job by id",
             description = "Required permission: <b>PUT /jobs/{id}</b>"
     )
-    public ResponseEntity<?> updateJobById(
+    public ResponseEntity<JobResponse> updateJobById(
             @PathVariable Long id,
-            @Valid @RequestBody JobRequestDto jobRequestDto
+            @Valid @RequestBody JobRequest request
     ) {
-        return ResponseEntity.ok(jobService.updateJobById(id, jobRequestDto, false));
+        return ResponseEntity.ok(JobResponse.from(updateJob.execute(id, request.toData())));
     }
 
     @PutMapping("/company/{id}")
@@ -144,23 +133,22 @@ public class JobController {
             summary = "Update Job by id for current user's company",
             description = "Required permission: <b>PUT /jobs/company/{id}</b>"
     )
-    public ResponseEntity<?> updateJobByIdForRecruiterCompany(
+    public ResponseEntity<JobResponse> updateJobByIdForRecruiterCompany(
             @PathVariable Long id,
-            @Valid @RequestBody JobRequestDto jobRequestDto
+            @Valid @RequestBody JobRequest request
     ) {
-        return ResponseEntity.ok(jobService.updateJobById(id, jobRequestDto, true));
+        return ResponseEntity.ok(JobResponse.from(updateJob.executeForCurrentUser(id, request.toData())));
     }
-
 
     @DeleteMapping("/{id}")
     @ApiMessage(value = "Delete Job by id")
     @PreAuthorize("hasAuthority('DELETE /jobs/{id}')")
     @Operation(
             summary = "Delete Job by id",
-            description = "Required permission: <b>DELETE jobs/{id}</b>"
+            description = "Required permission: <b>DELETE /jobs/{id}</b>"
     )
-    public ResponseEntity<?> deleteJobById(@PathVariable Long id) {
-        return ResponseEntity.ok(jobService.deleteJobById(id));
+    public ResponseEntity<JobResponse> deleteJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(JobResponse.from(deleteJob.execute(id)));
     }
 
     @DeleteMapping("/company/{id}")
@@ -168,11 +156,9 @@ public class JobController {
     @PreAuthorize("hasAuthority('DELETE /jobs/company/{id}')")
     @Operation(
             summary = "Delete Job by id for current user's company",
-            description = "Required permission: <b>DELETE jobs/company/{id}</b>"
+            description = "Required permission: <b>DELETE /jobs/company/{id}</b>"
     )
-    public ResponseEntity<?> deleteJobByIdForRecruiterCompany(@PathVariable Long id) {
-        return ResponseEntity.ok(jobService.deleteJobByIdForRecruiterCompany(id));
+    public ResponseEntity<JobResponse> deleteJobByIdForRecruiterCompany(@PathVariable Long id) {
+        return ResponseEntity.ok(JobResponse.from(deleteJob.executeForCurrentUser(id)));
     }
-
-
 }

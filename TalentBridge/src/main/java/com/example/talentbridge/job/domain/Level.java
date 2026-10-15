@@ -1,4 +1,4 @@
-package com.example.talentbridge.model.constant;
+package com.example.talentbridge.job.domain;
 
 public enum Level {
     INTERN, FRESHER, MIDDLE, SENIOR

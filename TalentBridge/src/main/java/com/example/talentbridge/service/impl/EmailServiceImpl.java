@@ -5,9 +5,9 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.email.JobMailDto;
-import com.example.talentbridge.model.Job;
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
 import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaEntity;
-import com.example.talentbridge.repository.JobRepository;
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaRepository;
 import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,7 +30,7 @@ public class EmailServiceImpl implements com.example.talentbridge.service.EmailS
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
-    private final JobRepository jobRepository;
+    private final JobJpaRepository jobRepository;
     private final SubscriberJpaRepository subscriberRepository;
 
     @Value("${mail.from}")
@@ -42,7 +42,7 @@ public class EmailServiceImpl implements com.example.talentbridge.service.EmailS
                 .map(skill -> skill.getName())
                 .toList();
 
-        List<Job> jobs = jobRepository.findDistinctTop3BySkills_NameInOrderByCreatedAtDesc(skillNames);
+        List<JobJpaEntity> jobs = jobRepository.findDistinctTop3BySkills_NameInOrderByCreatedAtDesc(skillNames);
 
         List<JobMailDto> jobMailDtos = jobs.stream()
                 .map(this::mapToEmailJobInform)
@@ -71,7 +71,7 @@ public class EmailServiceImpl implements com.example.talentbridge.service.EmailS
         sendJobNotificationForSubscriber(subscriber);
     }
 
-    private JobMailDto mapToEmailJobInform(Job job) {
+    private JobMailDto mapToEmailJobInform(JobJpaEntity job) {
         String applyUrl = "http://localhost:3000/jobs/" + job.getId();
 
         JobMailDto jobMailDto = new JobMailDto(job.getId(), job.getName(), job.getSalary(), applyUrl);

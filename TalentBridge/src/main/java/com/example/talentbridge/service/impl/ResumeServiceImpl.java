@@ -11,11 +11,11 @@ import com.example.talentbridge.dto.response.resume.DefaultResumeResponseDto;
 import com.example.talentbridge.dto.response.resume.GetResumeFileResponseDto;
 import com.example.talentbridge.dto.response.resume.ResumeForDisplayResponseDto;
 import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
-import com.example.talentbridge.model.Job;
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
 import com.example.talentbridge.model.Resume;
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 import com.example.talentbridge.model.User;
-import com.example.talentbridge.repository.JobRepository;
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaRepository;
 import com.example.talentbridge.repository.ResumeRepository;
 import com.example.talentbridge.repository.UserRepository;
 import com.example.talentbridge.shared.application.FileStorage;
@@ -39,7 +39,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
 
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
-    private final JobRepository jobRepository;
+    private final JobJpaRepository jobRepository;
 
     private final FileStorage s3Service;
 
@@ -60,7 +60,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
         if (!user.getEmail().equals(resume.getEmail()))
             throw new EntityNotFoundException("Truy cập bị từ chối");
 
-        Job job = jobRepository
+        JobJpaEntity job = jobRepository
                 .findById(resumeRequestDto.getJob().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy công việc"));
 

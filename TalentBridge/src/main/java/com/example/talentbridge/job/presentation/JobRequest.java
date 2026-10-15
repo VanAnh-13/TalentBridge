@@ -1,11 +1,11 @@
-package com.example.talentbridge.dto.request.job;
+package com.example.talentbridge.job.presentation;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.model.constant.Level;
+import com.example.talentbridge.job.domain.Level;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobRequestDto {
+public class JobRequest {
 
     @NotBlank(message = "Tên công việc không được để trống")
     private String name;
@@ -67,5 +67,12 @@ public class JobRequestDto {
     public static class SkillId {
         @NotNull(message = "ID kỹ năng không được để trống")
         private Long id;
+    }
+
+    public com.example.talentbridge.job.application.JobData toData() {
+        return new com.example.talentbridge.job.application.JobData(
+                name, location, salary, quantity, level, description, startDate, endDate, active,
+                company == null ? null : company.getId(),
+                skills == null ? null : skills.stream().map(SkillId::getId).toList());
     }
 }

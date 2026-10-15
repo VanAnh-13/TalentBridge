@@ -1,13 +1,16 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.job.infrastructure.persistence;
 
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
-
+import com.example.talentbridge.job.domain.Level;
+import com.example.talentbridge.model.Resume;
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
-
-import jakarta.persistence.*;
-import lombok.*;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
-import com.example.talentbridge.model.constant.Level;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,9 +20,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Job extends BaseEntity {
+public class JobJpaEntity extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -63,7 +66,8 @@ public class Job extends BaseEntity {
     @ToString.Exclude
     private List<Resume> resumes;
 
-    public Job(String name, String location, Double salary, Integer quantity, Level level, String description, Instant startDate, Instant endDate, Boolean active) {
+    public JobJpaEntity(String name, String location, Double salary, Integer quantity, Level level,
+                        String description, Instant startDate, Instant endDate, Boolean active) {
         this.name = name;
         this.location = location;
         this.salary = salary;

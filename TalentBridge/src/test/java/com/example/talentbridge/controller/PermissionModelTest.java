@@ -1,5 +1,9 @@
 package com.example.talentbridge.controller;
 
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaRepository;
+
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
+
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaRepository;
 
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
@@ -12,7 +16,7 @@ import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 
 import com.example.talentbridge.model.*;
 import com.example.talentbridge.model.constant.Gender;
-import com.example.talentbridge.model.constant.Level;
+import com.example.talentbridge.job.domain.Level;
 import com.example.talentbridge.model.constant.ResumeStatus;
 import com.example.talentbridge.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,7 +66,7 @@ class PermissionModelTest {
     @Autowired UserRepository userRepository;
     @Autowired RoleJpaRepository roleRepository;
     @Autowired CompanyJpaRepository companyRepository;
-    @Autowired JobRepository jobRepository;
+    @Autowired JobJpaRepository jobRepository;
     @Autowired ResumeRepository resumeRepository;
 
     String adminToken, recruiterAToken, recruiterBToken, candidateToken, otherCandidateToken;
@@ -86,7 +90,7 @@ class PermissionModelTest {
         user("other-candidate@pm.test", "USER", null);
 
         jobOfA = job(companyA).getId();
-        Job b = job(companyB);
+        JobJpaEntity b = job(companyB);
         jobOfB = b.getId();
 
         Resume resume = new Resume(candidate.getEmail(), ResumeStatus.PENDING, 1L);
@@ -114,8 +118,8 @@ class PermissionModelTest {
         return userRepository.save(u);
     }
 
-    private Job job(CompanyJpaEntity company) {
-        Job j = new Job("Dev", "HCM", 1000.0, 1, Level.FRESHER, "d", Instant.now(), Instant.now().plusSeconds(86400), true);
+    private JobJpaEntity job(CompanyJpaEntity company) {
+        JobJpaEntity j = new JobJpaEntity("Dev", "HCM", 1000.0, 1, Level.FRESHER, "d", Instant.now(), Instant.now().plusSeconds(86400), true);
         j.setCompany(company);
         return jobRepository.save(j);
     }

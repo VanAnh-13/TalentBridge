@@ -1,5 +1,7 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
@@ -33,7 +35,7 @@ public class Resume extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "job_id")
     @ToString.Exclude
-    private Job job;
+    private JobJpaEntity job;
 
     private Long version;
 
