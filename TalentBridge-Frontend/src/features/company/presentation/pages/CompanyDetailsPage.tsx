@@ -8,10 +8,9 @@ import {
   BreadcrumbSeparator,
 } from "@/shared/presentation/ui/breadcrumb.tsx";
 import { errorMessage } from "@/shared/domain/errors";
-import { companies as companyUseCases } from "@/app/container";
-import { findJobByCompanyId } from "@/services/jobApi.ts";
+import { companies as companyUseCases, jobs as jobUseCases } from "@/app/container";
 import type { Company } from "../../domain/company";
-import type { Job } from "@/types/job";
+import type { Job } from "@/features/job/domain/job";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -41,7 +40,7 @@ const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
       setIsLoading(true);
       try {
         const res = await companyUseCases.find(parseInt(id));
-        const jobRes = (await findJobByCompanyId(parseInt(id))).data.data;
+        const jobRes = await jobUseCases.ofCompany(parseInt(id));
         setCompany(res);
         setJobs(jobRes || []);
       } catch (err) {

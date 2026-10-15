@@ -15,7 +15,7 @@ import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { Separator } from "@/shared/presentation/ui/separator.tsx";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
-import type { Job } from "@/types/job";
+import type { Job } from "../../domain/job";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 
 interface JobDetailsSidebarProps {

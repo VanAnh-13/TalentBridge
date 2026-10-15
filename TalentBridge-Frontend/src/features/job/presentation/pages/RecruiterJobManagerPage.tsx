@@ -1,14 +1,11 @@
 import Pagination from "@/shared/presentation/components/Pagination";
 import { Button } from "@/shared/presentation/ui/button";
 import { errorMessage } from "@/shared/domain/errors";
-import { JobDetailsSidebar } from "@/pages/commons/job-manager-components/JobDetailsSidebar.tsx";
-import { JobSearchSection } from "@/pages/commons/job-manager-components/JobSearchSection.tsx";
-import { JobTable } from "@/pages/commons/job-manager-components/JobTable.tsx";
-import {
-  deleteJobByIdForRecruiterCompany,
-  findAllJobsForRecruiterCompany,
-} from "@/services/jobApi";
-import type { Job } from "@/types/job";
+import { JobDetailsSidebar } from "../components/JobDetailsSidebar.tsx";
+import { JobSearchSection } from "../components/JobSearchSection.tsx";
+import { JobTable } from "../components/JobTable.tsx";
+import { jobs as jobUseCases } from "@/app/container";
+import type { Job } from "../../domain/job";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -68,17 +65,12 @@ const JobManagerRecruiterPage = () => {
   ) => {
     setIsLoading(true);
     try {
-      const filters: string[] = [];
-
-      if (searchName) filters.push(`name ~ '*${searchName}*'`);
-      if (searchLevel && searchLevel !== "all")
-        filters.push(`level : '${searchLevel}'`);
-      if (searchLocation) filters.push(`address ~ '*${searchLocation}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await findAllJobsForRecruiterCompany({ page, size, filter }))
-        .data.data;
+      const res = await jobUseCases.search(
+        "company",
+        { name: searchName, level: searchLevel, location: searchLocation },
+        page,
+        size,
+      );
       setJobs(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -123,7 +115,7 @@ const JobManagerRecruiterPage = () => {
   const handleDelete = async (id: number) => {
     setIsLoading(true);
     try {
-      await deleteJobByIdForRecruiterCompany(id);
+      await jobUseCases.remove("company", id);
       toast.success("Xóa công ty thành công");
 
       if (hoveredJob?.id === id) handleCloseDetails();

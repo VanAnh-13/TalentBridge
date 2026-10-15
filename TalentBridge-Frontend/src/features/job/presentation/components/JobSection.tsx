@@ -1,6 +1,6 @@
 "use client";
 
-import type { Job } from "@/types/job";
+import type { Job } from "../../domain/job";
 import {
   Building2,
   MapPin,

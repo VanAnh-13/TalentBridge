@@ -1,6 +1,6 @@
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
-import type { Job } from "@/types/job";
+import type { Job } from "@/features/job/domain/job";
 import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
 import { useNavigate } from "react-router-dom";
 

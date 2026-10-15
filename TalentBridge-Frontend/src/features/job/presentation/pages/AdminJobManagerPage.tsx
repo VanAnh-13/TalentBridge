@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { Button } from "@/shared/presentation/ui/button";
 
 import { Plus } from "lucide-react";
-import type { Job } from "@/types/job";
-import { JobSearchSection } from "../../../commons/job-manager-components/JobSearchSection.tsx";
+import type { Job } from "../../domain/job";
+import { JobSearchSection } from "../components/JobSearchSection.tsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
-import { deleteJobById, findAllJobs } from "@/services/jobApi";
+import { jobs as jobUseCases } from "@/app/container";
 import Pagination from "@/shared/presentation/components/Pagination";
 
-import { JobDetailsSidebar } from "../../../commons/job-manager-components/JobDetailsSidebar.tsx";
-import { JobTable } from "../../../commons/job-manager-components/JobTable.tsx";
+import { JobDetailsSidebar } from "../components/JobDetailsSidebar.tsx";
+import { JobTable } from "../components/JobTable.tsx";
 import { HasPermission } from "@/features/auth";
 
 const JobManagerPage = () => {
@@ -71,18 +71,17 @@ const JobManagerPage = () => {
   ) => {
     setIsLoading(true);
     try {
-      const filters: string[] = [];
-
-      if (searchName) filters.push(`name ~ '*${searchName}*'`);
-      if (searchCompanyName)
-        filters.push(`company.name ~ '*${searchCompanyName}*'`);
-      if (searchLevel && searchLevel !== "all")
-        filters.push(`level : '${searchLevel}'`);
-      if (searchLocation) filters.push(`address ~ '*${searchLocation}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await findAllJobs({ page, size, filter })).data.data;
+      const res = await jobUseCases.search(
+        "all",
+        {
+          name: searchName,
+          companyName: searchCompanyName,
+          level: searchLevel,
+          location: searchLocation,
+        },
+        page,
+        size,
+      );
       setJobs(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -137,7 +136,7 @@ const JobManagerPage = () => {
   const handleDelete = async (id: number) => {
     setIsLoading(true);
     try {
-      await deleteJobById(id);
+      await jobUseCases.remove("all", id);
       toast.success("Xóa công ty thành công");
 
       if (hoveredJob?.id === id) handleCloseDetails();

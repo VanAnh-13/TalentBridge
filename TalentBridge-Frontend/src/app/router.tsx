@@ -6,8 +6,7 @@ import RootPage from "@/pages/client";
 import AuthPage from "@/features/auth/presentation/pages/AuthPage";
 import HomePage from "@/pages/client/home-page";
 import { CompanyBrowsePage as CompanyClientPage, CompanyDetailsPage as CompanyDetailsClientPage, CompanyManagerPage, MyCompanyPage as CompanyManagerRecruiterPage, MembersPage as MemberManagePage } from "@/features/company";
-import JobClientPage from "@/pages/client/job-page";
-import JobDetailsClientPage from "@/pages/client/job-details-page";
+import { JobBrowsePage as JobClientPage, JobDetailsPage as JobDetailsClientPage, AdminJobManagerPage as JobManagerPage, AdminJobUpsertPage as JobUpsertPage, RecruiterJobManagerPage as JobManagerRecruiterPage, RecruiterJobUpsertPage as JobUpsertRecruiterPage } from "@/features/job";
 import UserPage from "@/pages/user";
 import UserInfoPage from "@/pages/user/user-info-page";
 import UserResumePage from "@/pages/user/user-resume-page";
@@ -18,8 +17,6 @@ import AdminPage from "@/pages/admin";
 import DashboardPage from "@/pages/admin/dashboard-page";
 import RecruitmentManagerPage from "@/pages/admin/recruitment-page";
 import { SkillManagerPage } from "@/features/skill";
-import JobManagerPage from "@/pages/admin/recruitment-page/job-page";
-import JobUpsertPage from "@/pages/admin/recruitment-page/job-upsert-page";
 import ResumeManagerPage from "@/pages/admin/recruitment-page/resume-page";
 import { AccessControlPage, PermissionManagerPage, RoleManagerPage } from "@/features/access";
 import UserManagerPage from "@/pages/admin/user-page/user-manager-page";
@@ -29,8 +26,6 @@ import { SubscriberPage } from "@/features/subscriber";
 // RECRUITER PAGE
 import RecruiterPage from "@/pages/recruiter";
 import ResumeManagerRecruiterPage from "@/pages/recruiter/resume-page";
-import JobManagerRecruiterPage from "@/pages/recruiter/job-page";
-import JobUpsertRecruiterPage from "@/pages/recruiter/job-upsert-page";
 
 // Components
 import ErrorPage from "@/shared/presentation/components/ErrorPage";

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { findJobById } from "@/services/jobApi.ts";
+import { jobs as jobUseCases } from "@/app/container";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
-import type { Job } from "@/types/job";
+import type { Job } from "../../domain/job";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,8 +13,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/shared/presentation/ui/breadcrumb.tsx";
-import JobSection from "./JobSection.tsx";
-import { ApplySection } from "./ApplySection.tsx";
+import JobSection from "../components/JobSection.tsx";
+import { ApplySection } from "@/pages/client/job-details-page/ApplySection.tsx";
 import { HasPermission } from "@/features/auth";
 
 type JobDetailsProp = {
@@ -36,7 +36,7 @@ const JobDetailsClientPage = ({ initialJob }: JobDetailsProp) => {
     const fetchJob = async () => {
       setIsLoading(true);
       try {
-        const res = (await findJobById(Number.parseInt(id))).data.data;
+        const res = await jobUseCases.find(Number.parseInt(id));
         setJob(res);
       } catch (err) {
         toast.error(errorMessage(err, "Không thể lấy thông tin công việc"));

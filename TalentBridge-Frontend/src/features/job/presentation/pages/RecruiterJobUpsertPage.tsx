@@ -30,14 +30,11 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor.tsx";
 import { SkillSelection } from "@/features/skill";
-import type { JobUpsertDto, SkillSummary } from "@/types/job";
+import type { SkillRef } from "@/features/skill/domain/skill";
+import type { JobData } from "../../domain/job";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
-import {
-  findJobById,
-  saveJobForRecruiterPage,
-  updateJobByIdForRecruiterCompany,
-} from "@/services/jobApi.ts";
+import { jobs as jobUseCases } from "@/app/container";
 import { formatISOToYMD } from "@/shared/presentation/format.ts";
 
 const levels = [
@@ -60,7 +57,7 @@ export default function JobUpsertRecruiterPage() {
   // ============================
   // Form data
   // ============================
-  const [formData, setFormData] = useState<JobUpsertDto>({
+  const [formData, setFormData] = useState<JobData>({
     name: "",
     location: "",
     salary: 0,
@@ -74,7 +71,7 @@ export default function JobUpsertRecruiterPage() {
     skills: [],
   });
 
-  const [selectedSkills, setSelectedSkills] = useState<SkillSummary[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<SkillRef[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -82,8 +79,7 @@ export default function JobUpsertRecruiterPage() {
       const fetchData = async () => {
         setIsLoading(true);
         try {
-          const res = await findJobById(parseInt(id));
-          const job = res.data.data;
+          const job = await jobUseCases.find(parseInt(id));
           job.startDate = formatISOToYMD(job.startDate);
           job.endDate = formatISOToYMD(job.endDate);
 
@@ -104,7 +100,7 @@ export default function JobUpsertRecruiterPage() {
   // ============================
   // Skill selection handler
   // ============================
-  const addSkill = (skill: SkillSummary) => {
+  const addSkill = (skill: SkillRef) => {
     const exists = selectedSkills.some((s) => s.id === skill.id);
     if (exists) return;
 
@@ -115,7 +111,7 @@ export default function JobUpsertRecruiterPage() {
     setFormData((form) => ({ ...form, skills: skillIds }));
   };
 
-  const removeSkill = (skill: SkillSummary) => {
+  const removeSkill = (skill: SkillRef) => {
     const updated = selectedSkills.filter((s) => s.id !== skill.id);
     const skillIds = updated.map((s) => ({ id: s.id }));
 
@@ -127,7 +123,7 @@ export default function JobUpsertRecruiterPage() {
   // General Field Handler
   // ============================
   const handleInputChange = (
-    field: keyof JobUpsertDto,
+    field: keyof JobData,
     value: string | number | boolean,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -153,8 +149,8 @@ export default function JobUpsertRecruiterPage() {
         endDate: toISODate(newCopy.endDate),
       };
 
-      if (isEdit) await updateJobByIdForRecruiterCompany(parseInt(id), newCopy);
-      else await saveJobForRecruiterPage(newCopy);
+      if (isEdit) await jobUseCases.update("company", parseInt(id), newCopy);
+      else await jobUseCases.create("company", newCopy);
 
       toast.success(
         isEdit
@@ -299,7 +295,7 @@ export default function JobUpsertRecruiterPage() {
                 <Select
                   value={formData.level}
                   onValueChange={(value) =>
-                    handleInputChange("level", value as JobUpsertDto["level"])
+                    handleInputChange("level", value as JobData["level"])
                   }
                 >
                   <SelectTrigger>

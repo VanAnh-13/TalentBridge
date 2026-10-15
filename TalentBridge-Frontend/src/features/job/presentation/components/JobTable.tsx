@@ -12,7 +12,7 @@ import { Edit, Briefcase } from "lucide-react";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
-import type { Job } from "@/types/job";
+import type { Job } from "../../domain/job";
 import { levelColors } from "@/shared/presentation/tagColors.ts";
 import { HasPermission } from "@/features/auth";
 

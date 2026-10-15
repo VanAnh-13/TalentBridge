@@ -25,11 +25,13 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor.tsx";
 import { SkillSelection } from "@/features/skill";
-import type { CompanySummary, JobUpsertDto, SkillSummary } from "@/types/job";
+import type { CompanyRef } from "@/features/company/domain/company";
+import type { SkillRef } from "@/features/skill/domain/skill";
+import type { JobData } from "../../domain/job";
 import { CompanySelection } from "@/features/company";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
-import { findJobById, saveJob, updateJobById } from "@/services/jobApi.ts";
+import { jobs as jobUseCases } from "@/app/container";
 import { formatISOToYMD } from "@/shared/presentation/format.ts";
 
 const levels = [
@@ -52,7 +54,7 @@ export default function JobUpsertPage() {
   // ============================
   // Form data
   // ============================
-  const [formData, setFormData] = useState<JobUpsertDto>({
+  const [formData, setFormData] = useState<JobData>({
     name: "",
     location: "",
     salary: 0,
@@ -66,9 +68,9 @@ export default function JobUpsertPage() {
     skills: [],
   });
 
-  const [selectedSkills, setSelectedSkills] = useState<SkillSummary[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<SkillRef[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<
-    CompanySummary | undefined
+    CompanyRef | undefined
   >();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -78,8 +80,7 @@ export default function JobUpsertPage() {
       const fetchData = async () => {
         setIsLoading(true);
         try {
-          const res = await findJobById(parseInt(id));
-          const job = res.data.data;
+          const job = await jobUseCases.find(parseInt(id));
           job.startDate = formatISOToYMD(job.startDate);
           job.endDate = formatISOToYMD(job.endDate);
 
@@ -101,7 +102,7 @@ export default function JobUpsertPage() {
   // ============================
   // Skill selection handler
   // ============================
-  const addSkill = (skill: SkillSummary) => {
+  const addSkill = (skill: SkillRef) => {
     const exists = selectedSkills.some((s) => s.id === skill.id);
     if (exists) return;
 
@@ -112,7 +113,7 @@ export default function JobUpsertPage() {
     setFormData((form) => ({ ...form, skills: skillIds }));
   };
 
-  const removeSkill = (skill: SkillSummary) => {
+  const removeSkill = (skill: SkillRef) => {
     const updated = selectedSkills.filter((s) => s.id !== skill.id);
     const skillIds = updated.map((s) => ({ id: s.id }));
 
@@ -123,7 +124,7 @@ export default function JobUpsertPage() {
   // ============================
   // Company selection handler
   // ============================
-  const addCompany = (company: CompanySummary) => {
+  const addCompany = (company: CompanyRef) => {
     const newCompany = selectedCompany?.id === company.id ? undefined : company;
 
     setSelectedCompany(newCompany);
@@ -141,7 +142,7 @@ export default function JobUpsertPage() {
   // General Field Handler
   // ============================
   const handleInputChange = (
-    field: keyof JobUpsertDto,
+    field: keyof JobData,
     value: string | number | boolean,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -167,8 +168,8 @@ export default function JobUpsertPage() {
         endDate: toISODate(newCopy.endDate),
       };
 
-      if (isEdit) await updateJobById(parseInt(id), newCopy);
-      else await saveJob(newCopy);
+      if (isEdit) await jobUseCases.update("all", parseInt(id), newCopy);
+      else await jobUseCases.create("all", newCopy);
 
       handleBack();
     } catch (err) {
@@ -308,7 +309,7 @@ export default function JobUpsertPage() {
                 <Select
                   value={formData.level}
                   onValueChange={(value) =>
-                    handleInputChange("level", value as JobUpsertDto["level"])
+                    handleInputChange("level", value as JobData["level"])
                   }
                 >
                   <SelectTrigger>

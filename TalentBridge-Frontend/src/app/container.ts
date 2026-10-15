@@ -34,3 +34,8 @@ import { createCompanyUseCases } from "@/features/company/application/companyUse
 import { HttpCompanyRepository } from "@/features/company/infrastructure/HttpCompanyRepository";
 
 export const companies = createCompanyUseCases(new HttpCompanyRepository());
+
+import { createJobUseCases } from "@/features/job/application/jobUseCases";
+import { HttpJobRepository } from "@/features/job/infrastructure/HttpJobRepository";
+
+export const jobs = createJobUseCases(new HttpJobRepository());

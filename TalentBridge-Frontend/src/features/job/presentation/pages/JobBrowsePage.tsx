@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import type { Job } from "@/types/job";
-import JobGrid from "./JobGrid";
-import { JobSearchSection } from "./JobSearchSection";
+import type { Job } from "../../domain/job";
+import JobGrid from "../components/JobGrid";
+import { JobSearchSection } from "../components/JobBrowseSearch";
 import { errorMessage } from "@/shared/domain/errors";
-import { findAllJobs } from "@/services/jobApi";
+import { jobs as jobUseCases } from "@/app/container";
 import { toast } from "sonner";
 import Pagination from "@/shared/presentation/components/Pagination";
 
@@ -45,18 +45,17 @@ export default function JobClientPage() {
   ) => {
     setIsLoading(true);
     try {
-      const filters: string[] = [];
-
-      if (searchName) filters.push(`name ~ '*${searchName}*'`);
-      if (searchCompanyName)
-        filters.push(`company.name ~ '*${searchCompanyName}*'`);
-      if (searchLevel && searchLevel !== "all")
-        filters.push(`level : '${searchLevel}'`);
-      if (searchLocation) filters.push(`address ~ '*${searchLocation}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await findAllJobs({ page, size, filter })).data.data;
+      const res = await jobUseCases.search(
+        "all",
+        {
+          name: searchName,
+          companyName: searchCompanyName,
+          level: searchLevel,
+          location: searchLocation,
+        },
+        page,
+        size,
+      );
       setJobs(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);

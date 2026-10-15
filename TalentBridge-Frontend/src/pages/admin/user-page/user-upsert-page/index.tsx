@@ -27,7 +27,7 @@ import type { UserCreateRequestDto, UserUpdateRequestDto } from "@/types/user";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import { getUserById, saveUser, updateUser } from "@/services/userApi";
-import type { CompanySummary } from "@/types/job";
+import type { CompanyRef } from "@/features/company";
 import { CompanySelection } from "@/features/company";
 import { RoleSelection } from "@/features/access";
 import type { RoleRef } from "@/features/access";
@@ -62,7 +62,7 @@ export default function UserUpsertPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedCompany, setSelectedCompany] = useState<
-    CompanySummary | undefined
+    CompanyRef | undefined
   >();
   const [selectedRole, setSelectedRole] = useState<RoleRef | undefined>();
 
@@ -101,7 +101,7 @@ export default function UserUpsertPage() {
   // ============================
   // Company selection handler
   // ============================
-  const addCompany = (company: CompanySummary) => {
+  const addCompany = (company: CompanyRef) => {
     const newCompany = selectedCompany?.id === company.id ? undefined : company;
     setSelectedCompany(newCompany);
 
