@@ -11,6 +11,8 @@ public interface CompanyJpaRepository extends
 
     CompanyJpaEntity findByOwnerEmail(String email);
 
+    java.util.Optional<CompanyJpaEntity> findByOwnerId(Long ownerId);
+
     boolean existsByNameIgnoreCase(String name);
 
     boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);

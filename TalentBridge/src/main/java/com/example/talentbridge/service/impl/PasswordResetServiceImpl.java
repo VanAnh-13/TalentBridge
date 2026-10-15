@@ -2,9 +2,9 @@ package com.example.talentbridge.service.impl;
 
 import com.example.talentbridge.dto.response.auth.TokenValidationResponse;
 import com.example.talentbridge.model.PasswordResetToken;
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.repository.PasswordResetTokenRepository;
-import com.example.talentbridge.repository.UserRepository;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
 import com.example.talentbridge.service.PasswordResetService;
 import com.example.talentbridge.service.TokenService;
 import com.example.talentbridge.util.PasswordValidator;
@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
@@ -46,7 +46,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
     @Autowired
     public PasswordResetServiceImpl(
-            UserRepository userRepository,
+            UserJpaRepository userRepository,
             PasswordResetTokenRepository tokenRepository,
             TokenService tokenService,
             PasswordEncoder passwordEncoder,
@@ -75,7 +75,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             return;
         }
 
-        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<UserJpaEntity> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isEmpty()) {
             // Don't reveal that email doesn't exist - just log and return
@@ -83,7 +83,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             return;
         }
 
-        User user = userOpt.get();
+        UserJpaEntity user = userOpt.get();
 
         // Generate token
         String rawToken = tokenService.generateToken();
@@ -163,7 +163,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         }
 
         // Update password
-        User user = resetToken.getUser();
+        UserJpaEntity user = resetToken.getUser();
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 

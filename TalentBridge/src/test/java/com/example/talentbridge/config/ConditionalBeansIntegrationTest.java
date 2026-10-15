@@ -123,8 +123,8 @@ class ConditionalBeansIntegrationTest {
                 "AuthService should be loaded"
         );
         assertTrue(
-                applicationContext.containsBean("userServiceImpl"),
-                "UserService should be loaded"
+                applicationContext.containsBean("createUser"),
+                "The user use cases should be loaded"
         );
         assertTrue(
                 applicationContext.containsBean("createJob"),

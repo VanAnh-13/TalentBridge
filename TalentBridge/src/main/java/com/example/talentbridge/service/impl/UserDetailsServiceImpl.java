@@ -2,7 +2,7 @@ package com.example.talentbridge.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
-import com.example.talentbridge.repository.UserRepository;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,12 +14,12 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
 
-        com.example.talentbridge.model.User savedUser =
+        com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity savedUser =
                 userRepository
                         .findByEmail(username)
                         .orElseThrow(() -> new UsernameNotFoundException(null));

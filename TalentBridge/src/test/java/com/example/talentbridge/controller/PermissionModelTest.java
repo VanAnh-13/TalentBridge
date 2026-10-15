@@ -1,5 +1,9 @@
 package com.example.talentbridge.controller;
 
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
+
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
+
 import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaRepository;
 
 import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaEntity;
@@ -19,7 +23,7 @@ import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaReposit
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 
 import com.example.talentbridge.model.*;
-import com.example.talentbridge.model.constant.Gender;
+import com.example.talentbridge.user.domain.Gender;
 import com.example.talentbridge.job.domain.Level;
 import com.example.talentbridge.resume.domain.ResumeStatus;
 import com.example.talentbridge.repository.*;
@@ -67,7 +71,7 @@ class PermissionModelTest {
     @Autowired ApplicationContext context;
     @Autowired JdbcTemplate jdbc;
     @Autowired PasswordEncoder passwordEncoder;
-    @Autowired UserRepository userRepository;
+    @Autowired UserJpaRepository userRepository;
     @Autowired RoleJpaRepository roleRepository;
     @Autowired CompanyJpaRepository companyRepository;
     @Autowired JobJpaRepository jobRepository;
@@ -88,9 +92,9 @@ class PermissionModelTest {
         SkillJpaEntity skill = new SkillJpaEntity();
         skill.setName("pm-skill-" + System.nanoTime());
         skillId = skillRepository.save(skill).getId();
-        User recruiterA = user("recruiter-a@pm.test", "RECRUITER", companyA);
-        User recruiterB = user("recruiter-b@pm.test", "RECRUITER", companyB);
-        User candidate = user("candidate@pm.test", "USER", null);
+        UserJpaEntity recruiterA = user("recruiter-a@pm.test", "RECRUITER", companyA);
+        UserJpaEntity recruiterB = user("recruiter-b@pm.test", "RECRUITER", companyB);
+        UserJpaEntity candidate = user("candidate@pm.test", "USER", null);
         user("other-candidate@pm.test", "USER", null);
 
         jobOfA = job(companyA).getId();
@@ -109,8 +113,8 @@ class PermissionModelTest {
         otherCandidateToken = TestHelper.getUserToken(mockMvc, objectMapper, "other-candidate@pm.test", PASSWORD);
     }
 
-    private User user(String email, String role, CompanyJpaEntity company) {
-        User u = new User();
+    private UserJpaEntity user(String email, String role, CompanyJpaEntity company) {
+        UserJpaEntity u = new UserJpaEntity();
         u.setEmail(email);
         u.setName(email);
         u.setPassword(passwordEncoder.encode(PASSWORD));

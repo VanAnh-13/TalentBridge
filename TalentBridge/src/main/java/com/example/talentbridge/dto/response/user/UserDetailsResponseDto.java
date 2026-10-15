@@ -3,7 +3,7 @@ package com.example.talentbridge.dto.response.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.model.constant.Gender;
+import com.example.talentbridge.user.domain.Gender;
 
 import java.time.Instant;
 import java.time.LocalDate;

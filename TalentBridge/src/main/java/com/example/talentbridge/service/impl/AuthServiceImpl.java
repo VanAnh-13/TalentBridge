@@ -12,9 +12,9 @@ import com.example.talentbridge.dto.response.auth.SessionMetaResponse;
 import com.example.talentbridge.dto.response.user.UserDetailsResponseDto;
 import com.example.talentbridge.dto.response.user.UserSessionResponseDto;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
-import com.example.talentbridge.repository.UserRepository;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
 import com.example.talentbridge.service.RefreshTokenRedisService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
     private final PasswordEncoder passwordEncoder;
 
     private final RefreshTokenRedisService refreshTokenRedisService;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
     private final RoleJpaRepository roleRepository;
 
     @Value("${jwt.access-token-expiration}")
@@ -63,7 +63,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
 
         System.out.println(userRegisterRequestDto.isRecruiter());
 
-        User user = new User(
+        UserJpaEntity user = new UserJpaEntity(
                 userRegisterRequestDto.getEmail(),
                 userRegisterRequestDto.getName(),
                 passwordEncoder.encode(userRegisterRequestDto.getPassword()),
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                     .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy chức vụ USER, đăng ký thất bại"));
         user.setRole(role);
 
-        User savedUser = userRepository.saveAndFlush(user);
+        UserJpaEntity savedUser = userRepository.saveAndFlush(user);
 
         return mapToUserInformation(savedUser);
     }
@@ -110,7 +110,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         if (refreshToken != null) {
             String email = jwtDecoder.decode(refreshToken).getSubject();
 
-            User user = userRepository
+            UserJpaEntity user = userRepository
                     .findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 
@@ -130,7 +130,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
     public AuthResult handleRefresh(String refreshToken, SessionMetaRequest sessionMetaRequest) {
         String email = jwtDecoder.decode(refreshToken).getSubject();
 
-        User user = userRepository
+        UserJpaEntity user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
         String userId = user.getId().toString();
@@ -151,7 +151,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
     public List<SessionMetaResponse> getAllSelfSessionMetas(String refreshToken) {
         String email = jwtDecoder.decode(refreshToken).getSubject();
 
-        User user = userRepository
+        UserJpaEntity user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
         String userId = user.getId().toString();
@@ -166,7 +166,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                 .getAuthentication()
                 .getName();
 
-        User user = userRepository
+        UserJpaEntity user = userRepository
                 .findByEmail(currentUserEmail)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 
@@ -202,7 +202,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                 .getContext()
                 .getAuthentication()
                 .getName();
-        User user = userRepository
+        UserJpaEntity user = userRepository
                 .findByEmail(loginUserId)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 
@@ -212,7 +212,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         refreshTokenRedisService.deleteRefreshToken(sessionId);
     }
 
-    private UserSessionResponseDto mapToUserInformation(User user) {
+    private UserSessionResponseDto mapToUserInformation(UserJpaEntity user) {
         if (user == null)
             throw new EntityNotFoundException("Không tìm thấy người dùng");
 
@@ -243,7 +243,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         if (email == null || email.isBlank())
             throw new EntityNotFoundException("Email không được để trống");
 
-        User user = userRepository
+        UserJpaEntity user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 
@@ -252,14 +252,14 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
     }
 
     private AuthResult buildAuthResult(String email, SessionMetaRequest sessionMetaRequest) {
-        User user = userRepository
+        UserJpaEntity user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 
         return buildAuthResult(user, sessionMetaRequest);
     }
 
-    private AuthResult buildAuthResult(User user, SessionMetaRequest sessionMetaRequest) {
+    private AuthResult buildAuthResult(UserJpaEntity user, SessionMetaRequest sessionMetaRequest) {
 
         // ================================================
         // HANDLE REFRESH TOKEN
@@ -294,7 +294,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         return new AuthResult(authTokenResponseDto, responseCookie);
     }
 
-    private String buildJwt(Long expirationRate, User user) {
+    private String buildJwt(Long expirationRate, UserJpaEntity user) {
         Instant now = Instant.now();
         Instant validity = now.plus(expirationRate, ChronoUnit.SECONDS);
 

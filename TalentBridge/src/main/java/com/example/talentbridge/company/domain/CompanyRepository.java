@@ -12,6 +12,8 @@ public interface CompanyRepository {
 
     Optional<Company> findById(Long id);
 
+    Optional<Company> findByOwnerId(Long ownerId);
+
     PageResult<Company> search(FilterExpression filter, PageQuery page);
 
     boolean existsByNameIgnoreCase(String name);

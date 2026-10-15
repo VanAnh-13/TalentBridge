@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.model.constant.Gender;
+import com.example.talentbridge.user.domain.Gender;
 
 import java.time.LocalDate;
 

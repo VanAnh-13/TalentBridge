@@ -1,7 +1,7 @@
 package com.example.talentbridge.company.infrastructure.persistence;
 
 import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
@@ -40,7 +40,7 @@ public class CompanyJpaEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<User> users;
+    private List<UserJpaEntity> users;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
@@ -48,7 +48,7 @@ public class CompanyJpaEntity extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "owner_id", unique = true)
-    private User owner;
+    private UserJpaEntity owner;
 
     public CompanyJpaEntity(String name, String description, String address) {
         this.name = name;

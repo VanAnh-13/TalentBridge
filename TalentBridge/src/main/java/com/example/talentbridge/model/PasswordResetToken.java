@@ -1,5 +1,7 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +27,7 @@ public class PasswordResetToken {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
-    private User user;
+    private UserJpaEntity user;
 
     @Column(name = "expiry_date", nullable = false)
     private Instant expiryDate;

@@ -1,10 +1,10 @@
 package com.example.talentbridge.init;
 
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
-import com.example.talentbridge.model.User;
-import com.example.talentbridge.model.constant.Gender;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
+import com.example.talentbridge.user.domain.Gender;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
-import com.example.talentbridge.repository.UserRepository;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ public class DataValidator implements CommandLineRunner {
     private static final String LEGACY_ADMIN_PASSWORD = "admin123";
 
     private final RoleJpaRepository roleRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     /** Optional: when both are set and the account does not exist, an ADMIN user is created at startup. */
@@ -77,7 +77,7 @@ public class DataValidator implements CommandLineRunner {
         RoleJpaEntity adminRole = roleRepository.findByName("ADMIN")
                 .orElseThrow(() -> new IllegalStateException("ADMIN role not found"));
 
-        User admin = new User();
+        UserJpaEntity admin = new UserJpaEntity();
         admin.setEmail(bootstrapAdminEmail);
         admin.setName("Administrator");
         admin.setPassword(passwordEncoder.encode(bootstrapAdminPassword));

@@ -1,10 +1,10 @@
 package com.example.talentbridge.controller;
 
 import com.example.talentbridge.init.DataValidator;
-import com.example.talentbridge.model.User;
-import com.example.talentbridge.model.constant.Gender;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
+import com.example.talentbridge.user.domain.Gender;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
-import com.example.talentbridge.repository.UserRepository;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SecurityHardeningTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired UserRepository userRepository;
+    @Autowired UserJpaRepository userRepository;
     @Autowired RoleJpaRepository roleRepository;
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired DataValidator dataValidator;
@@ -59,7 +59,7 @@ class SecurityHardeningTest {
     @Test
     @DisplayName("A legacy admin@talentbridge.com / admin123 account is locked at startup")
     void legacyDefaultAdminIsNeutralized() throws Exception {
-        User legacy = new User();
+        UserJpaEntity legacy = new UserJpaEntity();
         legacy.setEmail("admin@talentbridge.com");
         legacy.setName("System Admin");
         legacy.setPassword(passwordEncoder.encode("admin123"));

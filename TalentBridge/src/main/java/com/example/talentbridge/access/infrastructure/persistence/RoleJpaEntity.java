@@ -1,6 +1,6 @@
 package com.example.talentbridge.access.infrastructure.persistence;
 
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,5 +45,5 @@ public class RoleJpaEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "role")
     @ToString.Exclude
-    private List<User> users;
+    private List<UserJpaEntity> users;
 }

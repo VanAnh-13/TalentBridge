@@ -1,7 +1,7 @@
 package com.example.talentbridge.resume.infrastructure.persistence;
 
 import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.resume.domain.Resume;
 import com.example.talentbridge.resume.domain.ResumeDetails;
 import com.example.talentbridge.resume.domain.ResumeRepository;
@@ -38,7 +38,7 @@ public class ResumeRepositoryAdapter implements ResumeRepository {
         entity.setStatus(resume.getStatus());
         entity.setFileKey(resume.getFileKey());
         entity.setVersion(resume.getVersion());
-        entity.setUser(entityManager.getReference(User.class, resume.getUserId()));
+        entity.setUser(entityManager.getReference(UserJpaEntity.class, resume.getUserId()));
         entity.setJob(entityManager.getReference(JobJpaEntity.class, resume.getJobId()));
 
         return toDetails(jpa.saveAndFlush(entity));

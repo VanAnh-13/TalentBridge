@@ -2,7 +2,7 @@ package com.example.talentbridge.company.infrastructure.persistence;
 
 import com.example.talentbridge.company.domain.Company;
 import com.example.talentbridge.company.domain.CompanyRepository;
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.shared.domain.exception.NotFoundException;
 import com.example.talentbridge.shared.domain.query.FilterExpression;
 import com.example.talentbridge.shared.domain.query.PageQuery;
@@ -32,7 +32,7 @@ public class CompanyRepositoryAdapter implements CompanyRepository {
         entity.setName(company.getName());
         entity.setDescription(company.getDescription());
         entity.setAddress(company.getAddress());
-        entity.setOwner(company.getOwnerId() == null ? null : entityManager.getReference(User.class, company.getOwnerId()));
+        entity.setOwner(company.getOwnerId() == null ? null : entityManager.getReference(UserJpaEntity.class, company.getOwnerId()));
 
         if (company.getLogoUrl() != null) {
             CompanyLogoJpaEntity logo = entity.getCompanyLogo();
@@ -50,6 +50,11 @@ public class CompanyRepositoryAdapter implements CompanyRepository {
     @Override
     public Optional<Company> findById(Long id) {
         return jpa.findById(id).map(CompanyRepositoryAdapter::toDomain);
+    }
+
+    @Override
+    public Optional<Company> findByOwnerId(Long ownerId) {
+        return jpa.findByOwnerId(ownerId).map(CompanyRepositoryAdapter::toDomain);
     }
 
     @Override

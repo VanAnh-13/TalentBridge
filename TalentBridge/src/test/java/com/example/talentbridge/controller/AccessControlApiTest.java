@@ -1,9 +1,9 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.model.User;
-import com.example.talentbridge.model.constant.Gender;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
+import com.example.talentbridge.user.domain.Gender;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
-import com.example.talentbridge.repository.UserRepository;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ class AccessControlApiTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
-    @Autowired UserRepository userRepository;
+    @Autowired UserJpaRepository userRepository;
     @Autowired RoleJpaRepository roleRepository;
 
     String adminToken;
@@ -184,7 +184,7 @@ class AccessControlApiTest {
 
     @Test @Order(8) @DisplayName("role: deleting detaches its users")
     void deleteRoleDetachesUsers() throws Exception {
-        User u = new User();
+        UserJpaEntity u = new UserJpaEntity();
         u.setEmail("roleholder-" + suffix + "@test.com");
         u.setName("holder");
         u.setPassword("x");

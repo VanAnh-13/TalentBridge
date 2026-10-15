@@ -1,7 +1,7 @@
 package com.example.talentbridge.resume.infrastructure.persistence;
 
 import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
-import com.example.talentbridge.model.User;
+import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.resume.domain.ResumeStatus;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
@@ -34,7 +34,7 @@ public class ResumeJpaEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @ToString.Exclude
-    private User user;
+    private UserJpaEntity user;
 
     @ManyToOne
     @JoinColumn(name = "job_id")
