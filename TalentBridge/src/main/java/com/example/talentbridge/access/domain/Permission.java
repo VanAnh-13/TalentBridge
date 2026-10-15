@@ -49,6 +49,11 @@ public class Permission {
         return value;
     }
 
+    /** The authority string carried in tokens and checked by {@code @PreAuthorize}: "METHOD /path". */
+    public String authority() {
+        return method + " " + apiPath;
+    }
+
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getApiPath() { return apiPath; }

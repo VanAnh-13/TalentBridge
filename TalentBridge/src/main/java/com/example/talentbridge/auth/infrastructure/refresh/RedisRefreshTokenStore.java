@@ -63,6 +63,14 @@ public class RedisRefreshTokenStore implements RefreshTokenStore {
     }
 
     @Override
+    public void deleteAllOf(Long userId, String keepToken) {
+        Set<String> keys = redisStoredSessionTemplate.keys("auth::refresh_token:" + userId + ":*");
+        if (keys == null || keys.isEmpty()) return;
+        String keep = keepToken == null ? null : buildKey(keepToken, userId);
+        keys.stream().filter(key -> !key.equals(keep)).forEach(redisStoredSessionTemplate::delete);
+    }
+
+    @Override
     public List<SessionInfo> sessionsOf(Long userId, String currentRefreshToken) {
         String keyPattern = "auth::refresh_token:" + userId + ":*";
         Set<String> keys = redisStoredSessionTemplate.keys(keyPattern);

@@ -18,5 +18,8 @@ public interface RefreshTokenStore {
     /** Revokes the session whose id was returned by {@link #sessionsOf}. */
     void deleteBySessionId(String sessionId);
 
+    /** Revokes every session of the user, except the one opened with {@code keepToken} (may be null). */
+    void deleteAllOf(Long userId, String keepToken);
+
     List<SessionInfo> sessionsOf(Long userId, String currentToken);
 }

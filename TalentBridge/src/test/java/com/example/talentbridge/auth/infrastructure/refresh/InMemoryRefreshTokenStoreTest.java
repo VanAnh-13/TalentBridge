@@ -231,4 +231,22 @@ class InMemoryRefreshTokenStoreTest {
         // Assert
         assertFalse(isValidAfterExpiry, "Token should be invalid after expiration");
     }
+
+    @Test
+    @DisplayName("deleteAllOf removes every session of the user except the kept one, and nobody else's")
+    void testDeleteAllOf() {
+        DeviceInfo device = new DeviceInfo("d", "web", "ua");
+        refreshTokenService.save("a", 7L, device, Duration.ofMinutes(5));
+        refreshTokenService.save("b", 7L, device, Duration.ofMinutes(5));
+        refreshTokenService.save("c", 8L, device, Duration.ofMinutes(5));
+
+        refreshTokenService.deleteAllOf(7L, "a");
+
+        assertTrue(refreshTokenService.isValid("a", 7L));
+        assertFalse(refreshTokenService.isValid("b", 7L));
+        assertTrue(refreshTokenService.isValid("c", 8L));
+
+        refreshTokenService.deleteAllOf(7L, null);
+        assertFalse(refreshTokenService.isValid("a", 7L));
+    }
 }

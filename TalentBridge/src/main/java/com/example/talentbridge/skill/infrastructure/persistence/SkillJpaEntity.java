@@ -32,7 +32,7 @@ public class SkillJpaEntity extends BaseEntity {
     @ToString.Exclude
     private List<JobJpaEntity> jobs;
 
-    @ManyToMany(mappedBy = "skills", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "skills")
     @ToString.Exclude
     private List<SubscriberJpaEntity> subscribers;
 }

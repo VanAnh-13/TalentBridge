@@ -88,3 +88,11 @@ Dependency rule (enforced by `no-restricted-imports` blocks generated per layer 
 Backend: every package follows the four layers (`shared`, `skill`, `subscriber`, `access`, `company`, `job`, `resume`,
 `user`, `auth`, `notification`), checked by `ArchitectureTest`.
 Frontend: every feature follows the four layers and no legacy `pages/`, `services/`, `types/` remains.
+
+## Safety invariants (enforced in the domain/use cases, covered by tests)
+* The ADMIN role always keeps `Role.ADMIN_ESSENTIALS` (open the admin workspace, manage roles/permissions/users);
+  those permissions cannot be deleted or re-pointed, and the last administrator cannot be deleted or demoted.
+* Changing or resetting a password signs the account out everywhere else (refresh tokens are revoked; access tokens
+  expire on their own). Deleting a user revokes all of their sessions.
+* A skill required by a job cannot be deleted; deleting a skill only stops subscribers from following it.
+* CVs are shown with the browser's own PDF viewer, never parsed by JavaScript in the page.

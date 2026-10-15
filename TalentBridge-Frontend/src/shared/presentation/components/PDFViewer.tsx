@@ -1,35 +1,25 @@
-import { Viewer, type Plugin } from "@react-pdf-viewer/core";
-import { toolbarPlugin } from "@react-pdf-viewer/toolbar";
-
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import "@react-pdf-viewer/toolbar/lib/styles/index.css";
-
 interface PDFViewerProps {
   fileUrl: string;
   className?: string;
 }
 
+/**
+ * Shows a PDF with the browser's own viewer. CVs are uploaded by strangers, so they are never parsed by
+ * JavaScript running in our page (pdf.js < 4.2.67 could be made to execute script by a crafted file).
+ */
 const PDFViewer: React.FC<PDFViewerProps> = ({
   fileUrl,
   className = "h-full w-full",
 }) => {
-  const toolbarPluginInstance = toolbarPlugin();
-  const { Toolbar } = toolbarPluginInstance;
-
   if (!fileUrl) return null;
 
   return (
-    <div
-      className={`rpv-core__viewer flex flex-col border border-gray-300 ${className}`}
-    >
-      <div className="flex items-center border-b border-gray-200 bg-gray-100 p-2">
-        <Toolbar />
-      </div>
-
-      <div className="flex-1 overflow-hidden">
-        <Viewer fileUrl={fileUrl} plugins={[toolbarPluginInstance as Plugin]} />
-      </div>
-    </div>
+    <iframe
+      src={fileUrl}
+      title="Xem hồ sơ (PDF)"
+      referrerPolicy="no-referrer"
+      className={`border border-gray-300 ${className}`}
+    />
   );
 };
 

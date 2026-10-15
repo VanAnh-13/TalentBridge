@@ -139,6 +139,11 @@ export default tseslint.config(
     files: ['cypress/**/*.ts'],
     rules: { '@typescript-eslint/no-unused-expressions': 'off' },
   },
+  {
+    // shadcn/ui files export their variants (buttonVariants, ...) next to the component by design.
+    files: ['src/shared/presentation/ui/**/*.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
   ...sharedLayers,
   ...featureLayers,
 )

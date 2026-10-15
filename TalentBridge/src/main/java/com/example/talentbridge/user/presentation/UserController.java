@@ -109,8 +109,9 @@ public class UserController {
     @PostMapping("/me/update-password")
     @ApiMessage(value = "Update current user password")
     @Operation(summary = "Update current user password")
-    public ResponseEntity<UserResponse> updateSelfUserPassword(@Valid @RequestBody SelfPasswordRequest request) {
-        return ResponseEntity.ok(UserResponse.from(changeOwnPassword.execute(request.getOldPassword(), request.getNewPassword())));
+    public ResponseEntity<UserResponse> updateSelfUserPassword(@Valid @RequestBody SelfPasswordRequest request,
+            @org.springframework.web.bind.annotation.CookieValue(name = "refresh_token", required = false) String refreshToken) {
+        return ResponseEntity.ok(UserResponse.from(changeOwnPassword.execute(request.getOldPassword(), request.getNewPassword(), refreshToken)));
     }
 
     @PostMapping("/me/upload-avatar")

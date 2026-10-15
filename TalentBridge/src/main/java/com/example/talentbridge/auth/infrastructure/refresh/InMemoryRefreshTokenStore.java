@@ -93,6 +93,16 @@ public class InMemoryRefreshTokenStore implements RefreshTokenStore {
     }
 
     @Override
+    public void deleteAllOf(Long userId, String keepToken) {
+        String prefix = "auth::refresh_token:" + userId + ":";
+        String keep = keepToken == null ? null : buildKey(keepToken, userId);
+        sessionStore.keySet().stream()
+                .filter(key -> key.startsWith(prefix) && !key.equals(keep))
+                .toList()
+                .forEach(this::deleteBySessionId);
+    }
+
+    @Override
     public List<SessionInfo> sessionsOf(Long userId, String currentRefreshToken) {
         String keyPrefix = "auth::refresh_token:" + userId + ":";
         String currentTokenHash = DigestUtils.sha256Hex(currentRefreshToken);

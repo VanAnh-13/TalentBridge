@@ -28,6 +28,7 @@ public class PasswordReset {
     private final PasswordResetTokenRepository tokens;
     private final UserDirectory users;
     private final ResetUserPassword resetUserPassword;
+    private final RevokeSessions revokeSessions;
     private final ResetMailer mailer;
 
     /** Outcome of checking a reset link. */
@@ -78,5 +79,6 @@ public class PasswordReset {
 
         resetUserPassword.execute(token.getUserId(), newPassword);
         tokens.invalidateAllFor(token.getUserId());
+        revokeSessions.all(token.getUserId());
     }
 }

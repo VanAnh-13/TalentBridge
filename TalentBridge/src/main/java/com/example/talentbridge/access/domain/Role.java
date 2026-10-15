@@ -16,6 +16,14 @@ public class Role {
     /** Roles the application relies on: they cannot be renamed or deleted. */
     public static final Set<String> BUILT_IN = Set.of("ADMIN", "RECRUITER", "USER");
 
+    /**
+     * What the ADMIN role must always keep, otherwise nobody could open the admin workspace or repair the
+     * roles and permissions again.
+     */
+    public static final Set<String> ADMIN_ESSENTIALS = Set.of(
+            "GET /admin", "GET /roles", "PUT /roles/{id}", "GET /permissions", "GET /permissions/all",
+            "GET /users", "PUT /users");
+
     private final Long id;
     private String name;
     private String description;
@@ -58,7 +66,19 @@ public class Role {
     }
 
     public void replacePermissions(List<Permission> newPermissions) {
-        this.permissions = unique(newPermissions);
+        List<Permission> replacement = unique(newPermissions);
+        if (isAdmin()) {
+            Set<String> granted = new java.util.HashSet<>();
+            replacement.forEach(p -> granted.add(p.authority()));
+            List<String> missing = ADMIN_ESSENTIALS.stream().filter(a -> !granted.contains(a)).sorted().toList();
+            if (!missing.isEmpty())
+                throw new InvalidRequestException("Chức vụ ADMIN phải giữ các quyền: " + String.join(", ", missing));
+        }
+        this.permissions = replacement;
+    }
+
+    public boolean isAdmin() {
+        return name != null && "ADMIN".equalsIgnoreCase(name);
     }
 
     public void assertDeletable() {
