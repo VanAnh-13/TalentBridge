@@ -1,0 +1,20 @@
+server:
+  port: ${PORT:8888}
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          # the files shipped in this jar, unless CONFIG_REPO points at a mounted folder (edit without rebuilding)
+          search-locations: ${CONFIG_REPO:classpath:/config-repo}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

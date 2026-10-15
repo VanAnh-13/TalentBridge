@@ -1,0 +1,25 @@
+# Settings every service receives (spring.config.import=optional:configserver:...).
+# Secrets never live here: they come from each container's environment, which also wins over these values.
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+# Access tokens: issued by the monolith (auth module), verified everywhere else with its public keys.
+jwt:
+  issuer: talentbridge-auth
+  jwk-set-uri: ${JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

@@ -1,0 +1,5 @@
+# The remaining monolith: auth, users, access control, companies, jobs, skills, subscribers, resumes, interviews,
+# chat and AI matching. Non-secret settings that should change without rebuilding the image go here.
+info:
+  service:
+    description: TalentBridge monolith (shrinks as services are extracted)

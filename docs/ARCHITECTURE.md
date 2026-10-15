@@ -89,6 +89,24 @@ Backend: every package follows the four layers (`shared`, `skill`, `subscriber`,
 `user`, `auth`, `notification`), checked by `ArchitectureTest`.
 Frontend: every feature follows the four layers and no legacy `pages/`, `services/`, `types/` remains.
 
+## Platform (Spring Cloud)
+```
+browser ──► api-gateway :8080 ──lb://monolith──► monolith :8081 ──► MariaDB, Redis
+                │   (REST and /ws WebSocket)        ▲
+                └─────── Eureka discovery-server :8761 ◄── every service registers
+                         config-server :8888 (native, backend/platform/config-server/.../config-repo)
+```
+* **api-gateway** (Spring Cloud Gateway, WebFlux) is the only public entry point. Routes live in its
+  `application.yml`: everything goes to `lb://monolith` until a more specific route sends a path to an extracted
+  service (strangler fig). It answers CORS (`ALLOWED_ORIGINS`) before routing, deduplicates the CORS headers services
+  add, gives every request an `X-Request-Id` (kept if the caller sent a sane one, returned in the response, forwarded
+  to the service) and hides the services' `/actuator/**`.
+* **discovery-server** (Eureka): services register under their `spring.application.name`.
+* **config-server** serves `config-repo/application.yml` (every service: Eureka address, JWKS address, management) and
+  `config-repo/<service>.yml`. Secrets never go there; container environment variables win over it.
+* Platform clients are off by default (`CONFIG_SERVER_ENABLED`, `EUREKA_ENABLED`), so a plain `mvn spring-boot:run`
+  and the tests need none of it; docker compose switches them on.
+
 ## Tokens
 * The auth module issues RS256 access and refresh tokens signed with an RSA private key (`JWT_PRIVATE_KEY`, PKCS#8 PEM;
   development falls back to a throw-away key). Claims: `iss` (`talentbridge-auth`), `sub` (email), `user`

@@ -20,6 +20,9 @@
         <module>libs/common-lib</module>
         <module>libs/security-lib</module>
         <module>monolith</module>
+        <module>platform/discovery-server</module>
+        <module>platform/config-server</module>
+        <module>platform/api-gateway</module>
     </modules>
 
     <properties>

@@ -1,5 +1,7 @@
 # Whole TalentBridge stack for local use:  cp .env.example .env  (fill JWT_PRIVATE_KEY)  &&  docker compose up --build
-#   web  http://localhost:3000        api  http://localhost:8080 (Swagger: /swagger-ui.html)
+#   web  http://localhost:3000        api (gateway)  http://localhost:8080        Eureka  http://localhost:8761
+# The browser only talks to the gateway; services find each other through Eureka and read shared settings from
+# the config server.
 services:
   mariadb:
     image: mariadb:11.2
@@ -31,16 +33,61 @@ services:
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_password}
 
-  backend:
+  discovery:
+    build:
+      context: ./backend
+      args:
+        MODULE: platform/discovery-server
+    restart: unless-stopped
+    ports:
+      - "${EUREKA_PORT:-8761}:8761"
+    environment:
+      SERVER_PORT: 8761
+      EUREKA_HOSTNAME: discovery
+
+  config:
+    build:
+      context: ./backend
+      args:
+        MODULE: platform/config-server
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: 8888
+
+  gateway:
+    build:
+      context: ./backend
+      args:
+        MODULE: platform/api-gateway
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      SERVER_PORT: 8080
+      CONFIG_SERVER_ENABLED: "true"
+      CONFIG_SERVER_URL: http://config:8888
+      EUREKA_ENABLED: "true"
+      EUREKA_URL: http://discovery:8761/eureka
+      ALLOWED_ORIGINS: ${WEB_ORIGIN:-http://localhost:3000}
+    depends_on:
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+
+  monolith:
     build:
       context: ./backend
       args:
         MODULE: monolith
     restart: unless-stopped
-    ports:
-      - "${API_PORT:-8080}:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8081
+      CONFIG_SERVER_ENABLED: "true"
+      CONFIG_SERVER_URL: http://config:8888
+      EUREKA_ENABLED: "true"
+      EUREKA_URL: http://discovery:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${DB_NAME:-talentbridge}?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-talentbridge_user}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
@@ -67,18 +114,22 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
 
   frontend:
     build:
       context: ./frontend
       args:
-        # The browser calls the API directly, so this is the address as seen from the host.
+        # The browser calls the gateway directly, so this is its address as seen from the host.
         API_BASE_URL: ${PUBLIC_API_URL:-http://localhost:8080}
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-3000}:8080"
     depends_on:
-      - backend
+      - gateway
 
 volumes:
   mariadb-data:

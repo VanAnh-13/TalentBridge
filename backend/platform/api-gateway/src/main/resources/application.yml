@@ -1,0 +1,48 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+  cloud:
+    config:
+      enabled: ${CONFIG_SERVER_ENABLED:false}
+    gateway:
+      server:
+        webflux:
+          # Strangler fig: everything goes to the monolith unless a more specific route sends it to an extracted
+          # service. Routes are tried in the order listed. Targets are Eureka names (lb://) unless overridden.
+          routes:
+            # internal endpoints of the services are not for the public
+            - id: hide-internals
+              uri: no://op
+              predicates:
+                - Path=/actuator/**
+              filters:
+                - SetStatus=404
+            - id: realtime
+              uri: ${MONOLITH_WS_URI:lb:ws://monolith}
+              predicates:
+                - Path=/ws/**
+            - id: monolith
+              uri: ${MONOLITH_URI:lb://monolith}
+              predicates:
+                - Path=/**
+              filters:
+                # CORS is decided by CorsConfig (ALLOWED_ORIGINS); services answer CORS too and the browser must see
+                # each header once. (Not on WebSocket routes: their headers are fixed once the upgrade is done.)
+                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials Vary, RETAIN_UNIQUE
+
+eureka:
+  client:
+    enabled: ${EUREKA_ENABLED:false}
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

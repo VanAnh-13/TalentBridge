@@ -1,0 +1,23 @@
+server:
+  port: ${PORT:8761}
+
+spring:
+  application:
+    name: discovery-server
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+  client:
+    # a single registry: it does not register with, or copy from, another one
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    # a small installation: do not keep dead instances around because too few heartbeats arrive
+    enable-self-preservation: ${EUREKA_SELF_PRESERVATION:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
