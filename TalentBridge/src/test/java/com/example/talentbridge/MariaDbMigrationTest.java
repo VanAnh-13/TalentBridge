@@ -56,9 +56,10 @@ class MariaDbMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, USER, PASSWORD)) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM permissions"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
-            assertEquals(12, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM permissions"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(21, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
+            assertEquals(17, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'USER'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM users"));
         }
         assertEquals(0, flyway(url, false, "latest").migrate().migrationsExecuted, "re-run must be a no-op");
@@ -88,9 +89,14 @@ class MariaDbMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, USER, PASSWORD)) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM permissions"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM permissions"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions WHERE permission_id NOT IN (SELECT id FROM permissions)"));
+            // V4: the old seed let recruiters modify any company's data; that grant must be gone
+            assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id JOIN permissions p ON p.id = rp.permission_id "
+                    + "WHERE r.name = 'RECRUITER' AND ((p.method = 'PUT' AND p.api_path = '/jobs/{id}') OR (p.method = 'DELETE' AND p.api_path = '/companies/{id}'))"));
+            assertEquals(1, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id JOIN permissions p ON p.id = rp.permission_id "
+                    + "WHERE r.name = 'RECRUITER' AND p.method = 'PUT' AND p.api_path = '/jobs/company/{id}'"));
             try (Statement s = c.createStatement()) {
                 assertThrows(SQLException.class, () -> s.execute(
                         "INSERT INTO permissions (name, api_path, method, module) VALUES ('Dup','/roles','POST','ROLE')"));

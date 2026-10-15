@@ -148,10 +148,10 @@ public class AuthControllerTest {
     @DisplayName("AUTH_11: Truy cập API không có quyền")
     void testAccessWithoutPermission() throws Exception {
         // Try to access admin endpoint without admin role
-        // Contract: the API answers 401 + ACCESS_DENIED (the frontend refreshes the token on it)
+        // Authenticated but lacking the permission -> 403 (401 is reserved for missing/invalid credentials)
         mockMvc.perform(get("/users")
                 .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errorCode").value("ACCESS_DENIED"));
     }
 

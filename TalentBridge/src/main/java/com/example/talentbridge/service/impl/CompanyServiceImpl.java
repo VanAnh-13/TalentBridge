@@ -7,6 +7,7 @@ import com.example.talentbridge.dto.request.user.RecruiterRequestDto;
 import com.example.talentbridge.dto.response.company.DefaultCompanyExtendedResponseDto;
 import com.example.talentbridge.dto.response.company.DefaultCompanyResponseDto;
 import com.example.talentbridge.dto.response.user.RecruiterResponseDto;
+import com.example.talentbridge.advice.exception.BusinessRuleViolationException;
 import com.example.talentbridge.advice.exception.ResourceAlreadyExistsException;
 import com.example.talentbridge.model.Company;
 import com.example.talentbridge.model.CompanyLogo;
@@ -270,6 +271,11 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
     public DefaultCompanyResponseDto deleteCompanyById(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy công ty"));
+
+        // Must run before any side effect below (users are detached, jobs deleted).
+        if (jobRepository.existsByCompanyIdAndActiveTrue(company.getId()))
+            throw new BusinessRuleViolationException(
+                    "Công ty còn việc làm đang tuyển (has active jobs), hãy đóng các việc làm trước khi xóa");
 
         userRepository.detachUsersFromCompany(company);
 

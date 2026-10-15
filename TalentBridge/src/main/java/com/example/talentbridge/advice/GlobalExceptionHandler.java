@@ -15,6 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
+import com.example.talentbridge.advice.exception.BusinessRuleViolationException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -162,17 +166,31 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleAccessDeniedException(
             AccessDeniedException ex
     ) {
-        String message = "Access denied";
-        if (ex.getMessage() != null)
-            message = ex.getMessage();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean anonymous = authentication == null
+                || authentication instanceof AnonymousAuthenticationToken
+                || !authentication.isAuthenticated();
 
+        // Not logged in -> 401 (the client should authenticate / refresh its token).
+        // Logged in but not allowed -> 403 (retrying with a new token will not help).
+        if (anonymous)
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>("Authentication required", "UNAUTHORIZED"));
 
+        String message = ex.getMessage() != null ? ex.getMessage() : "Access denied";
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiResponse<>(
-                        message,
-                        "ACCESS_DENIED"
-                ));
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse<>(message, "ACCESS_DENIED"));
+    }
+
+    @ExceptionHandler(BusinessRuleViolationException.class)
+    public ResponseEntity<ApiResponse<?>> handleBusinessRuleViolationException(
+            BusinessRuleViolationException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ApiResponse<>(ex.getMessage(), "BUSINESS_RULE_VIOLATION"));
     }
 
     @ExceptionHandler(ImmutableFieldException.class)

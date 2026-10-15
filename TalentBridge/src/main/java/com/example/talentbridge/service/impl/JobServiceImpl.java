@@ -229,7 +229,7 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy công việc"));
 
         if (!user.getCompany().getId().equals(job.getCompany().getId()))
-            throw new EntityNotFoundException("Không có quyền truy cập");
+            throw new AccessDeniedException("Không có quyền truy cập");
 
         cleanupJobResumesAndSkills(job);
 

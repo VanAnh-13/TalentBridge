@@ -214,6 +214,8 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy resume"));
 
+        assertCanReadResumeFile(resume);
+
         return new GetResumeFileResponseDto(
                 s3Service.generatePresignedUrl(resume.getFileKey(), Duration.ofMinutes(15))
         );
@@ -256,6 +258,31 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
         resume.setStatus(updateResumeStatusRequestDto.getStatus());
         resumeRepository.save(resume);
         return mapToResponseDto(resume);
+    }
+
+    /**
+     * A CV may be read by its owner, by recruiters of the company that owns the job it was submitted to,
+     * and by administrators. Anyone else gets 403 (the id alone must not be enough to fetch someone's CV).
+     */
+    private void assertCanReadResumeFile(Resume resume) {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
+
+        boolean admin = user.getRole() != null && "ADMIN".equals(user.getRole().getName());
+        boolean owner = resume.getUser() != null && resume.getUser().getId().equals(user.getId());
+        boolean sameCompany = user.getCompany() != null
+                && resume.getJob() != null
+                && resume.getJob().getCompany() != null
+                && resume.getJob().getCompany().getId().equals(user.getCompany().getId());
+
+        if (!admin && !owner && !sameCompany)
+            throw new AccessDeniedException("Không có quyền truy cập");
     }
 
     private String generateKey(String email, Long id, Long version) {

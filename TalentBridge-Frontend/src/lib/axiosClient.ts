@@ -58,7 +58,7 @@ const processQueue = (error: unknown, token: string | null = null) => {
 };
 
 // ============================================================
-// Interceptor: Xử lý lỗi 401 và errorCode UNAUTHORIZED
+// Interceptor: Xử lý lỗi 401 (UNAUTHORIZED) bằng refresh token; 403 (ACCESS_DENIED) được trả về nguyên trạng
 // ============================================================
 
 let isRefreshing = false;
@@ -73,9 +73,10 @@ axiosClient.interceptors.response.use(
     // Check lỗi có phải thuộc lại lỗi JWT Token
     const { response } = error;
     const errorCode = (response?.data as ApiResponse<null>)?.errorCode;
+    // 401 = missing/expired/invalid token -> try to refresh and retry.
+    // 403 (errorCode ACCESS_DENIED) = authenticated but not allowed -> a new token will not help, just reject.
     const isUnauthorized =
-      response?.status === 401 &&
-      (errorCode === "UNAUTHORIZED" || errorCode === "ACCESS_DENIED");
+      response?.status === 401 && errorCode === "UNAUTHORIZED";
 
     if (isUnauthorized && !originalRequest._retry) {
       originalRequest._retry = true;

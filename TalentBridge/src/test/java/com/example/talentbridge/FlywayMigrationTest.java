@@ -46,10 +46,10 @@ class FlywayMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, "sa", "")) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM permissions"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
-            // selected by path only (as in the former data.sql): 2+3+2+3+1+1 permissions
-            assertEquals(12, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM permissions"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(21, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
+            assertEquals(17, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'USER'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM users"), "no default users may be seeded");
         }
     }
@@ -80,10 +80,15 @@ class FlywayMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, "sa", "")) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"), "roles must not be duplicated");
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM permissions"), "duplicates removed, missing ones added");
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM permissions"), "duplicates removed, catalog completed");
             assertEquals(0, count(c, "SELECT COUNT(*) FROM (SELECT api_path, method FROM permissions GROUP BY api_path, method HAVING COUNT(*) > 1) d"));
-            assertEquals(31, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(54, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp WHERE rp.permission_id NOT IN (SELECT id FROM permissions)"));
+            // V4: the old seed let recruiters modify any company's data; that grant must be gone
+            assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id JOIN permissions p ON p.id = rp.permission_id "
+                    + "WHERE r.name = 'RECRUITER' AND ((p.method = 'PUT' AND p.api_path = '/jobs/{id}') OR (p.method = 'DELETE' AND p.api_path = '/companies/{id}'))"));
+            assertEquals(1, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id JOIN permissions p ON p.id = rp.permission_id "
+                    + "WHERE r.name = 'RECRUITER' AND p.method = 'PUT' AND p.api_path = '/jobs/company/{id}'"));
 
             // the unique key now prevents the old startup re-insert from ever duplicating again
             try (Statement s = c.createStatement()) {

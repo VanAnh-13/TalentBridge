@@ -32,6 +32,9 @@ public class CompanyControllerTest {
     @Autowired
     private com.example.talentbridge.repository.SkillRepository skillRepository;
 
+    @Autowired
+    private com.example.talentbridge.repository.JobRepository jobRepository;
+
     private String adminToken;
     private Long companyId;
     private String companyName = "Test Company " + System.currentTimeMillis();
@@ -166,18 +169,32 @@ public class CompanyControllerTest {
 
     @Test
     @Order(7)
-    @DisplayName("COMPANY_09: Xóa công ty sẽ xóa luôn các job của công ty (cascade)")
+    @DisplayName("COMPANY_09: Xóa công ty còn job đang tuyển -> bị từ chối (expect fail)")
     void testDeleteCompanyWithActiveJobs() throws Exception {
         com.example.talentbridge.model.Skill skill = new com.example.talentbridge.model.Skill();
         skill.setName("skill-" + System.nanoTime());
         Long skillId = skillRepository.save(skill).getId();
-        Long jobId = TestHelper.createJobForCompany(mockMvc, objectMapper, adminToken, companyId, skillId);
+        Long jobId = TestHelper.createJobForCompany(mockMvc, objectMapper, adminToken, companyId, skillId); // active = true
 
-        // Deleting the company currently cascades to its jobs (see CompanyServiceImpl#deleteCompanyById)
+        mockMvc.perform(delete("/companies/" + companyId)
+                .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("BUSINESS_RULE_VIOLATION"))
+                .andExpect(jsonPath("$.message", containsString("has active jobs")));
+
+        // nothing was deleted by the rejected request
+        mockMvc.perform(get("/companies/" + companyId)).andExpect(status().isOk());
+        mockMvc.perform(get("/jobs/" + jobId)).andExpect(status().isOk());
+
+        // close the job: now the company can be deleted (its closed jobs go with it)
+        jobRepository.findById(jobId).ifPresent(j -> {
+            j.setActive(false);
+            jobRepository.save(j);
+        });
+
         mockMvc.perform(delete("/companies/" + companyId)
                 .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk());
-
         mockMvc.perform(get("/jobs/" + jobId)).andExpect(status().isNotFound());
     }
 }

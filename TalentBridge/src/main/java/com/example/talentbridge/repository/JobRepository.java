@@ -19,6 +19,8 @@ public interface JobRepository extends
 
     Long countByCompanyId(Long id);
 
+    boolean existsByCompanyIdAndActiveTrue(Long companyId);
+
     default Page<Job> findByCompanyId(
             Long id,
             Specification<Job> filterSpec,

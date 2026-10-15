@@ -1,8 +1,8 @@
 # Database migrations
 
 Schema and reference data are owned by **Flyway** (`db/migration`, `V<n>__<name>.sql`). Hibernate only
-validates (`ddl-auto=validate` in dev/tests; `none` in prod by default, override with
-`SPRING_JPA_HIBERNATE_DDL_AUTO=validate` once you trust the schema).
+validates (`ddl-auto=validate` in dev/tests; `validate` in prod too; override with
+`SPRING_JPA_HIBERNATE_DDL_AUTO=none` only as an emergency escape hatch).
 
 | Version | Purpose |
 |---|---|
