@@ -6,7 +6,7 @@ echo "========================================"
 echo "Starting TalentBridge Backend Tests"
 echo "========================================"
 
-cd TalentBridge
+cd backend
 
 # Clean and build
 echo "Building project..."

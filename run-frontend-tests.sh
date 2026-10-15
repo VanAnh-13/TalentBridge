@@ -6,7 +6,7 @@ echo "========================================"
 echo "Starting TalentBridge Frontend Tests"
 echo "========================================"
 
-cd TalentBridge-Frontend
+cd frontend
 
 # Install dependencies if not already installed
 echo "Installing dependencies..."

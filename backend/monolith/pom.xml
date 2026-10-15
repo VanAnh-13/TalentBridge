@@ -3,15 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.example</groupId>
+        <artifactId>talentbridge-backend</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>TalentBridge</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>TalentBridge</name>
+    <artifactId>talentbridge-monolith</artifactId>
+    <name>TalentBridge monolith</name>
     <description>Demo ứng dụng Spring Boot cho nền tảng kết nối nhà tuyển dụng và ứng viên TalentBridge</description>
     <url/>
     <licenses>
@@ -26,9 +24,6 @@
         <tag/>
         <url/>
     </scm>
-    <properties>
-        <java.version>21</java.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -4,7 +4,7 @@ TalentBridge follows **Clean Architecture** in both the backend and the frontend
 module; modules not yet migrated are listed at the bottom. `ArchitectureTest` (backend) enforces the rules below for
 every migrated module.
 
-## Backend (`TalentBridge/`, Spring Boot)
+## Backend (`backend/monolith/`, Spring Boot)
 
 ```
 com.example.talentbridge
@@ -45,7 +45,7 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 * **Who is calling** is an application concern behind a port (not `SecurityContextHolder` in use cases).
 * Adding a module = add it to `MIGRATED` in `ArchitectureTest` in the same commit.
 
-## Frontend (`TalentBridge-Frontend/`, React + Vite)
+## Frontend (`frontend/`, React + Vite)
 
 ```
 src

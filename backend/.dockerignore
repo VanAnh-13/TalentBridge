@@ -11,7 +11,7 @@
 *.iws
 
 # Maven
-target/
+**/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 # Logs
@@ -24,8 +24,8 @@ logs/
 !.env.example
 
 # Docker
-docker-compose*.yml
-Dockerfile
+**/docker-compose*.yml
+**/compose.yaml
 .dockerignore
 
 # Documentation
@@ -33,7 +33,7 @@ Dockerfile
 !README.md
 
 # Test files
-src/test/
+**/src/test/
 
 # OS files
 .DS_Store
@@ -47,7 +47,7 @@ Thumbs.db
 *~
 
 # Uploads (will be created in container)
-uploads/
+**/uploads/
 
 # Build artifacts
 *.jar

@@ -79,26 +79,15 @@ Kiến trúc: xem [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ```
 do_an_chuyen_nganh/
-├── TalentBridge/                 # Backend Spring Boot
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/            # Source code Java
-│   │   │   └── resources/       # Config files & SQL
-│   │   └── test/                # Unit tests
-│   ├── Dockerfile
-│   └── pom.xml
-│
-├── TalentBridge-Frontend/        # Frontend React
-│   ├── src/
-│   │   ├── components/          # Reusable components
-│   │   ├── pages/               # Page components
-│   │   ├── lib/                 # Utilities
-│   │   └── types/               # TypeScript types
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.ts
-│
-└── README.md
+├── backend/                      # Maven multi-module build (parent pom.xml, one Dockerfile for every module)
+│   ├── monolith/                 # Spring Boot app being split up (strangler fig), Clean Architecture modules
+│   ├── libs/                     # code shared by the deployables (added as services are extracted)
+│   ├── platform/                 # discovery, config and gateway servers
+│   └── services/                 # services extracted from the monolith
+├── frontend/                     # React + Vite (Clean Architecture per feature)
+├── docs/ARCHITECTURE.md          # layers, rules, invariants, real time, AI matching
+├── docker-compose.yml            # the whole stack for local use
+└── .github/workflows/ci.yml
 ```
 
 ## 🚀 Cài đặt và Chạy
@@ -115,7 +104,7 @@ do_an_chuyen_nganh/
 ```bash
 # Clone repository
 git clone https://github.com/VanAnh-13/do_an_chuyen_nganh.git
-cd do_an_chuyen_nganh/TalentBridge
+cd do_an_chuyen_nganh/backend
 
 # Copy environment variables
 cp .env.example .env
@@ -125,9 +114,9 @@ DB_NAME=talentbridge
 DB_USER=root
 DB_PASSWORD=yourpassword
 
-# Build và chạy với Maven
+# Build và chạy với Maven (from backend/)
 mvn clean install
-mvn spring-boot:run
+mvn -pl monolith spring-boot:run
 
 # Hoặc chạy với Docker
 docker-compose up -d
@@ -138,7 +127,7 @@ Backend sẽ chạy tại: http://localhost:8080
 ### Frontend
 
 ```bash
-cd TalentBridge-Frontend
+cd frontend
 
 # Cài đặt dependencies
 npm install
@@ -164,8 +153,7 @@ Frontend sẽ chạy tại: http://localhost:5173
 CREATE DATABASE talentbridge;
 
 -- Import schema và data mẫu
-mysql -u root -p talentbridge < TalentBridge/src/main/resources/data.sql
-mysql -u root -p talentbridge < TalentBridge/src/main/resources/all-fake-data.sql
+-- The schema and reference data are created by Flyway on start-up (backend/monolith/src/main/resources/db/migration)
 ```
 
 ### Tài khoản test
@@ -191,12 +179,11 @@ docker-compose -f docker-compose.prod.yml up -d
 ### Build Docker images riêng
 
 ```bash
-# Backend
-cd TalentBridge
-docker build -t talentbridge-backend .
+# Backend (any module: MODULE=monolith, platform/api-gateway, ...)
+docker build -t talentbridge-backend --build-arg MODULE=monolith backend
 
 # Frontend
-cd TalentBridge-Frontend
+cd frontend
 docker build -t talentbridge-frontend .
 ```
 
@@ -209,12 +196,12 @@ docker build -t talentbridge-frontend .
 gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 
-# Deploy backend
-cd TalentBridge
+# Deploy backend (legacy single-image script, see backend/monolith)
+cd backend/monolith
 gcloud builds submit --config cloudbuild.yaml
 
 # Deploy frontend
-cd TalentBridge-Frontend
+cd frontend
 gcloud builds submit --config cloudbuild.yaml
 ```
 
@@ -223,8 +210,8 @@ gcloud builds submit --config cloudbuild.yaml
 ### Backend Tests
 
 ```bash
-cd TalentBridge
-mvn test
+cd backend
+mvn verify
 
 # Run với coverage
 mvn test jacoco:report
@@ -233,7 +220,7 @@ mvn test jacoco:report
 ### Frontend Tests
 
 ```bash
-cd TalentBridge-Frontend
+cd frontend
 
 # Unit tests
 npm run test
