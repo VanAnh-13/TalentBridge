@@ -10,7 +10,7 @@ import com.example.talentbridge.dto.request.job.JobRequestDto;
 import com.example.talentbridge.dto.response.job.JobResponseDto;
 import com.example.talentbridge.model.*;
 import com.example.talentbridge.repository.*;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,7 +32,7 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
-    private final S3Service s3Service;
+    private final FileStorage s3Service;
 
     @Override
     public Page<JobResponseDto> findAllJobs(Specification<Job> spec, Pageable pageable) {

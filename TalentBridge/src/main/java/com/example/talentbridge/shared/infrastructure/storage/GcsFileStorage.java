@@ -1,15 +1,14 @@
-package com.example.talentbridge.service.impl;
+package com.example.talentbridge.shared.infrastructure.storage;
 
-import com.example.talentbridge.advice.exception.S3UploadException;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
+import com.example.talentbridge.shared.application.FileUpload;
+import com.example.talentbridge.shared.domain.exception.StorageException;
 import com.google.cloud.storage.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -21,56 +20,52 @@ import java.util.concurrent.TimeUnit;
         name = "type",
         havingValue = "gcs"
 )
-public class GCSServiceImpl implements S3Service {
+public class GcsFileStorage implements FileStorage {
 
     private final Storage storage;
     private final String gcsBucketName;
 
     @Override
-    public String uploadFile(MultipartFile file, String folder, String fileName, boolean getUrl) {
+    public String uploadFile(FileUpload file, String folder, String fileName, boolean getUrl) {
         try {
             if (file == null || file.isEmpty())
-                throw new S3UploadException("Tệp logo không được rỗng hoặc null");
+                throw new StorageException("Tệp logo không được rỗng hoặc null");
 
             String key = String.format("%s/%s", folder, fileName);
 
             BlobId blobId = BlobId.of(gcsBucketName, key);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                    .setContentType(file.getContentType())
+                    .setContentType(file.contentType())
                     .build();
 
-            storage.create(blobInfo, file.getBytes());
+            storage.create(blobInfo, file.content());
 
             if (getUrl)
                 return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
             else return key;
-        } catch (IOException e) {
-            throw new S3UploadException("Lỗi khi đọc dữ liệu từ tệp");
         } catch (Exception e) {
-            throw new S3UploadException("Lỗi khi upload file lên GCS: " + e.getMessage());
+            throw new StorageException("Lỗi khi upload file lên GCS: " + e.getMessage());
         }
     }
 
     @Override
-    public String uploadFile(MultipartFile file, String key, boolean getUrl) {
+    public String uploadFile(FileUpload file, String key, boolean getUrl) {
         try {
             if (file == null || file.isEmpty())
-                throw new S3UploadException("Tệp logo không được rỗng hoặc null");
+                throw new StorageException("Tệp logo không được rỗng hoặc null");
 
             BlobId blobId = BlobId.of(gcsBucketName, key);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                    .setContentType(file.getContentType())
+                    .setContentType(file.contentType())
                     .build();
 
-            storage.create(blobInfo, file.getBytes());
+            storage.create(blobInfo, file.content());
 
             if (getUrl)
                 return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
             else return key;
-        } catch (IOException e) {
-            throw new S3UploadException("Lỗi khi đọc dữ liệu từ tệp logo");
         } catch (Exception e) {
-            throw new S3UploadException("Lỗi khi upload file lên GCS: " + e.getMessage());
+            throw new StorageException("Lỗi khi upload file lên GCS: " + e.getMessage());
         }
     }
 
@@ -92,7 +87,7 @@ public class GCSServiceImpl implements S3Service {
             
             return signedUrl.toString();
         } catch (Exception e) {
-            throw new S3UploadException("Lỗi khi tạo presigned URL: " + e.getMessage());
+            throw new StorageException("Lỗi khi tạo presigned URL: " + e.getMessage());
         }
     }
 
@@ -109,7 +104,7 @@ public class GCSServiceImpl implements S3Service {
             storage.delete(blobId);
 
         } catch (Exception e) {
-            throw new S3UploadException("Lỗi khi xóa file khỏi GCS: " + e.getMessage());
+            throw new StorageException("Lỗi khi xóa file khỏi GCS: " + e.getMessage());
         }
     }
 
@@ -124,14 +119,14 @@ public class GCSServiceImpl implements S3Service {
             storage.delete(blobId);
 
         } catch (Exception e) {
-            throw new S3UploadException("Lỗi khi xóa file khỏi GCS: " + e.getMessage());
+            throw new StorageException("Lỗi khi xóa file khỏi GCS: " + e.getMessage());
         }
     }
 
     private String extractObjectKeyFromUrl(String url) {
         String base = String.format("https://storage.googleapis.com/%s/", gcsBucketName);
         if (!url.startsWith(base)) {
-            throw new S3UploadException("URL không hợp lệ hoặc không thuộc bucket hiện tại");
+            throw new StorageException("URL không hợp lệ hoặc không thuộc bucket hiện tại");
         }
         return url.substring(base.length());
     }

@@ -1,5 +1,7 @@
 package com.example.talentbridge.service.impl;
 
+import com.example.talentbridge.shared.presentation.FileUploads;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.request.user.SelfUserUpdatePasswordRequestDto;
@@ -14,7 +16,7 @@ import com.example.talentbridge.model.User;
 import com.example.talentbridge.repository.CompanyRepository;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 import com.example.talentbridge.repository.UserRepository;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +39,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
     private final CompanyRepository companyRepository;
     private final RoleJpaRepository roleRepository;
 
-    private final S3Service s3Service;
+    private final FileStorage s3Service;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -186,7 +188,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
         User user = findByEmail(email);
 
         if (avatarFile != null && !avatarFile.isEmpty()) {
-            String url = s3Service.uploadFile(avatarFile, "avatar", user.getId().toString(), true);
+            String url = s3Service.uploadFile(FileUploads.from(avatarFile), "avatar", user.getId().toString(), true);
 
             user.setLogoUrl(url);
         }

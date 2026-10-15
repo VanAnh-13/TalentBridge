@@ -1,5 +1,7 @@
 package com.example.talentbridge.service.impl;
 
+import com.example.talentbridge.shared.presentation.FileUploads;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.request.resume.ResumeRequestDto;
@@ -16,7 +18,7 @@ import com.example.talentbridge.model.User;
 import com.example.talentbridge.repository.JobRepository;
 import com.example.talentbridge.repository.ResumeRepository;
 import com.example.talentbridge.repository.UserRepository;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +41,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
 
-    private final S3Service s3Service;
+    private final FileStorage s3Service;
 
     @Override
     public CreateResumeResponseDto saveResume(
@@ -78,7 +80,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
             String generatedFileName = "resume-" + savedResume.getId() + "-" + resume.getVersion() + ".pdf";
 
 
-            String key = s3Service.uploadFile(pdfFile, folderName, generatedFileName, false);
+            String key = s3Service.uploadFile(FileUploads.from(pdfFile), folderName, generatedFileName, false);
 
             savedResume.setFileKey(key);
         } else throw new EntityNotFoundException("Không tìm thấy tệp pdf");
@@ -199,7 +201,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
             String newKey = generateKey(resume.getEmail(), resume.getId(), resume.getVersion());
 
             s3Service.deleteFileByKey(resume.getFileKey());
-            s3Service.uploadFile(pdfFile, newKey, false);
+            s3Service.uploadFile(FileUploads.from(pdfFile), newKey, false);
             resume.setFileKey(newKey);
         } else throw new EntityNotFoundException("Không tìm thấy tệp pdf");
 

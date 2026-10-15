@@ -1,6 +1,7 @@
-package com.example.talentbridge.service.impl;
+package com.example.talentbridge.shared.infrastructure.storage;
 
-import com.example.talentbridge.advice.exception.S3UploadException;
+import com.example.talentbridge.shared.domain.exception.StorageException;
+import com.example.talentbridge.shared.presentation.FileUploads;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +18,15 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("S3LocalServiceImpl Unit Tests")
-class S3LocalServiceImplTest {
+@DisplayName("LocalFileStorage Unit Tests")
+class LocalFileStorageTest {
 
-    private S3LocalServiceImpl s3LocalService;
+    private LocalFileStorage s3LocalService;
     private static final String UPLOAD_DIR = "uploads";
 
     @BeforeEach
     void setUp() {
-        s3LocalService = new S3LocalServiceImpl();
+        s3LocalService = new LocalFileStorage();
     }
 
     @AfterEach
@@ -60,7 +61,7 @@ class S3LocalServiceImplTest {
         String fileName = "user123.txt";
 
         // Act
-        String result = s3LocalService.uploadFile(file, folder, fileName, false);
+        String result = s3LocalService.uploadFile(FileUploads.from(file), folder, fileName, false);
 
         // Assert
         assertNotNull(result, "Result should not be null");
@@ -86,7 +87,7 @@ class S3LocalServiceImplTest {
         String fileName = "doc123.txt";
 
         // Act
-        String result = s3LocalService.uploadFile(file, folder, fileName, true);
+        String result = s3LocalService.uploadFile(FileUploads.from(file), folder, fileName, true);
 
         // Assert
         assertNotNull(result, "Result should not be null");
@@ -108,7 +109,7 @@ class S3LocalServiceImplTest {
         String key = "resumes/2024/resume123.pdf";
 
         // Act
-        String result = s3LocalService.uploadFile(file, key, false);
+        String result = s3LocalService.uploadFile(FileUploads.from(file), key, false);
 
         // Assert
         assertEquals(key, result, "Should return the same key");
@@ -127,9 +128,9 @@ class S3LocalServiceImplTest {
         String fileName = "test.txt";
 
         // Act & Assert
-        assertThrows(S3UploadException.class, () -> {
-            s3LocalService.uploadFile(file, folder, fileName, false);
-        }, "Should throw S3UploadException for null file");
+        assertThrows(StorageException.class, () -> {
+            s3LocalService.uploadFile(FileUploads.from(file), folder, fileName, false);
+        }, "Should throw StorageException for null file");
     }
 
     @Test
@@ -146,9 +147,9 @@ class S3LocalServiceImplTest {
         String fileName = "empty.txt";
 
         // Act & Assert
-        assertThrows(S3UploadException.class, () -> {
-            s3LocalService.uploadFile(file, folder, fileName, false);
-        }, "Should throw S3UploadException for empty file");
+        assertThrows(StorageException.class, () -> {
+            s3LocalService.uploadFile(FileUploads.from(file), folder, fileName, false);
+        }, "Should throw StorageException for empty file");
     }
 
     @Test
@@ -165,7 +166,7 @@ class S3LocalServiceImplTest {
         String key = "images/presign-test.txt";
         
         // Upload file first
-        s3LocalService.uploadFile(file, key, false);
+        s3LocalService.uploadFile(FileUploads.from(file), key, false);
 
         // Act
         String presignedUrl = s3LocalService.generatePresignedUrl(key, Duration.ofHours(1));
@@ -204,7 +205,7 @@ class S3LocalServiceImplTest {
         String key = "temp/delete-test.txt";
         
         // Upload file first
-        s3LocalService.uploadFile(file, key, false);
+        s3LocalService.uploadFile(FileUploads.from(file), key, false);
         Path filePath = Paths.get(UPLOAD_DIR, key);
         assertTrue(Files.exists(filePath), "File should exist before deletion");
 
@@ -229,7 +230,7 @@ class S3LocalServiceImplTest {
         String key = "temp/delete-url-test.txt";
         
         // Upload file and get URL
-        String fileUrl = s3LocalService.uploadFile(file, key, true);
+        String fileUrl = s3LocalService.uploadFile(FileUploads.from(file), key, true);
         Path filePath = Paths.get(UPLOAD_DIR, key);
         assertTrue(Files.exists(filePath), "File should exist before deletion");
 
@@ -280,7 +281,7 @@ class S3LocalServiceImplTest {
         String key = "level1/level2/level3/nested.txt";
 
         // Act
-        String result = s3LocalService.uploadFile(file, key, false);
+        String result = s3LocalService.uploadFile(FileUploads.from(file), key, false);
 
         // Assert
         assertEquals(key, result, "Should return the correct key");
@@ -306,7 +307,7 @@ class S3LocalServiceImplTest {
         String fileName = "file_with_underscores-and-dashes.txt";
 
         // Act
-        String result = s3LocalService.uploadFile(file, folder, fileName, false);
+        String result = s3LocalService.uploadFile(FileUploads.from(file), folder, fileName, false);
 
         // Assert
         assertNotNull(result, "Result should not be null");
@@ -331,7 +332,7 @@ class S3LocalServiceImplTest {
         String key = "content/test.txt";
 
         // Act
-        s3LocalService.uploadFile(file, key, false);
+        s3LocalService.uploadFile(FileUploads.from(file), key, false);
 
         // Assert
         Path filePath = Paths.get(UPLOAD_DIR, key);

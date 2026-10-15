@@ -1,4 +1,4 @@
-package com.example.talentbridge.config.network;
+package com.example.talentbridge.shared.infrastructure.storage;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
@@ -16,7 +16,7 @@ import java.io.IOException;
         name = {"gcs.project-id", "gcs.bucket-name"},
         matchIfMissing = false
 )
-public class GCSConfig {
+public class GcsConfig {
 
     @Value("${gcs.project-id}")
     private String projectId;

@@ -1,11 +1,11 @@
-package com.example.talentbridge.service.impl;
+package com.example.talentbridge.shared.infrastructure.storage;
 
-import com.example.talentbridge.advice.exception.S3UploadException;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
+import com.example.talentbridge.shared.application.FileUpload;
+import com.example.talentbridge.shared.domain.exception.StorageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +16,8 @@ import java.time.Duration;
 import java.util.UUID;
 
 /**
- * Local file system implementation of S3Service for development
- * This is used when AWS is not configured
+ * Local file system implementation of {@link FileStorage} for development.
+ * Used unless storage.type=gcs.
  */
 @Service
 @Slf4j
@@ -27,11 +27,11 @@ import java.util.UUID;
         havingValue = "local",
         matchIfMissing = true
 )
-public class S3LocalServiceImpl implements S3Service {
+public class LocalFileStorage implements FileStorage {
 
     private static final String UPLOAD_DIR = "uploads";
     
-    public S3LocalServiceImpl() {
+    public LocalFileStorage() {
         // Create uploads directory if it doesn't exist
         try {
             Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -45,10 +45,10 @@ public class S3LocalServiceImpl implements S3Service {
     }
 
     @Override
-    public String uploadFile(MultipartFile file, String folder, String fileName, boolean getUrl) {
+    public String uploadFile(FileUpload file, String folder, String fileName, boolean getUrl) {
         try {
             if (file == null || file.isEmpty()) {
-                throw new S3UploadException("Tệp không được rỗng hoặc null");
+                throw new StorageException("Tệp không được rỗng hoặc null");
             }
 
             // Create folder path
@@ -59,7 +59,7 @@ public class S3LocalServiceImpl implements S3Service {
 
             // Save file
             Path filePath = folderPath.resolve(fileName);
-            file.transferTo(filePath.toFile());
+            Files.write(filePath, file.content());
 
             String key = String.format("%s/%s", folder, fileName);
             log.info("Uploaded file locally: {}", key);
@@ -72,15 +72,15 @@ public class S3LocalServiceImpl implements S3Service {
             }
         } catch (IOException e) {
             log.error("Error uploading file locally: {}", e.getMessage());
-            throw new S3UploadException("Lỗi khi upload file locally: " + e.getMessage());
+            throw new StorageException("Lỗi khi upload file locally: " + e.getMessage());
         }
     }
 
     @Override
-    public String uploadFile(MultipartFile file, String key, boolean getUrl) {
+    public String uploadFile(FileUpload file, String key, boolean getUrl) {
         try {
             if (file == null || file.isEmpty()) {
-                throw new S3UploadException("Tệp không được rỗng hoặc null");
+                throw new StorageException("Tệp không được rỗng hoặc null");
             }
 
             // Parse folder and filename from key
@@ -96,7 +96,7 @@ public class S3LocalServiceImpl implements S3Service {
 
             // Save file
             Path filePath = Paths.get(UPLOAD_DIR, key);
-            file.transferTo(filePath.toFile());
+            Files.write(filePath, file.content());
 
             log.info("Uploaded file locally: {}", key);
 
@@ -107,7 +107,7 @@ public class S3LocalServiceImpl implements S3Service {
             }
         } catch (IOException e) {
             log.error("Error uploading file locally: {}", e.getMessage());
-            throw new S3UploadException("Lỗi khi upload file locally: " + e.getMessage());
+            throw new StorageException("Lỗi khi upload file locally: " + e.getMessage());
         }
     }
 
@@ -146,7 +146,7 @@ public class S3LocalServiceImpl implements S3Service {
             deleteFileByKey(key);
         } catch (Exception e) {
             log.error("Error deleting file by URL: {}", e.getMessage());
-            throw new S3UploadException("Lỗi khi xóa file: " + e.getMessage());
+            throw new StorageException("Lỗi khi xóa file: " + e.getMessage());
         }
     }
 
@@ -166,7 +166,7 @@ public class S3LocalServiceImpl implements S3Service {
             }
         } catch (IOException e) {
             log.error("Error deleting file: {}", e.getMessage());
-            throw new S3UploadException("Lỗi khi xóa file: " + e.getMessage());
+            throw new StorageException("Lỗi khi xóa file: " + e.getMessage());
         }
     }
 }

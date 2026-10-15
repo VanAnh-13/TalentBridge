@@ -1,5 +1,7 @@
 package com.example.talentbridge.service.impl;
 
+import com.example.talentbridge.shared.presentation.FileUploads;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.request.company.DefaultCompanyRequestDto;
@@ -17,7 +19,7 @@ import com.example.talentbridge.repository.CompanyRepository;
 import com.example.talentbridge.repository.JobRepository;
 import com.example.talentbridge.repository.UserRepository;
 import com.example.talentbridge.service.JobService;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,7 +42,7 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
 
-    private final S3Service s3Service;
+    private final FileStorage s3Service;
     private final JobService jobService;
 
     @Override
@@ -76,7 +78,7 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
 
         if (logoFile != null && !logoFile.isEmpty()) {
 
-            String url = s3Service.uploadFile(logoFile, "company-logos", company.getId().toString(), true);
+            String url = s3Service.uploadFile(FileUploads.from(logoFile), "company-logos", company.getId().toString(), true);
 
             CompanyLogo logo = new CompanyLogo();
             logo.setCompany(savedCompany);
@@ -122,7 +124,7 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
         company.setAddress(dto.getAddress());
 
         if (logoFile != null && !logoFile.isEmpty()) {
-            String url = s3Service.uploadFile(logoFile, "company-logos", company.getId().toString(), true);
+            String url = s3Service.uploadFile(FileUploads.from(logoFile), "company-logos", company.getId().toString(), true);
 
             CompanyLogo logo = company.getCompanyLogo();
             if (logo == null) {

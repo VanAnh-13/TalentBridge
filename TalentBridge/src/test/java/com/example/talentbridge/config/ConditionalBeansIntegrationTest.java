@@ -1,10 +1,10 @@
 package com.example.talentbridge.config;
 
 import com.example.talentbridge.service.RefreshTokenRedisService;
-import com.example.talentbridge.service.S3Service;
+import com.example.talentbridge.shared.application.FileStorage;
 import com.example.talentbridge.service.impl.RefreshTokenInMemoryServiceImpl;
 import com.example.talentbridge.service.impl.RefreshTokenRedisServiceImpl;
-import com.example.talentbridge.service.impl.S3LocalServiceImpl;
+import com.example.talentbridge.shared.infrastructure.storage.LocalFileStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ class ConditionalBeansIntegrationTest {
     private RefreshTokenRedisService refreshTokenRedisService;
 
     @Autowired
-    private S3Service s3Service;
+    private FileStorage fileStorage;
 
     @Test
     @DisplayName("Should load in-memory RefreshTokenService when Redis is not configured")
@@ -52,13 +52,13 @@ class ConditionalBeansIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should load local S3Service when AWS is not configured")
-    void testLocalS3ServiceLoaded() {
+    @DisplayName("Should load local FileStorage when AWS is not configured")
+    void testLocalFileStorageLoaded() {
         // Assert
-        assertNotNull(s3Service, "S3Service bean should be loaded");
+        assertNotNull(fileStorage, "FileStorage bean should be loaded");
         assertInstanceOf(
-                S3LocalServiceImpl.class,
-                s3Service,
+                LocalFileStorage.class,
+                fileStorage,
                 "Should load local implementation when AWS is not configured"
         );
 
@@ -101,14 +101,14 @@ class ConditionalBeansIntegrationTest {
     }
 
     @Test
-    @DisplayName("S3Service should be functional with local implementation")
-    void testS3ServiceFunctionality() {
+    @DisplayName("FileStorage should be functional with local implementation")
+    void testFileStorageFunctionality() {
         // This tests that the injected service actually works
         assertDoesNotThrow(() -> {
             // The service should function normally
-            String url = s3Service.generatePresignedUrl("test/file.txt", java.time.Duration.ofHours(1));
+            String url = fileStorage.generatePresignedUrl("test/file.txt", java.time.Duration.ofHours(1));
             assertNotNull(url, "Should generate URL even for non-existent file");
-        }, "S3Service should be functional");
+        }, "FileStorage should be functional");
     }
 
     @Test
