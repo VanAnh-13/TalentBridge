@@ -10,7 +10,10 @@ import com.example.talentbridge.model.common.BaseEntity;
 import java.util.Set;
 
 @Entity
-@Table(name = "permissions")
+@Table(
+        name = "permissions",
+        uniqueConstraints = @UniqueConstraint(name = "uk_permissions_api_path_method", columnNames = {"api_path", "method"})
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
