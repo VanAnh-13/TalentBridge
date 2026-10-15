@@ -17,6 +17,7 @@
     <description>All TalentBridge backend deployables and the libraries they share</description>
 
     <modules>
+        <module>libs/common-lib</module>
         <module>monolith</module>
     </modules>
 
@@ -27,6 +28,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>common-lib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
