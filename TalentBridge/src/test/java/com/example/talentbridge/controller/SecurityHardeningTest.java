@@ -50,6 +50,16 @@ class SecurityHardeningTest {
     }
 
     @Test
+    @DisplayName("A filter naming an unknown field is a 400 for everyone, not a 500 (or a misleading 401 when anonymous)")
+    void unknownFilterFieldIsABadRequest() throws Exception {
+        mockMvc.perform(get("/jobs").param("filter", "address ~ '*hanoi*'"))
+                .andExpect(status().isBadRequest())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.errorCode").value("VALIDATION_ERROR"));
+        mockMvc.perform(get("/companies").param("filter", "bogus : 'x'")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/jobs").param("filter", "location ~ '*hanoi*'")).andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Public browsing of companies and jobs still works anonymously")
     void anonymousReadsStillWork() throws Exception {
         mockMvc.perform(get("/companies")).andExpect(status().isOk());

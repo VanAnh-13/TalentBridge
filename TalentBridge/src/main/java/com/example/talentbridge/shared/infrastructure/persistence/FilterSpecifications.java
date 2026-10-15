@@ -17,10 +17,21 @@ public class FilterSpecifications {
     public <T> Specification<T> toSpecification(FilterExpression filter) {
         if (filter == null || filter.isEmpty())
             return Specification.where(null);
+        Specification<T> parsed;
         try {
-            return converter.convert(filter.value());
+            parsed = converter.convert(filter.value());
         } catch (RuntimeException ex) {
             throw new InvalidRequestException("Bộ lọc không hợp lệ: " + ex.getMessage());
         }
+        // A well-formed filter can still name a field the entity does not have; that only shows when the
+        // query is built. Report it as a bad request instead of letting it surface as a 500 (or, for an
+        // anonymous caller, as a 401 from the error dispatch).
+        return (root, query, builder) -> {
+            try {
+                return parsed.toPredicate(root, query, builder);
+            } catch (IllegalArgumentException ex) {
+                throw new InvalidRequestException("Bộ lọc không hợp lệ: " + ex.getMessage());
+            }
+        };
     }
 }
