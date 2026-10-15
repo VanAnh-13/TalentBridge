@@ -39,18 +39,22 @@ const OUTER_LAYERS = [
 ]
 
 /** Other features may only be used through their public API or their domain types. */
-const otherFeatures = (feature, { allowPublicApi }) =>
+const otherFeatures = (feature) =>
   featureNames
     .filter((name) => name !== feature)
-    .flatMap((name) => [
+    .map((name) =>
       forbid(
         [`@/features/${name}/application/**`, `@/features/${name}/infrastructure/**`, `@/features/${name}/presentation/**`],
         `Use the public API of the ${name} feature (@/features/${name}) or its domain types.`,
       ),
-      ...(allowPublicApi
-        ? []
-        : [forbid([`@/features/${name}`, `@/features/${name}/index`], `Only presentation may use the public API of the ${name} feature.`)]),
-    ])
+    )
+
+/** The public API (index.ts) re-exports UI, so only presentation may depend on it. */
+const otherFeatureBarrels = (feature) =>
+  featureNames
+    .filter((name) => name !== feature)
+    .flatMap((name) => [`@/features/${name}`, `@/features/${name}/index`])
+    .map((name) => ({ name, message: 'Only presentation may use the public API of another feature; inner layers may use its domain types.' }))
 
 const layer = (name, files, patterns, paths = []) => ({
   name,
@@ -84,26 +88,26 @@ const featureLayers = featureNames.flatMap((feature) => {
     layer(`${feature}/domain`, [`${dir}/domain/**/*.{ts,tsx}`], [
       ...OUTER_LAYERS,
       forbid(['@/shared/infrastructure/**', '@/shared/presentation/**'], 'The domain only knows the shared domain.'),
-      ...otherFeatures(feature, { allowPublicApi: false }),
+      ...otherFeatures(feature),
       ...libPatterns([...UI_LIBS, ...HTTP_LIBS], 'The domain is framework free.'),
-    ]),
+    ], otherFeatureBarrels(feature)),
     layer(`${feature}/application`, [`${dir}/application/**/*.{ts,tsx}`], [
       forbid(['**/infrastructure/**', '**/presentation/**'], 'Use cases depend on ports, not on adapters or UI.'),
       forbid(['@/app/**'], 'Only presentation may use the composition root, and only @/app/container.'),
       forbid(['@/shared/infrastructure/**', '@/shared/presentation/**'], 'Use cases only know the shared domain.'),
-      ...otherFeatures(feature, { allowPublicApi: false }),
+      ...otherFeatures(feature),
       ...libPatterns([...UI_LIBS, ...HTTP_LIBS], 'Use cases are framework free.'),
-    ]),
+    ], otherFeatureBarrels(feature)),
     layer(`${feature}/infrastructure`, [`${dir}/infrastructure/**/*.{ts,tsx}`], [
       forbid(['**/presentation/**'], 'Adapters must not depend on presentation.'),
       forbid(['@/app/**', '@/shared/presentation/**'], 'Adapters must not depend on the app shell or the UI kit.'),
-      ...otherFeatures(feature, { allowPublicApi: false }),
+      ...otherFeatures(feature),
       ...libPatterns(UI_LIBS, 'Adapters have no UI.'),
-    ]),
+    ], otherFeatureBarrels(feature)),
     layer(`${feature}/presentation`, [`${dir}/presentation/**/*.{ts,tsx}`], [
       forbid(['**/infrastructure/**'], 'Presentation gets its use cases from @/app/container, never from infrastructure.'),
       forbid(['@/app/**', '!@/app/container'], 'Presentation may only use the composition root (@/app/container).'),
-      ...otherFeatures(feature, { allowPublicApi: true }),
+      ...otherFeatures(feature),
       ...libPatterns(HTTP_LIBS, 'No HTTP in presentation: call a use case.'),
     ]),
   ]
