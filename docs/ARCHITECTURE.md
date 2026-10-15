@@ -29,7 +29,10 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 | infrastructure | domain, application, Spring Data/JPA | presentation |
 | presentation | application, domain, Spring Web/Security | infrastructure |
 
-* A module may use another module's `domain`/`application`, never its `infrastructure`/`presentation`.
+* A module may use another module's `domain`/`application`, never its `infrastructure`/`presentation`. The single
+  exception is a JPA association: an entity may name another module's `*JpaEntity` class (the tables are shared).
+* Outbound ports that a use case needs but that are not repositories (e.g. `SkillCatalog`, `CurrentUser`) live in
+  `application/port` (or `shared.application`); repository ports live in `domain`.
 * **Domain objects are not JPA entities.** The JPA entity (`XJpaEntity`) lives in `infrastructure/persistence`; the
   `XRepositoryAdapter` maps between both and implements the port declared in `domain`. On update it loads the managed
   entity and copies the fields, so relations the domain does not model are preserved.
@@ -42,5 +45,5 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 * Adding a module = add it to `MIGRATED` in `ArchitectureTest` in the same commit.
 
 ### Status
-Migrated: `shared`, `skill`. Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still present
-for: subscriber, role/permission, company, job, resume, user, auth, email/storage.
+Migrated: `shared`, `skill`, `subscriber`. Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still
+present for: role/permission, company, job, resume, user, auth, email/storage.

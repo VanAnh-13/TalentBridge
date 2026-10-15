@@ -1,14 +1,14 @@
-package com.example.talentbridge.controller;
+package com.example.talentbridge.subscriber.presentation;
 
+import com.example.talentbridge.shared.presentation.ApiMessage;
+import com.example.talentbridge.subscriber.application.CreateSelfSubscriber;
+import com.example.talentbridge.subscriber.application.DeleteSelfSubscriber;
+import com.example.talentbridge.subscriber.application.GetSelfSubscriber;
+import com.example.talentbridge.subscriber.application.UpdateSelfSubscriber;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import com.example.talentbridge.shared.presentation.ApiMessage;
-import com.example.talentbridge.dto.request.subscriber.DefaultSubscriberRequestDto;
-import com.example.talentbridge.dto.response.subscriber.DefaultSubscriberResponseDto;
-import com.example.talentbridge.service.SubscriberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SubscriberController {
 
-    private final SubscriberService subscriberService;
+    private final CreateSelfSubscriber createSelfSubscriber;
+    private final GetSelfSubscriber getSelfSubscriber;
+    private final UpdateSelfSubscriber updateSelfSubscriber;
+    private final DeleteSelfSubscriber deleteSelfSubscriber;
 
     @PostMapping("/me")
     @ApiMessage(value = "Create subscriber for current user")
@@ -28,10 +31,8 @@ public class SubscriberController {
             summary = "Create subscriber for current user",
             description = "Required permission: <b>POST /subscribers/me</b>"
     )
-    public ResponseEntity<DefaultSubscriberResponseDto> saveSelfSubscriber(
-            @Valid @RequestBody DefaultSubscriberRequestDto defaultSubscriberRequestDto
-    ) {
-        return ResponseEntity.ok(subscriberService.saveSelfSubscriber(defaultSubscriberRequestDto));
+    public ResponseEntity<SubscriberResponse> saveSelfSubscriber(@Valid @RequestBody SubscriberRequest request) {
+        return ResponseEntity.ok(SubscriberResponse.from(createSelfSubscriber.execute(request.skillIds())));
     }
 
     @GetMapping("/me")
@@ -41,8 +42,9 @@ public class SubscriberController {
             summary = "Get subscriber for current user",
             description = "Required permission: <b>GET /subscribers/me</b>"
     )
-    public ResponseEntity<DefaultSubscriberResponseDto> findSelfSubscriber() {
-        return ResponseEntity.ok(subscriberService.findSelfSubscriber());
+    public ResponseEntity<SubscriberResponse> findSelfSubscriber() {
+        // 200 with an empty body when the caller has not subscribed (existing API behaviour)
+        return ResponseEntity.ok(getSelfSubscriber.execute().map(SubscriberResponse::from).orElse(null));
     }
 
     @PutMapping("/me")
@@ -52,10 +54,8 @@ public class SubscriberController {
             summary = "Update subscriber for current user",
             description = "Required permission: <b>PUT /subscribers/me</b>"
     )
-    public ResponseEntity<DefaultSubscriberResponseDto> updateSelfSubscriber(
-            @Valid @RequestBody DefaultSubscriberRequestDto defaultSubscriberRequestDto
-    ) {
-        return ResponseEntity.ok(subscriberService.updateSelfSubscriber(defaultSubscriberRequestDto));
+    public ResponseEntity<SubscriberResponse> updateSelfSubscriber(@Valid @RequestBody SubscriberRequest request) {
+        return ResponseEntity.ok(SubscriberResponse.from(updateSelfSubscriber.execute(request.skillIds())));
     }
 
     @DeleteMapping("/me")
@@ -66,8 +66,7 @@ public class SubscriberController {
             description = "Required permission: <b>DELETE /subscribers/me</b>"
     )
     public ResponseEntity<Void> deleteSelfSubscriber() {
-        subscriberService.deleteSelfSubscriber();
+        deleteSelfSubscriber.execute();
         return ResponseEntity.noContent().build();
     }
-
 }

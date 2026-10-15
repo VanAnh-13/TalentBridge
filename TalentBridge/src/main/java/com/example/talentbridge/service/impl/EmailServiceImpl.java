@@ -6,9 +6,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.email.JobMailDto;
 import com.example.talentbridge.model.Job;
-import com.example.talentbridge.model.Subscriber;
+import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaEntity;
 import com.example.talentbridge.repository.JobRepository;
-import com.example.talentbridge.repository.SubscriberRepository;
+import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,13 +31,13 @@ public class EmailServiceImpl implements com.example.talentbridge.service.EmailS
     private final SpringTemplateEngine templateEngine;
 
     private final JobRepository jobRepository;
-    private final SubscriberRepository subscriberRepository;
+    private final SubscriberJpaRepository subscriberRepository;
 
     @Value("${mail.from}")
     private String sender;
 
     @Override
-    public void sendJobNotificationForSubscriber(Subscriber subscriber) throws MessagingException {
+    public void sendJobNotificationForSubscriber(SubscriberJpaEntity subscriber) throws MessagingException {
         List<String> skillNames = subscriber.getSkills().stream()
                 .map(skill -> skill.getName())
                 .toList();
@@ -64,7 +64,7 @@ public class EmailServiceImpl implements com.example.talentbridge.service.EmailS
 
     @Override
     public void sendJobNotificationManually(String email) throws MessagingException {
-        Subscriber subscriber = subscriberRepository
+        SubscriberJpaEntity subscriber = subscriberRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 

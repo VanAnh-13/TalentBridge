@@ -2,8 +2,8 @@ package com.example.talentbridge.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.example.talentbridge.model.Subscriber;
-import com.example.talentbridge.repository.SubscriberRepository;
+import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaEntity;
+import com.example.talentbridge.subscriber.infrastructure.persistence.SubscriberJpaRepository;
 import com.example.talentbridge.service.EmailService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,15 +20,15 @@ import java.util.List;
 )
 public class JobMailCronService {
 
-    private final SubscriberRepository subscriberRepository;
+    private final SubscriberJpaRepository subscriberRepository;
     private final EmailService emailService;
 
     @Scheduled(cron = "0 0 8 * * ?")
     public void sendJobRecommendationToAllUsers() {
-        List<Subscriber> subscribers = subscriberRepository.findAll();
+        List<SubscriberJpaEntity> subscribers = subscriberRepository.findAll();
         int sent = 0, failed = 0;
 
-        for (Subscriber subscriber : subscribers) {
+        for (SubscriberJpaEntity subscriber : subscribers) {
             try {
                 emailService.sendJobNotificationForSubscriber(subscriber);
                 sent++;

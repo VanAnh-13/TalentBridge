@@ -1,7 +1,6 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.subscriber.infrastructure.persistence;
 
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Subscriber {
+public class SubscriberJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +32,7 @@ public class Subscriber {
     )
     private List<SkillJpaEntity> skills;
 
-    public Subscriber(String email) {
+    public SubscriberJpaEntity(String email) {
         this.email = email;
     }
 }

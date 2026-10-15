@@ -1,5 +1,6 @@
 package com.example.talentbridge.architecture;
 
+import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAnyPackage;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleNameEndingWith;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
@@ -30,7 +33,7 @@ class ArchitectureTest {
     private static final String BASE = "com.example.talentbridge";
 
     /** Modules that follow the four-layer structure. Keep sorted. */
-    private static final List<String> MIGRATED = List.of("shared", "skill");
+    private static final List<String> MIGRATED = List.of("shared", "skill", "subscriber");
 
     private static JavaClasses classes;
 
@@ -95,10 +98,23 @@ class ArchitectureTest {
     @TestFactory
     Stream<DynamicTest> modulesAreIsolated() {
         // A module may use another module's domain/application API, never its adapters.
-        return MIGRATED.stream().filter(m -> !m.equals("shared")).map(m ->
-                DynamicTest.dynamicTest(m + " does not use other modules' infrastructure/presentation", () ->
-                        noClasses().that().resideInAPackage(BASE + "." + m + "..")
-                                .should().dependOnClassesThat().resideInAnyPackage(otherModuleAdapters(m))
-                                .allowEmptyShould(true).check(classes)));
+        // One exception: persistence associations (@ManyToMany, ...) must name the other module's JPA entity class.
+        List<DynamicTest> tests = new ArrayList<>();
+        for (String m : MIGRATED) {
+            if (m.equals("shared")) continue;
+            tests.add(DynamicTest.dynamicTest(m + " (outside infrastructure) does not use other modules' adapters", () ->
+                    noClasses().that().resideInAPackage(BASE + "." + m + "..")
+                            .and().resideOutsideOfPackage(pkg(m, "infrastructure"))
+                            .should().dependOnClassesThat().resideInAnyPackage(otherModuleAdapters(m))
+                            .allowEmptyShould(true).check(classes)));
+
+            tests.add(DynamicTest.dynamicTest(m + ".infrastructure only shares other modules' JPA entities", () ->
+                    noClasses().that().resideInAPackage(pkg(m, "infrastructure"))
+                            .should().dependOnClassesThat(
+                                    resideInAnyPackage(otherModuleAdapters(m))
+                                            .and(DescribedPredicate.not(simpleNameEndingWith("JpaEntity"))))
+                            .allowEmptyShould(true).check(classes)));
+        }
+        return tests.stream();
     }
 }
