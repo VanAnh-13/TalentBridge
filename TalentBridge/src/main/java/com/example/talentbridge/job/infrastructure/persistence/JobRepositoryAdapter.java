@@ -88,6 +88,14 @@ public class JobRepositoryAdapter implements JobRepository {
     }
 
     @Override
+    public List<JobDetails> findLatestBySkillNames(List<String> skillNames, int limit) {
+        if (skillNames == null || skillNames.isEmpty())
+            return List.of();
+        return jpa.findDistinctBySkills_NameInOrderByCreatedAtDesc(skillNames, org.springframework.data.domain.PageRequest.of(0, limit))
+                .stream().map(JobRepositoryAdapter::toDetails).toList();
+    }
+
+    @Override
     public long countByCompany(Long companyId) {
         return jpa.countByCompanyId(companyId);
     }

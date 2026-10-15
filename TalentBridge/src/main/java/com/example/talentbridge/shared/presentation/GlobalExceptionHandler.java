@@ -2,8 +2,6 @@ package com.example.talentbridge.shared.presentation;
 
 import jakarta.persistence.EntityNotFoundException;
 import com.example.talentbridge.shared.presentation.ApiResponse;
-import com.example.talentbridge.advice.exception.ImmutableFieldException;
-import com.example.talentbridge.advice.exception.InvalidImageDataException;
 import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -191,18 +189,6 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(InvalidImageDataException.class)
-    public ResponseEntity<ApiResponse<?>> handleInvalidImageDataException(
-            InvalidImageDataException ex
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(
-                        ex.getMessage(),
-                        "INVALID_IMAGE_DATA"
-                ));
-    }
-
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<?>> handleAccessDeniedException(
             AccessDeniedException ex
@@ -234,19 +220,4 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(ex.getMessage(), "BUSINESS_RULE_VIOLATION"));
     }
 
-    @ExceptionHandler(ImmutableFieldException.class)
-    public ResponseEntity<ApiResponse<?>> handleImmutableFieldException(
-            ImmutableFieldException ex
-    ) {
-        String message = "Access denied";
-        if (ex.getMessage() != null)
-            message = ex.getMessage();
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiResponse<>(
-                        message,
-                        "IMMUTABLE_FIELD"
-                ));
-    }
 }

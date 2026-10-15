@@ -22,10 +22,13 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 public class SmtpResetMailer implements ResetMailer {
 
     private final SpringTemplateEngine templateEngine;
-    private final JavaMailSender mailSender;     // null when mail is not configured
+    private final JavaMailSender mailSender;     // absent when mail is not configured
 
     @Value("${app.frontend-url:http://localhost:5173}")
     private String frontendUrl;
+
+    @Value("${spring.mail.host:}")
+    private String mailHost;
 
     @Value("${mail.from:noreply@talentbridge.com}")
     private String mailFrom;
@@ -42,7 +45,7 @@ public class SmtpResetMailer implements ResetMailer {
     public void sendPasswordReset(String email, String name, String rawToken) {
         String resetLink = frontendUrl + "/reset-password?token=" + rawToken;
 
-        if (mailSender == null) {
+        if (mailSender == null || mailHost.isBlank()) {
             if (logResetLinks)
                 log.warn("Mail is not configured. Reset link for {}: {}", email, resetLink);
             else

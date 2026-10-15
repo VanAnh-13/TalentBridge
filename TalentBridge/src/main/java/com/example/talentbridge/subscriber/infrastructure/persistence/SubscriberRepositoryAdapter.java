@@ -40,6 +40,11 @@ public class SubscriberRepositoryAdapter implements SubscriberRepository {
     }
 
     @Override
+    public List<Subscriber> findAll() {
+        return jpa.findAll().stream().map(SubscriberRepositoryAdapter::toDomain).toList();
+    }
+
+    @Override
     public void delete(Subscriber subscriber) {
         SubscriberJpaEntity entity = jpa.findById(subscriber.getId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đăng ký người dùng này"));

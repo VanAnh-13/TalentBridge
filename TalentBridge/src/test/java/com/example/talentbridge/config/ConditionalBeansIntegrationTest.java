@@ -74,18 +74,18 @@ class ConditionalBeansIntegrationTest {
     void testEmailBeansNotLoaded() {
         // Assert - Email service, controller, and scheduler should not be loaded
         assertFalse(
-                applicationContext.containsBean("emailServiceImpl"),
-                "EmailService should not be loaded when mail.host is not configured"
+                applicationContext.containsBean("smtpDigestMailer"),
+                "The digest mailer should not be loaded when mail.host is not configured"
         );
 
         assertFalse(
-                applicationContext.containsBean("emailController"),
-                "EmailController should not be loaded when mail.host is not configured"
+                applicationContext.containsBean("digestController"),
+                "The digest controller should not be loaded when mail.host is not configured"
         );
 
         assertFalse(
-                applicationContext.containsBean("jobMailCronService"),
-                "JobMailCronService should not be loaded when mail.host is not configured"
+                applicationContext.containsBean("dailyDigestScheduler"),
+                "The daily digest scheduler should not be loaded when mail.host is not configured"
         );
     }
 

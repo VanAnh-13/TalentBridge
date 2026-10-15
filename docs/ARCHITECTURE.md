@@ -46,5 +46,6 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 * Adding a module = add it to `MIGRATED` in `ArchitectureTest` in the same commit.
 
 ### Status
-Migrated: `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`, `resume`, `user`, `auth` (login, tokens, sessions, password reset). Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still
-present for: email notifications (and the daily job-digest cron).
+Migrated (backend): `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`, `resume`, `user`,
+`auth` (login, tokens, sessions, password reset), `notification` (job-digest email + daily schedule). Every backend
+package now follows the four layers. The frontend is not migrated yet.

@@ -17,5 +17,5 @@ public interface JobJpaRepository extends
 
     boolean existsByCompanyIdAndActiveTrue(Long companyId);
 
-    List<JobJpaEntity> findDistinctTop3BySkills_NameInOrderByCreatedAtDesc(List<String> skillNames);
+    List<JobJpaEntity> findDistinctBySkills_NameInOrderByCreatedAtDesc(List<String> skillNames, org.springframework.data.domain.Pageable pageable);
 }

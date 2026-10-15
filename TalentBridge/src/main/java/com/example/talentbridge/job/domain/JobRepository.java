@@ -22,6 +22,9 @@ public interface JobRepository {
 
     List<JobDetails> findByCompany(Long companyId);
 
+    /** The newest jobs that require at least one of the named skills. */
+    List<JobDetails> findLatestBySkillNames(List<String> skillNames, int limit);
+
     long countByCompany(Long companyId);
 
     boolean existsActiveByCompany(Long companyId);
