@@ -11,7 +11,7 @@ import {
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
-import type { ResumeForDisplayResponseDto } from "@/types/resume";
+import type { Resume } from "../../domain/resume";
 import {
   Tooltip,
   TooltipContent,
@@ -22,9 +22,9 @@ import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { getResumeStatusColor } from "@/shared/presentation/tagColors.ts";
 
 interface ResumeTableProps {
-  resumes: ResumeForDisplayResponseDto[];
+  resumes: Resume[];
   isLoading: boolean;
-  onViewResumePDF: (resume: ResumeForDisplayResponseDto) => void;
+  onViewResumePDF: (resume: Resume) => void;
   theme?: "blue" | "purple";
 }
 

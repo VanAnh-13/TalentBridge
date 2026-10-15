@@ -8,13 +8,13 @@ import {
 } from "@/shared/presentation/ui/dialog";
 import { Button } from "@/shared/presentation/ui/button";
 import { BookText } from "lucide-react";
-import type { ResumeForDisplayResponseDto } from "@/types/resume";
+import type { Resume } from "../../domain/resume";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview";
 import { ScrollArea } from "@/shared/presentation/ui/scroll-area";
 import { Badge } from "@/shared/presentation/ui/badge";
 
 type Props = {
-  job: ResumeForDisplayResponseDto["job"];
+  job: Resume["job"];
   companyName: string;
   location: string;
 };

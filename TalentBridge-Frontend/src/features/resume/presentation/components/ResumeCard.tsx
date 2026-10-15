@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/shared/presentation/ui/card";
 import { Button } from "@/shared/presentation/ui/button";
-import type { ResumeForDisplayResponseDto } from "@/types/resume";
+import type { Resume } from "../../domain/resume";
 import PDFViewer from "@/shared/presentation/components/PDFViewer";
 import { FileX, MapPin, Sparkles } from "lucide-react";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
@@ -16,7 +16,7 @@ import { formatISO } from "@/shared/presentation/format.ts";
 import { Badge } from "@/shared/presentation/ui/badge";
 
 type Props = {
-  resume: ResumeForDisplayResponseDto;
+  resume: Resume;
   onDelete: (jobId: number) => void;
   onUpdateResumeFile: (resumeId: number, file: File) => Promise<void>;
 };

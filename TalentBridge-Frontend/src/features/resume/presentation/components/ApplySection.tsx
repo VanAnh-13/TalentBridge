@@ -15,8 +15,7 @@ import { Label } from "@/shared/presentation/ui/label.tsx";
 import { toast } from "sonner";
 import PDFViewer from "@/shared/presentation/components/PDFViewer.tsx";
 import { errorMessage } from "@/shared/domain/errors";
-import type { CreateResumeRequestDto } from "@/types/resume";
-import { saveResume } from "@/services/resumeApi.ts";
+import { resumes as resumeUseCases } from "@/app/container";
 import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
 import { checkFileSizeAndFileType } from "@/shared/presentation/files.ts";
 
@@ -91,23 +90,12 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
 
     setIsLoading(true);
     try {
-      const createResumeRequestDto: CreateResumeRequestDto = {
+      await resumeUseCases.apply({
+        userId: parseInt(user.id),
         email: user.email,
-        status: "PENDING",
-        user: { id: parseInt(user.id) },
-        job: { id: jobId },
-      };
-
-      const formData = new FormData();
-      formData.append("pdfFile", selectedFile);
-      formData.append(
-        "resume",
-        new Blob([JSON.stringify(createResumeRequestDto)], {
-          type: "application/json",
-        }),
-      );
-
-      await saveResume(formData);
+        jobId,
+        pdf: selectedFile,
+      });
 
       toast.success("Ứng tuyển thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
       setIsModalOpen(false);

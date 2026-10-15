@@ -2,16 +2,12 @@ import { useAuthState } from "@/features/auth";
 import { FileText } from "lucide-react";
 import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { useEffect, useState, useCallback } from "react";
-import {
-  findSelfResumes,
-  removeSelfResumeByJobId,
-  updateSelfResumeFile,
-} from "@/services/resumeApi";
+import { resumes as resumeUseCases } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import Pagination from "@/shared/presentation/components/Pagination";
-import ResumeCard from "./ResumeCard";
-import type { ResumeForDisplayResponseDto } from "@/types/resume";
+import ResumeCard from "../components/ResumeCard";
+import type { Resume } from "../../domain/resume";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 
@@ -21,7 +17,7 @@ export default function UserResumePage() {
   // ===================
   // Data
   // ===================
-  const [resumes, setResumes] = useState<ResumeForDisplayResponseDto[]>([]);
+  const [resumes, setResumes] = useState<Resume[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // ===================
@@ -39,13 +35,7 @@ export default function UserResumePage() {
     if (!user?.id) return;
     setIsLoading(true);
     try {
-      const res = (
-        await findSelfResumes({
-          page: currentPage,
-          size: itemsPerPage,
-          filter: null
-        })
-      ).data.data;
+      const res = await resumeUseCases.mine(currentPage, itemsPerPage);
 
       setResumes(res.content);
       setTotalElements(res.totalElements);
@@ -67,7 +57,7 @@ export default function UserResumePage() {
   const handleDeleteResume = async (jobId: number) => {
     try {
       setIsLoading(true);
-      await removeSelfResumeByJobId(jobId);
+      await resumeUseCases.withdraw(jobId);
       toast.success("Rút đơn thành công");
       await fetchResumes();
     } catch (err) {
@@ -83,9 +73,7 @@ export default function UserResumePage() {
   const handleUpdateResumeFile = async (resumeId: number, file: File) => {
     try {
       setIsLoading(true);
-      const formData = new FormData();
-      formData.append("pdfFile", file);
-      await updateSelfResumeFile(resumeId, formData);
+      await resumeUseCases.replaceFile(resumeId, file);
       await fetchResumes();
     } catch (err) {
       toast.error(errorMessage(err, "Cập nhật hồ sơ thất bại"));

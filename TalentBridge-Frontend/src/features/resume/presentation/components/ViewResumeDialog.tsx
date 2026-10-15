@@ -18,10 +18,7 @@ import {
 } from "@/shared/presentation/ui/select.tsx";
 import { BetweenVerticalStart } from "lucide-react";
 
-import type {
-  ResumeForDisplayResponseDto,
-  UpdateResumeStatusRequestDto,
-} from "@/types/resume";
+import type { Resume, StatusChange } from "../../domain/resume";
 import PDFViewer from "@/shared/presentation/components/PDFViewer.tsx";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 import { statusOptions } from "@/shared/presentation/tagColors.ts";
@@ -29,8 +26,8 @@ import { statusOptions } from "@/shared/presentation/tagColors.ts";
 interface ViewResumeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUpdate: (resume: UpdateResumeStatusRequestDto) => Promise<void>;
-  resume: ResumeForDisplayResponseDto;
+  onUpdate: (resume: StatusChange) => Promise<void>;
+  resume: Resume;
   onCloseForm: () => void;
   theme?: "blue" | "purple";
 }
@@ -59,7 +56,7 @@ export function ViewResumeDialog({
     e.preventDefault();
 
     setIsLoading(true);
-    const res: UpdateResumeStatusRequestDto = {
+    const res: StatusChange = {
       id: resume.id,
       status,
     };

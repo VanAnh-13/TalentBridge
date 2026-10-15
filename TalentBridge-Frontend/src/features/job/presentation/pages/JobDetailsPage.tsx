@@ -14,7 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/shared/presentation/ui/breadcrumb.tsx";
 import JobSection from "../components/JobSection.tsx";
-import { ApplySection } from "@/pages/client/job-details-page/ApplySection.tsx";
+import { ApplySection } from "@/features/resume";
 import { HasPermission } from "@/features/auth";
 
 type JobDetailsProp = {

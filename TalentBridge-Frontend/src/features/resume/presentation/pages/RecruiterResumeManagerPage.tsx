@@ -1,24 +1,18 @@
-import type {
-  ResumeForDisplayResponseDto,
-  UpdateResumeStatusRequestDto,
-} from "@/types/resume";
+import type { Resume, StatusChange } from "../../domain/resume";
 import { useEffect, useState } from "react";
-import { ResumeSearchSection } from "../../commons/resume-manager-components/ResumeSearchSection.tsx";
+import { ResumeSearchSection } from "../components/ResumeSearchSection.tsx";
 import Pagination from "@/shared/presentation/components/Pagination";
-import {
-  findAllResumesForRecruiterCompany,
-  updateResumeStatusForRecruiterCompany
-} from "@/services/resumeApi";
+import { resumes as resumeUseCases } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
-import { ResumeTable } from "../../commons/resume-manager-components/ResumeTable.tsx";
-import { ViewResumeDialog } from "../../commons/resume-manager-components/ViewResumeDialog.tsx";
+import { ResumeTable } from "../components/ResumeTable.tsx";
+import { ViewResumeDialog } from "../components/ViewResumeDialog.tsx";
 
 const ResumeManagerRecruiterPage = () => {
   // ============================
   // Data
   // ============================
-  const [resumes, setResumes] = useState<ResumeForDisplayResponseDto[]>([]);
+  const [resumes, setResumes] = useState<Resume[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // ============================
@@ -39,9 +33,9 @@ const ResumeManagerRecruiterPage = () => {
   // ============================
   const [isDialogOpen, setisDialogOpen] = useState(false);
   const [selectedResume, setSelectedResume] =
-    useState<ResumeForDisplayResponseDto | null>(null);
+    useState<Resume | null>(null);
 
-  const handleViewResumeDialog = (resume: ResumeForDisplayResponseDto) => {
+  const handleViewResumeDialog = (resume: Resume) => {
     setSelectedResume(resume);
     setisDialogOpen(true);
   };
@@ -56,15 +50,12 @@ const ResumeManagerRecruiterPage = () => {
   ) => {
     setIsLoading(true);
     try {
-      const filters: string[] = [];
-
-      if (searchJobName) filters.push(`job.name ~ '*${searchJobName}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (
-        await findAllResumesForRecruiterCompany({ page, size, filter })
-      ).data.data;
+      const res = await resumeUseCases.search(
+        "company",
+        { jobName: searchJobName },
+        page,
+        size,
+      );
       setResumes(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -88,11 +79,11 @@ const ResumeManagerRecruiterPage = () => {
   // HANDLE UPDATE RESUME STATUS
   // ============================
   const handleUpdateResumeStatus = async (
-    resume: UpdateResumeStatusRequestDto,
+    resume: StatusChange,
   ) => {
     setIsLoading(true);
     try {
-      await updateResumeStatusForRecruiterCompany(resume);
+      await resumeUseCases.changeStatus("company", resume);
       await fetchResumes(currentPage, itemsPerPage, searchJobName);
       toast.success("Cập nhật trạng thái hồ sơ thành công");
     } catch (err) {
@@ -144,7 +135,7 @@ const ResumeManagerRecruiterPage = () => {
         open={isDialogOpen}
         onOpenChange={setisDialogOpen}
         onUpdate={handleUpdateResumeStatus}
-        resume={selectedResume ?? ({} as ResumeForDisplayResponseDto)}
+        resume={selectedResume ?? ({} as Resume)}
         onCloseForm={() => setSelectedResume(null)}
         theme={"purple"}
       />
