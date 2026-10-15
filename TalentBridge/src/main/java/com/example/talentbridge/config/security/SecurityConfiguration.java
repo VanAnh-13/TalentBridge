@@ -31,6 +31,11 @@ public class SecurityConfiguration {
             "/auth/register",
             "/auth/refresh-token",
 
+            // PASSWORD RESET (used by people who cannot log in)
+            "/auth/forgot-password",
+            "/auth/reset-password",
+            "/auth/reset-password/verify",
+
             // API DOCS
             "/swagger-ui/**",
             "/v3/api-docs/**",
