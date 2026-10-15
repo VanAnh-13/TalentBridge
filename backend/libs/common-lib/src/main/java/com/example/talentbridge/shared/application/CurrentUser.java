@@ -5,4 +5,7 @@ public interface CurrentUser {
 
     /** Login email of the caller. */
     String email();
+
+    /** User id of the caller (from the access token), or null when it is not known. */
+    Long id();
 }

@@ -89,6 +89,15 @@ Backend: every package follows the four layers (`shared`, `skill`, `subscriber`,
 `user`, `auth`, `notification`), checked by `ArchitectureTest`.
 Frontend: every feature follows the four layers and no legacy `pages/`, `services/`, `types/` remains.
 
+## Tokens
+* The auth module issues RS256 access and refresh tokens signed with an RSA private key (`JWT_PRIVATE_KEY`, PKCS#8 PEM;
+  development falls back to a throw-away key). Claims: `iss` (`talentbridge-auth`), `sub` (email), `user`
+  (id, email, name, companyId, role, ...), `permissions` ("METHOD /path" strings), `jti`, `iat`, `exp`. The header names
+  the key (`kid`, the key's RFC 7638 thumbprint unless `JWT_KEY_ID` is set).
+* The public key is published at `GET /.well-known/jwks.json` (no auth, cached 5 min). Other services only set
+  `jwt.jwk-set-uri`: `backend/libs/security-lib` then verifies signature, issuer and expiry, maps `permissions` to
+  authorities (so `@PreAuthorize("hasAuthority('GET /x')")` works everywhere) and exposes the caller as `CurrentUser`.
+
 ## Safety invariants (enforced in the domain/use cases, covered by tests)
 * The ADMIN role always keeps `Role.ADMIN_ESSENTIALS` (open the admin workspace, manage roles/permissions/users);
   those permissions cannot be deleted or re-pointed, and the last administrator cannot be deleted or demoted.

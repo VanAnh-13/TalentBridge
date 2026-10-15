@@ -28,7 +28,8 @@ public class ApiResponseAdvice implements ResponseBodyAdvice<Object> {
             "/favicon.ico",
             "/actuator/**",
             "/error",
-            "/doc.html"
+            "/doc.html",
+            "/.well-known/**"
     );
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 

@@ -1,4 +1,4 @@
-package com.example.talentbridge.shared.presentation.security;
+package com.example.talentbridge.shared.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

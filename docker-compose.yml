@@ -1,4 +1,4 @@
-# Whole TalentBridge stack for local use:  cp .env.example .env  (fill JWT_SECRET)  &&  docker compose up --build
+# Whole TalentBridge stack for local use:  cp .env.example .env  (fill JWT_PRIVATE_KEY)  &&  docker compose up --build
 #   web  http://localhost:3000        api  http://localhost:8080 (Swagger: /swagger-ui.html)
 services:
   mariadb:
@@ -47,7 +47,7 @@ services:
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_password}
       SPRING_CACHE_TYPE: redis
-      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (openssl rand -base64 64)}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:?Set JWT_PRIVATE_KEY in .env (see .env.example)}
       ALLOWED_ORIGINS: ${WEB_ORIGIN:-http://localhost:3000}
       BOOTSTRAP_ADMIN_EMAIL: ${BOOTSTRAP_ADMIN_EMAIL:-}
       BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}

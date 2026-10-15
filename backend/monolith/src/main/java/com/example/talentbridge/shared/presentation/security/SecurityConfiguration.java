@@ -1,5 +1,6 @@
 package com.example.talentbridge.shared.presentation.security;
 
+import com.example.talentbridge.shared.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,9 @@ public class SecurityConfiguration {
             "/auth/forgot-password",
             "/auth/reset-password",
             "/auth/reset-password/verify",
+
+            // PUBLIC KEYS THAT VERIFY ACCESS TOKENS (JWKS)
+            "/.well-known/jwks.json",
 
             // WEBSOCKET HANDSHAKE (the STOMP CONNECT frame carries and verifies the access token)
             "/ws/**",

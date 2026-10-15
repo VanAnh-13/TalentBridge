@@ -1,29 +1,22 @@
 package com.example.talentbridge.auth.infrastructure.security;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import com.nimbusds.jose.util.Base64;
-import lombok.RequiredArgsConstructor;
+import com.example.talentbridge.shared.security.TokenClaimNames;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
+/** This application issues the tokens: it signs with the private key and verifies with the public one locally. */
 @Configuration
-@RequiredArgsConstructor
 public class AuthConfiguration {
 
-    @Value("${jwt.secret}")
-    private String jwtKey;
-
-    public static final MacAlgorithm MAC_ALGORITHM = MacAlgorithm.HS512;
+    public static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.RS256;
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -33,40 +26,17 @@ public class AuthConfiguration {
     }
 
     @Bean
-    public JwtEncoder jwtEncoder() {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
-
+    public JwtEncoder jwtEncoder(RsaSigningKey key) {
+        return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(key.signingKey())));
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder
-                .withSecretKey(getSecretKey())
-                .macAlgorithm(MAC_ALGORITHM).build();
+    public JwtDecoder jwtDecoder(RsaSigningKey key,
+                                 @Value("${jwt.issuer:" + TokenClaimNames.DEFAULT_ISSUER + "}") String issuer) {
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(key.publicKey())
+                .signatureAlgorithm(SIGNATURE_ALGORITHM)
+                .build();
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtValidators.createDefaultWithIssuer(issuer)));
+        return decoder;
     }
-
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("permissions");
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return jwtAuthenticationConverter;
-    }
-
-
-    public SecretKey getSecretKey() {
-        byte[] keyBytes = Base64.from(jwtKey).decode();
-        if (keyBytes.length < 64) {
-            throw new IllegalStateException(
-                    "jwt.secret must be a Base64 string decoding to at least 64 bytes for HS512 "
-                            + "(generate one with: openssl rand -base64 64)");
-        }
-
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length, MAC_ALGORITHM.getName());
-    }
-
-
 }

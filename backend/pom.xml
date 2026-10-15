@@ -18,6 +18,7 @@
 
     <modules>
         <module>libs/common-lib</module>
+        <module>libs/security-lib</module>
         <module>monolith</module>
     </modules>
 
@@ -31,6 +32,11 @@
             <dependency>
                 <groupId>com.example</groupId>
                 <artifactId>common-lib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>security-lib</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -17,7 +17,7 @@ TalentBridge là một nền tảng tuyển dụng IT chuyên nghiệp, kết n�
 ## ▶️ Chạy toàn bộ hệ thống (Docker)
 
 ```bash
-cp .env.example .env            # điền JWT_SECRET:  openssl rand -base64 64
+cp .env.example .env            # điền JWT_PRIVATE_KEY:  openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 -w0
 docker compose up --build       # web http://localhost:3000, API http://localhost:8080
 ```
 
