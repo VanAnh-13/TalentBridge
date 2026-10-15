@@ -1,9 +1,15 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.company.infrastructure.persistence;
 
+import com.example.talentbridge.model.Job;
+import com.example.talentbridge.model.User;
+import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
-import lombok.*;
-import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -14,10 +20,11 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @JsonPropertyOrder({"id", "name", "description", "address", "logoUrl"})
-public class Company extends BaseEntity {
+public class CompanyJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String name;
@@ -29,7 +36,7 @@ public class Company extends BaseEntity {
 
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private CompanyLogo companyLogo;
+    private CompanyLogoJpaEntity companyLogo;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @ToString.Exclude
@@ -43,7 +50,7 @@ public class Company extends BaseEntity {
     @JoinColumn(name = "owner_id", unique = true)
     private User owner;
 
-    public Company(String name, String description, String address) {
+    public CompanyJpaEntity(String name, String description, String address) {
         this.name = name;
         this.description = description;
         this.address = address;

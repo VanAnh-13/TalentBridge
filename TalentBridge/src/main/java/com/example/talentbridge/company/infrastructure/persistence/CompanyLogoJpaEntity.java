@@ -1,4 +1,4 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.company.infrastructure.persistence;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyLogo {
+public class CompanyLogoJpaEntity {
 
     @Id
     private Long id;
@@ -18,7 +18,7 @@ public class CompanyLogo {
     @MapsId
     @OneToOne
     @JoinColumn(name = "company_id")
-    private Company company;
+    private CompanyJpaEntity company;
 
     private String logoUrl;
 }

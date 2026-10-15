@@ -1,4 +1,4 @@
-package com.example.talentbridge.dto.request.user;
+package com.example.talentbridge.company.presentation;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RecruiterRequestDto {
+public class MemberRequest {
+
     @NotBlank(message = "Email không được để trống")
     private String email;
 }

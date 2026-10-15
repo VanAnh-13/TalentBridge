@@ -1,5 +1,7 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
+
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 
 import jakarta.persistence.*;
@@ -46,7 +48,7 @@ public class Job extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "company_id")
     @ToString.Exclude
-    private Company company;
+    private CompanyJpaEntity company;
 
     @ManyToMany
     @JoinTable(

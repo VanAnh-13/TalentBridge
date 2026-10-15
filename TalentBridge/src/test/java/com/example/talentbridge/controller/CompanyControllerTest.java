@@ -1,6 +1,6 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.dto.request.company.DefaultCompanyRequestDto;
+import com.example.talentbridge.company.presentation.CompanyRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class CompanyControllerTest {
     @Order(1)
     @DisplayName("COMPANY_01: Tạo công ty mới với đầy đủ thông tin")
     void testCreateCompanyWithFullInfo() throws Exception {
-        DefaultCompanyRequestDto companyDto = new DefaultCompanyRequestDto();
+        CompanyRequest companyDto = new CompanyRequest();
         companyDto.setName(companyName);
         companyDto.setAddress("123 Test Street, Test City");
         companyDto.setDescription("A test company for automation testing");
@@ -85,7 +85,7 @@ public class CompanyControllerTest {
     @Order(2)
     @DisplayName("COMPANY_02: Tạo công ty với tên trùng lặp")
     void testCreateCompanyWithDuplicateName() throws Exception {
-        DefaultCompanyRequestDto companyDto = new DefaultCompanyRequestDto();
+        CompanyRequest companyDto = new CompanyRequest();
         companyDto.setName(companyName.toUpperCase()); // same name, different case
         companyDto.setDescription("Another description");
         companyDto.setAddress("456 Another Street");
@@ -131,7 +131,7 @@ public class CompanyControllerTest {
     @Order(5)
     @DisplayName("COMPANY_05: Cập nhật thông tin công ty")
     void testUpdateCompany() throws Exception {
-        DefaultCompanyRequestDto updateDto = new DefaultCompanyRequestDto();
+        CompanyRequest updateDto = new CompanyRequest();
         updateDto.setName(companyName + " Updated");
         updateDto.setAddress("789 Updated Street");
         updateDto.setDescription("Updated description");

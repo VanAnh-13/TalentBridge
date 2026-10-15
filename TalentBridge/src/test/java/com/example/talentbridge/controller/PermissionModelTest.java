@@ -1,5 +1,9 @@
 package com.example.talentbridge.controller;
 
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaRepository;
+
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
+
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository;
@@ -57,7 +61,7 @@ class PermissionModelTest {
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired UserRepository userRepository;
     @Autowired RoleJpaRepository roleRepository;
-    @Autowired CompanyRepository companyRepository;
+    @Autowired CompanyJpaRepository companyRepository;
     @Autowired JobRepository jobRepository;
     @Autowired ResumeRepository resumeRepository;
 
@@ -70,8 +74,8 @@ class PermissionModelTest {
     void setUp() throws Exception {
         adminToken = TestHelper.getAdminToken(mockMvc, objectMapper);
 
-        Company companyA = companyRepository.save(new Company("PM Co A " + System.nanoTime(), "d", "a"));
-        Company companyB = companyRepository.save(new Company("PM Co B " + System.nanoTime(), "d", "a"));
+        CompanyJpaEntity companyA = companyRepository.save(new CompanyJpaEntity("PM Co A " + System.nanoTime(), "d", "a"));
+        CompanyJpaEntity companyB = companyRepository.save(new CompanyJpaEntity("PM Co B " + System.nanoTime(), "d", "a"));
         companyAId = companyA.getId();
         SkillJpaEntity skill = new SkillJpaEntity();
         skill.setName("pm-skill-" + System.nanoTime());
@@ -97,7 +101,7 @@ class PermissionModelTest {
         otherCandidateToken = TestHelper.getUserToken(mockMvc, objectMapper, "other-candidate@pm.test", PASSWORD);
     }
 
-    private User user(String email, String role, Company company) {
+    private User user(String email, String role, CompanyJpaEntity company) {
         User u = new User();
         u.setEmail(email);
         u.setName(email);
@@ -110,7 +114,7 @@ class PermissionModelTest {
         return userRepository.save(u);
     }
 
-    private Job job(Company company) {
+    private Job job(CompanyJpaEntity company) {
         Job j = new Job("Dev", "HCM", 1000.0, 1, Level.FRESHER, "d", Instant.now(), Instant.now().plusSeconds(86400), true);
         j.setCompany(company);
         return jobRepository.save(j);

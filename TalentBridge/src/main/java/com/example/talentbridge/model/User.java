@@ -1,5 +1,7 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
+
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -46,7 +48,7 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "company_id")
     @ToString.Exclude
-    private Company company;
+    private CompanyJpaEntity company;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude

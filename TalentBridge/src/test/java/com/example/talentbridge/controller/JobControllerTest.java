@@ -32,7 +32,7 @@ public class JobControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private com.example.talentbridge.repository.CompanyRepository companyRepository;
+    private com.example.talentbridge.company.infrastructure.persistence.CompanyJpaRepository companyRepository;
 
     @Autowired
     private com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository skillRepository;
@@ -47,7 +47,7 @@ public class JobControllerTest {
     void setUp() throws Exception {
         adminToken = TestHelper.getAdminToken(mockMvc, objectMapper);
         companyId = companyRepository.save(
-                new com.example.talentbridge.model.Company("Job Test Co " + System.nanoTime(), "desc", "addr")).getId();
+                new com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity("Job Test Co " + System.nanoTime(), "desc", "addr")).getId();
         com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity skill = new com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity();
         skill.setName("job-test-skill-" + System.nanoTime());
         skillId = skillRepository.save(skill).getId();

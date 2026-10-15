@@ -1,5 +1,11 @@
 package com.example.talentbridge.service.impl;
 
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaRepository;
+
+import com.example.talentbridge.company.infrastructure.persistence.CompanyLogoJpaEntity;
+
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
+
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository;
 
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
@@ -29,7 +35,7 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
 
     private final JobRepository jobRepository;
     private final SkillJpaRepository skillRepository;
-    private final CompanyRepository companyRepository;
+    private final CompanyJpaRepository companyRepository;
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
     private final FileStorage s3Service;
@@ -99,7 +105,7 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
 
             job.setCompany(user.getCompany());
         } else {
-            Company company = null;
+            CompanyJpaEntity company = null;
             if (jobRequestDto.getCompany() != null)
                 company = companyRepository
                         .findById(jobRequestDto.getCompany().getId())
@@ -164,7 +170,7 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
         } else if (
                 jobRequestDto.getCompany() != null && !Objects.equals(jobRequestDto.getCompany().getId(), job.getCompany().getId())
         ) {
-            Company company = companyRepository
+            CompanyJpaEntity company = companyRepository
                     .findById(jobRequestDto.getCompany().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Công ty không tồn tại"));
 
@@ -259,11 +265,11 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
 
 
     private JobResponseDto mapToResponseDto(Job job) {
-        Company company = job.getCompany();
+        CompanyJpaEntity company = job.getCompany();
         JobResponseDto.CompanyDto companyDto = null;
 
         if (company != null) {
-            CompanyLogo logo = company.getCompanyLogo();
+            CompanyLogoJpaEntity logo = company.getCompanyLogo();
             String logoUrl = (logo != null) ? logo.getLogoUrl() : null;
 
             companyDto = new JobResponseDto.CompanyDto(

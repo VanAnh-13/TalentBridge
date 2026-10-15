@@ -9,11 +9,11 @@ import com.example.talentbridge.dto.request.user.SelfUserUpdateProfileRequestDto
 import com.example.talentbridge.dto.request.user.UserCreateRequestDto;
 import com.example.talentbridge.dto.request.user.UserUpdateRequestDto;
 import com.example.talentbridge.dto.response.user.DefaultUserResponseDto;
-import com.example.talentbridge.model.Company;
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
 import com.example.talentbridge.model.Resume;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
 import com.example.talentbridge.model.User;
-import com.example.talentbridge.repository.CompanyRepository;
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaRepository;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 import com.example.talentbridge.repository.UserRepository;
 import com.example.talentbridge.shared.application.FileStorage;
@@ -36,7 +36,7 @@ import java.util.List;
 public class UserServiceImpl implements com.example.talentbridge.service.UserService {
 
     private final UserRepository userRepository;
-    private final CompanyRepository companyRepository;
+    private final CompanyJpaRepository companyRepository;
     private final RoleJpaRepository roleRepository;
 
     private final FileStorage s3Service;
@@ -126,7 +126,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
         user.setRole(null);
         user.setCompany(null);
 
-        Company company = companyRepository.findByOwnerEmail(user.getEmail());
+        CompanyJpaEntity company = companyRepository.findByOwnerEmail(user.getEmail());
         if (company != null) company.setOwner(null);
 
         List<Resume> resumes = user.getResumes();
@@ -232,7 +232,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
     }
 
     private void handleSetCompany(User user, Long id) {
-        Company company = companyRepository
+        CompanyJpaEntity company = companyRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy công ty"));
         user.setCompany(company);

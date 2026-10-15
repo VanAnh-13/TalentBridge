@@ -1,6 +1,6 @@
 package com.example.talentbridge.repository;
 
-import com.example.talentbridge.model.Company;
+import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
 import com.example.talentbridge.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -24,7 +24,7 @@ public interface UserRepository extends
 
     @Modifying
     @Query("UPDATE User u SET u.company = null WHERE u.company = :company")
-    void detachUsersFromCompany(@Param("company") Company company);
+    void detachUsersFromCompany(@Param("company") CompanyJpaEntity company);
 
     @Modifying
     @Query("UPDATE User u SET u.role = null WHERE u.role.id = :roleId")
