@@ -13,11 +13,11 @@ import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
 
-import type { DefaultUserResponseDto } from "@/types/user";
+import type { User } from "../../domain/user";
 import { HasPermission } from "@/features/auth";
 
 interface UserTableProps {
-  users: DefaultUserResponseDto[];
+  users: User[];
   isLoading: boolean;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;

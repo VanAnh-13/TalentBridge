@@ -1,13 +1,13 @@
 import { errorMessage } from "@/shared/domain/errors";
-import { deleteUserById, getUserList } from "@/services/userApi.ts";
-import type { DefaultUserResponseDto } from "@/types/user";
+import { users as userUseCases } from "@/app/container";
+import type { User } from "../../domain/user";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { UserSearchSection } from "./UserSeachSection.tsx";
+import { UserSearchSection } from "../components/UserSearchSection.tsx";
 import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Plus } from "lucide-react";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
-import { UserTable } from "./UserTable.tsx";
+import { UserTable } from "../components/UserTable.tsx";
 import { useNavigate } from "react-router-dom";
 import { HasPermission } from "@/features/auth";
 
@@ -17,7 +17,7 @@ const UserManagerPage = () => {
   // ============================
   // Data
   // ============================
-  const [users, setUsers] = useState<DefaultUserResponseDto[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // ============================
@@ -45,14 +45,11 @@ const UserManagerPage = () => {
   ) => {
     setIsLoading(true);
     try {
-      const filters: string[] = [];
-
-      if (searchUserName) filters.push(`name ~ '*${searchUserName}*'`);
-      if (searchEmail) filters.push(`email ~ '*${searchEmail}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await getUserList({ page, size, filter })).data.data;
+      const res = await userUseCases.search(
+        { name: searchUserName, email: searchEmail },
+        page,
+        size,
+      );
       setUsers(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -99,7 +96,7 @@ const UserManagerPage = () => {
     try {
       setIsLoading(true);
 
-      await deleteUserById(id);
+      await userUseCases.remove(id);
       await fetchUsers(1, itemsPerPage, searchUserName, searchEmail);
 
       toast.success("Xóa người dùng thành công");

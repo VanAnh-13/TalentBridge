@@ -11,16 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/presentation/ui/select";
-import type {
-  SelfUserUpdateProfileRequestDto,
-  UserDetailsResponseDto,
-} from "@/types/user.d.ts";
+import type { AccountDetails } from "@/features/auth/domain/account";
+import type { ProfileChange } from "../../domain/user";
 import { Save, User, X } from "lucide-react";
 import { useState } from "react";
 
 interface ProfileEditFormProps {
-  userDetails: UserDetailsResponseDto;
-  onSubmit: (data: SelfUserUpdateProfileRequestDto) => void;
+  userDetails: AccountDetails;
+  onSubmit: (data: ProfileChange) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -31,7 +29,7 @@ const ProfileEditForm = ({
   onCancel,
   isLoading = false,
 }: ProfileEditFormProps) => {
-  const [formData, setFormData] = useState<SelfUserUpdateProfileRequestDto>({
+  const [formData, setFormData] = useState<ProfileChange>({
     name: userDetails.name,
     dob: userDetails.dob ? userDetails.dob.split("T")[0] : "",
     address: userDetails.address,
@@ -48,7 +46,7 @@ const ProfileEditForm = ({
   };
 
   const handleInputChange = (
-    field: keyof SelfUserUpdateProfileRequestDto,
+    field: keyof ProfileChange,
     value: string,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

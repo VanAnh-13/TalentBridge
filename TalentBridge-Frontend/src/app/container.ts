@@ -44,3 +44,8 @@ import { createResumeUseCases } from "@/features/resume/application/resumeUseCas
 import { HttpResumeRepository } from "@/features/resume/infrastructure/HttpResumeRepository";
 
 export const resumes = createResumeUseCases(new HttpResumeRepository());
+
+import { createUserUseCases } from "@/features/user/application/userUseCases";
+import { HttpUserRepository } from "@/features/user/infrastructure/HttpUserRepository";
+
+export const users = createUserUseCases(new HttpUserRepository());

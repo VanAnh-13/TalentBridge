@@ -23,10 +23,9 @@ import {
 } from "@/shared/presentation/ui/breadcrumb";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import type { UserCreateRequestDto, UserUpdateRequestDto } from "@/types/user";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
-import { getUserById, saveUser, updateUser } from "@/services/userApi";
+import { users as userUseCases } from "@/app/container";
 import type { CompanyRef } from "@/features/company";
 import { CompanySelection } from "@/features/company";
 import { RoleSelection } from "@/features/access";
@@ -71,8 +70,7 @@ export default function UserUpsertPage() {
       const fetchData = async () => {
         setIsLoading(true);
         try {
-          const res = await getUserById(parseInt(id));
-          const user = res.data.data;
+          const user = await userUseCases.find(parseInt(id));
           setFormData({
             name: user.name,
             email: user.email,
@@ -80,12 +78,12 @@ export default function UserUpsertPage() {
             dob: user.dob ? user.dob.split("T")[0] : "",
             address: user.address ? user.address : "",
             gender: user?.gender,
-            companyId: user.company?.id.toString(),
-            roleId: user.role?.id.toString(),
+            companyId: user.company?.id.toString() ?? "",
+            roleId: user.role?.id.toString() ?? "",
           });
 
-          setSelectedCompany(user.company);
-          setSelectedRole(user.role);
+          setSelectedCompany(user.company ?? undefined);
+          setSelectedRole(user.role ?? undefined);
         } catch (err) {
           toast.error(errorMessage(err, "Không tìm thấy người dùng này"));
           setSearchParams({});
@@ -149,28 +147,26 @@ export default function UserUpsertPage() {
       const role = selectedRole?.id ? selectedRole : null;
 
       if (isEdit) {
-        const updateData: UserUpdateRequestDto = {
-          id: id!,
+        await userUseCases.update({
+          id: parseInt(id!),
           name: formData.name,
           gender: formData.gender,
           dob: new Date(formData.dob).toISOString(),
           address: formData.address,
-          company: company ?? { id: -1 },
-          role: role ?? { id: -1 },
-        };
-        await updateUser(updateData);
+          companyId: company?.id ?? null,
+          roleId: role?.id ?? null,
+        });
       } else {
-        const createData: UserCreateRequestDto = {
+        await userUseCases.create({
           name: formData.name,
           email: formData.email,
           password: formData.password,
           dob: new Date(formData.dob).toISOString(),
           address: formData.address,
           gender: formData.gender,
-          company: company,
-          role: role,
-        };
-        await saveUser(createData);
+          companyId: company?.id ?? null,
+          roleId: role?.id ?? null,
+        });
       }
 
       toast.success(

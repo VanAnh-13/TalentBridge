@@ -6,16 +6,9 @@ import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { Skeleton } from "@/shared/presentation/ui/skeleton";
 import { auth } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
-import {
-  selfUserAvatarUpdateApi,
-  selfUserPasswordUpdateApi,
-  selfUserProfileUpdateApi,
-} from "@/services/userApi";
-import type {
-  SelfUserUpdatePasswordRequestDto,
-  SelfUserUpdateProfileRequestDto,
-  UserDetailsResponseDto,
-} from "@/types/user.d.ts";
+import { users as userUseCases } from "@/app/container";
+import type { AccountDetails } from "@/features/auth/domain/account";
+import type { PasswordChange, ProfileChange } from "../../domain/user";
 import {
   Cake,
   Calendar,
@@ -31,15 +24,15 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import AvatarUploadForm from "./AvatarUploadForm";
-import PasswordChangeForm from "./PasswordChangeForm";
-import ProfileEditForm from "./ProfileEditForm";
+import AvatarUploadForm from "../components/AvatarUploadForm";
+import PasswordChangeForm from "../components/PasswordChangeForm";
+import ProfileEditForm from "../components/ProfileEditForm";
 
 const UserInfoPage = () => {
   const dispatch = useAuthDispatch();
 
   // Data
-  const [userDetails, setUserDetails] = useState<UserDetailsResponseDto>();
+  const [userDetails, setUserDetails] = useState<AccountDetails>();
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -105,10 +98,10 @@ const UserInfoPage = () => {
   // ======================================
   // Handle Actions Call API
   // ======================================
-  const handleUpdateProfile = async (data: SelfUserUpdateProfileRequestDto) => {
+  const handleUpdateProfile = async (data: ProfileChange) => {
     try {
       setIsUpdating(true);
-      await selfUserProfileUpdateApi(data);
+      await userUseCases.updateProfile(data);
       await fetchUserDetails();
       dispatch(getAccount());
       toast.success("Cập nhật thông tin thành công");
@@ -121,11 +114,11 @@ const UserInfoPage = () => {
   };
 
   const handleUpdatePassword = async (
-    data: SelfUserUpdatePasswordRequestDto,
+    data: PasswordChange,
   ) => {
     try {
       setIsUpdating(true);
-      await selfUserPasswordUpdateApi(data);
+      await userUseCases.changePassword(data);
       await fetchUserDetails();
       toast.success("Cập nhật mật khẩu thành công");
       setIsOpenPasswordChangeForm(false);
@@ -140,11 +133,9 @@ const UserInfoPage = () => {
     try {
       setIsUpdating(true);
 
-      const data = new FormData();
-      if (avatarFile) data.append("avatar", avatarFile);
-      else toast.error("File ảnh không được trống");
+      if (!avatarFile) toast.error("File ảnh không được trống");
 
-      await selfUserAvatarUpdateApi(data);
+      await userUseCases.changeAvatar(avatarFile);
       await fetchUserDetails();
       dispatch(getAccount());
       setAvatarVersion(Date.now());

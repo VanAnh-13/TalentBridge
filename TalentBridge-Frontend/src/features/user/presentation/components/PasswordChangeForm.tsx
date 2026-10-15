@@ -4,18 +4,18 @@ import { Button } from "@/shared/presentation/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
 import { Input } from "@/shared/presentation/ui/input";
 import { Label } from "@/shared/presentation/ui/label";
-import type { SelfUserUpdatePasswordRequestDto } from "@/types/user.d.ts";
+import type { PasswordChange } from "../../domain/user";
 import { Eye, EyeOff, Lock, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface PasswordChangeFormProps {
-  onSubmit: (data: SelfUserUpdatePasswordRequestDto) => void;
+  onSubmit: (data: PasswordChange) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
 
-interface FormData extends SelfUserUpdatePasswordRequestDto {
+interface FormData extends PasswordChange {
   confirmPassword: string;
 }
 
@@ -44,7 +44,7 @@ const PasswordChangeForm = ({
       return;
     }
 
-    const requestData: SelfUserUpdatePasswordRequestDto = {
+    const requestData: PasswordChange = {
       oldPassword: formData.oldPassword,
       newPassword: formData.newPassword,
     };

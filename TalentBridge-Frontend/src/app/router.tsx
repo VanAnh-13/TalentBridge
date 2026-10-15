@@ -8,7 +8,7 @@ import HomePage from "@/pages/client/home-page";
 import { CompanyBrowsePage as CompanyClientPage, CompanyDetailsPage as CompanyDetailsClientPage, CompanyManagerPage, MyCompanyPage as CompanyManagerRecruiterPage, MembersPage as MemberManagePage } from "@/features/company";
 import { JobBrowsePage as JobClientPage, JobDetailsPage as JobDetailsClientPage, AdminJobManagerPage as JobManagerPage, AdminJobUpsertPage as JobUpsertPage, RecruiterJobManagerPage as JobManagerRecruiterPage, RecruiterJobUpsertPage as JobUpsertRecruiterPage } from "@/features/job";
 import UserPage from "@/pages/user";
-import UserInfoPage from "@/pages/user/user-info-page";
+import { ProfilePage as UserInfoPage, UserManagerPage as UserManagerPage, UserUpsertPage as UserUpsertPage } from "@/features/user";
 import { MyResumesPage as UserResumePage, AdminResumeManagerPage as ResumeManagerPage, RecruiterResumeManagerPage as ResumeManagerRecruiterPage } from "@/features/resume";
 import UserSessionPage from "@/features/auth/presentation/pages/SessionsPage";
 
@@ -18,8 +18,6 @@ import DashboardPage from "@/pages/admin/dashboard-page";
 import RecruitmentManagerPage from "@/pages/admin/recruitment-page";
 import { SkillManagerPage } from "@/features/skill";
 import { AccessControlPage, PermissionManagerPage, RoleManagerPage } from "@/features/access";
-import UserManagerPage from "@/pages/admin/user-page/user-manager-page";
-import UserUpsertPage from "@/pages/admin/user-page/user-upsert-page";
 import { SubscriberPage } from "@/features/subscriber";
 
 // RECRUITER PAGE
