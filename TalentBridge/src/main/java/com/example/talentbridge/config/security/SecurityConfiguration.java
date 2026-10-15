@@ -3,6 +3,7 @@ package com.example.talentbridge.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,16 +31,18 @@ public class SecurityConfiguration {
             "/auth/register",
             "/auth/refresh-token",
 
-            // BASIC MODULES
-            "/companies/**",
-            "/jobs/**",
-
             // API DOCS
             "/swagger-ui/**",
             "/v3/api-docs/**",
 
             // ACTUATOR
             "/actuator/**"
+    };
+
+    /** Read-only public browsing; every write on these resources requires authentication. */
+    private static final String[] PUBLIC_GET = {
+            "/companies/**",
+            "/jobs/**"
     };
 
     @Bean
@@ -50,6 +53,7 @@ public class SecurityConfiguration {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(Customizer.withDefaults())

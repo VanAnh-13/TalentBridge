@@ -98,20 +98,5 @@ ON DUPLICATE KEY UPDATE
 -- USER Role has no admin permissions (can only access public endpoints)
 -- =====================================================
 
--- =====================================================
--- Create Default Admin User
--- Password: admin123 (hashed with BCrypt)
--- =====================================================
-INSERT INTO users (email, name, password, dob, address, gender, role_id, created_at, updated_at, created_by, modified_by)
-SELECT 'admin@talentbridge.com', 'System Admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1990-01-01', 'System', 'OTHER', r.id, NOW(), NOW(), 'system', 'system'
-FROM roles r
-WHERE r.name = 'ADMIN'
-ON DUPLICATE KEY UPDATE
-    name = VALUES(name),
-    password = VALUES(password),
-    dob = VALUES(dob),
-    address = VALUES(address),
-    gender = VALUES(gender),
-    role_id = VALUES(role_id),
-    updated_at = NOW(),
-    modified_by = VALUES(modified_by);
+-- NOTE: no default admin is seeded. Create one with app.bootstrap.admin-email/admin-password
+-- (env BOOTSTRAP_ADMIN_EMAIL / BOOTSTRAP_ADMIN_PASSWORD).
