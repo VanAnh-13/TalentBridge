@@ -65,7 +65,7 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message", containsString("already exists")));
+                .andExpect(jsonPath("$.message", containsString("đã tồn tại")));
     }
 
     @Test
@@ -148,9 +148,11 @@ public class AuthControllerTest {
     @DisplayName("AUTH_11: Truy cập API không có quyền")
     void testAccessWithoutPermission() throws Exception {
         // Try to access admin endpoint without admin role
+        // Contract: the API answers 401 + ACCESS_DENIED (the frontend refreshes the token on it)
         mockMvc.perform(get("/users")
                 .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorCode").value("ACCESS_DENIED"));
     }
 
     @Test
@@ -161,9 +163,11 @@ public class AuthControllerTest {
                 .cookie(new org.springframework.mock.web.MockCookie("refresh_token", refreshToken)))
                 .andExpect(status().isOk());
 
-        // Token should be invalidated
-        mockMvc.perform(get("/auth/me")
-                .header("Authorization", "Bearer " + accessToken))
+        // Access tokens are stateless JWTs; logout invalidates the refresh token instead
+        mockMvc.perform(post("/auth/refresh-token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"deviceName\":\"test-device\",\"deviceType\":\"test\",\"userAgent\":\"junit\"}")
+                .cookie(new org.springframework.mock.web.MockCookie("refresh_token", refreshToken)))
                 .andExpect(status().isUnauthorized());
     }
 }

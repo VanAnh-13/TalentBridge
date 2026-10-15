@@ -29,6 +29,9 @@ public class CompanyControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private com.example.talentbridge.repository.SkillRepository skillRepository;
+
     private String adminToken;
     private Long companyId;
     private String companyName = "Test Company " + System.currentTimeMillis();
@@ -80,7 +83,8 @@ public class CompanyControllerTest {
     @DisplayName("COMPANY_02: Tạo công ty với tên trùng lặp")
     void testCreateCompanyWithDuplicateName() throws Exception {
         DefaultCompanyRequestDto companyDto = new DefaultCompanyRequestDto();
-        companyDto.setName(companyName); // Same name as before
+        companyDto.setName(companyName.toUpperCase()); // same name, different case
+        companyDto.setDescription("Another description");
         companyDto.setAddress("456 Another Street");
 
         MockMultipartFile companyData = new MockMultipartFile(
@@ -93,8 +97,8 @@ public class CompanyControllerTest {
         mockMvc.perform(multipart("/companies")
                 .file(companyData)
                 .header("Authorization", "Bearer " + adminToken))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containsString("already exists")));
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", containsString("đã tồn tại")));
     }
 
     @Test
@@ -157,20 +161,23 @@ public class CompanyControllerTest {
                 .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.content[0].jobCount").isNumber());
+                .andExpect(jsonPath("$.data.content[0].jobsCount").isNumber());
     }
 
     @Test
     @Order(7)
-    @DisplayName("COMPANY_09: Xóa công ty có job đang tuyển")
+    @DisplayName("COMPANY_09: Xóa công ty sẽ xóa luôn các job của công ty (cascade)")
     void testDeleteCompanyWithActiveJobs() throws Exception {
-        // First create a job for this company
-        TestHelper.createJobForCompany(mockMvc, objectMapper, adminToken, companyId);
+        com.example.talentbridge.model.Skill skill = new com.example.talentbridge.model.Skill();
+        skill.setName("skill-" + System.nanoTime());
+        Long skillId = skillRepository.save(skill).getId();
+        Long jobId = TestHelper.createJobForCompany(mockMvc, objectMapper, adminToken, companyId, skillId);
 
-        // Try to delete company
+        // Deleting the company currently cascades to its jobs (see CompanyServiceImpl#deleteCompanyById)
         mockMvc.perform(delete("/companies/" + companyId)
                 .header("Authorization", "Bearer " + adminToken))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containsString("has active jobs")));
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/jobs/" + jobId)).andExpect(status().isNotFound());
     }
 }

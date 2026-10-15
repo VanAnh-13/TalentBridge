@@ -48,6 +48,9 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
             MultipartFile logoFile,
             boolean isRecruiter
     ) {
+        if (companyRepository.existsByNameIgnoreCase(dto.getName()))
+            throw new ResourceAlreadyExistsException("Tên công ty đã tồn tại");
+
         Company company = new Company(dto.getName(), dto.getDescription(), dto.getAddress());
         Company savedCompany = companyRepository.saveAndFlush(company);
 

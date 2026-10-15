@@ -11,4 +11,6 @@ public interface CompanyRepository extends
         JpaRepository<Company, Long>,
         JpaSpecificationExecutor<Company> {
     Company findByOwnerEmail(String email);
+
+    boolean existsByNameIgnoreCase(String name);
 }

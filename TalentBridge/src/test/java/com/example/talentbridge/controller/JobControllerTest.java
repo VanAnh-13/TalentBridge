@@ -31,12 +31,26 @@ public class JobControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private com.example.talentbridge.repository.CompanyRepository companyRepository;
+
+    @Autowired
+    private com.example.talentbridge.repository.SkillRepository skillRepository;
+
+    private Long companyId;
+    private Long skillId;
+
     private String adminToken;
     private Long jobId;
 
     @BeforeAll
     void setUp() throws Exception {
         adminToken = TestHelper.getAdminToken(mockMvc, objectMapper);
+        companyId = companyRepository.save(
+                new com.example.talentbridge.model.Company("Job Test Co " + System.nanoTime(), "desc", "addr")).getId();
+        com.example.talentbridge.model.Skill skill = new com.example.talentbridge.model.Skill();
+        skill.setName("job-test-skill-" + System.nanoTime());
+        skillId = skillRepository.save(skill).getId();
     }
 
     @Test
@@ -56,12 +70,12 @@ public class JobControllerTest {
         
         // Assuming company with ID 1 exists
         JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
-        company.setId(1L);
+        company.setId(companyId);
         jobDto.setCompany(company);
         
         // Assuming skill with ID 1 exists
         JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
-        skill.setId(1L);
+        skill.setId(skillId);
         jobDto.setSkills(Arrays.asList(skill));
 
         String response = mockMvc.perform(post("/jobs")
@@ -94,11 +108,11 @@ public class JobControllerTest {
         jobDto.setActive(true);
         
         JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
-        company.setId(1L);
+        company.setId(companyId);
         jobDto.setCompany(company);
         
         JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
-        skill.setId(1L);
+        skill.setId(skillId);
         jobDto.setSkills(Arrays.asList(skill));
 
         mockMvc.perform(post("/jobs")
@@ -126,7 +140,7 @@ public class JobControllerTest {
     @Order(4)
     @DisplayName("JOB_04: Lấy danh sách job theo công ty")
     void testGetJobsByCompany() throws Exception {
-        mockMvc.perform(get("/jobs/companies/1"))
+        mockMvc.perform(get("/jobs/companies/" + companyId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray());
     }
@@ -147,11 +161,11 @@ public class JobControllerTest {
         updateDto.setActive(true);
         
         JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
-        company.setId(1L);
+        company.setId(companyId);
         updateDto.setCompany(company);
         
         JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
-        skill.setId(1L);
+        skill.setId(skillId);
         updateDto.setSkills(Arrays.asList(skill));
 
         mockMvc.perform(put("/jobs/" + jobId)
@@ -180,11 +194,11 @@ public class JobControllerTest {
         updateDto.setActive(false); // Deactivate
         
         JobRequestDto.CompanyId company = new JobRequestDto.CompanyId();
-        company.setId(1L);
+        company.setId(companyId);
         updateDto.setCompany(company);
         
         JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
-        skill.setId(1L);
+        skill.setId(skillId);
         updateDto.setSkills(Arrays.asList(skill));
 
         mockMvc.perform(put("/jobs/" + jobId)
@@ -200,7 +214,7 @@ public class JobControllerTest {
     @DisplayName("JOB_09: Tìm kiếm job theo skills")
     void testSearchJobsBySkills() throws Exception {
         mockMvc.perform(get("/jobs")
-                .param("filter", "skills.id:1")
+                .param("filter", "skills.id:" + skillId)
                 .param("page", "0")
                 .param("size", "10"))
                 .andExpect(status().isOk())
@@ -217,7 +231,7 @@ public class JobControllerTest {
                 .param("sort", "salary,desc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.pageNumber").value(1))
-                .andExpect(jsonPath("$.data.pageSize").value(5));
+                .andExpect(jsonPath("$.data.page").value(1))
+                .andExpect(jsonPath("$.data.size").value(5));
     }
 }

@@ -52,7 +52,7 @@ public class TestHelper {
         return objectMapper.readTree(response).get("data").get("accessToken").asText();
     }
 
-    public static Long createJobForCompany(MockMvc mockMvc, ObjectMapper objectMapper, String token, Long companyId) throws Exception {
+    public static Long createJobForCompany(MockMvc mockMvc, ObjectMapper objectMapper, String token, Long companyId, Long skillId) throws Exception {
         JobRequestDto jobDto = new JobRequestDto();
         jobDto.setName("Test Job " + System.currentTimeMillis());
         jobDto.setLocation("Test Location");
@@ -70,11 +70,9 @@ public class TestHelper {
         jobDto.setCompany(company);
         
         // Set skills
-        JobRequestDto.SkillId skill1 = new JobRequestDto.SkillId();
-        skill1.setId(1L);
-        JobRequestDto.SkillId skill2 = new JobRequestDto.SkillId();
-        skill2.setId(2L);
-        jobDto.setSkills(Arrays.asList(skill1, skill2));
+        JobRequestDto.SkillId skill = new JobRequestDto.SkillId();
+        skill.setId(skillId);
+        jobDto.setSkills(Arrays.asList(skill));
 
         MvcResult result = mockMvc.perform(post("/jobs")
                 .contentType(MediaType.APPLICATION_JSON)
