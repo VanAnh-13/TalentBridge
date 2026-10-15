@@ -187,7 +187,7 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute
                 to="/admin"
-                requiredPermission="GET /permissions/*"
+                requiredPermission="GET /permissions"
               >
                 <PermissionManagerPage />
               </ProtectedRoute>

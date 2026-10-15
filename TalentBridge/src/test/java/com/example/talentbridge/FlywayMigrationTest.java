@@ -46,11 +46,19 @@ class FlywayMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, "sa", "")) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"));
-            assertEquals(55, count(c, "SELECT COUNT(*) FROM permissions"));
-            assertEquals(55, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
-            assertEquals(21, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
+            assertEquals(57, count(c, "SELECT COUNT(*) FROM permissions"));
+            assertEquals(56, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(22, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
             assertEquals(17, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'USER'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM users"), "no default users may be seeded");
+
+            String holders = "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id "
+                    + "JOIN permissions p ON p.id = rp.permission_id WHERE p.api_path = '%s' AND r.name = '%s'";
+            assertEquals(1, count(c, holders.formatted("/admin", "ADMIN")), "ADMIN opens the admin workspace");
+            assertEquals(0, count(c, holders.formatted("/admin", "RECRUITER")));
+            assertEquals(1, count(c, holders.formatted("/recruiter", "RECRUITER")), "RECRUITER opens the recruiter workspace");
+            assertEquals(0, count(c, holders.formatted("/recruiter", "ADMIN")));
+            assertEquals(0, count(c, holders.formatted("/admin", "USER")) + count(c, holders.formatted("/recruiter", "USER")));
         }
     }
 
@@ -80,9 +88,9 @@ class FlywayMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, "sa", "")) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"), "roles must not be duplicated");
-            assertEquals(55, count(c, "SELECT COUNT(*) FROM permissions"), "duplicates removed, catalog completed");
+            assertEquals(57, count(c, "SELECT COUNT(*) FROM permissions"), "duplicates removed, catalog completed");
             assertEquals(0, count(c, "SELECT COUNT(*) FROM (SELECT api_path, method FROM permissions GROUP BY api_path, method HAVING COUNT(*) > 1) d"));
-            assertEquals(55, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(56, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp WHERE rp.permission_id NOT IN (SELECT id FROM permissions)"));
             // V4: the old seed let recruiters modify any company's data; that grant must be gone
             assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id JOIN permissions p ON p.id = rp.permission_id "
