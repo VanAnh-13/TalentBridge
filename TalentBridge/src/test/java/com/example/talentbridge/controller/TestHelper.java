@@ -1,6 +1,6 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.dto.request.auth.UserLoginRequestDto;
+import com.example.talentbridge.auth.presentation.LoginRequest;
 import com.example.talentbridge.job.presentation.JobRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
@@ -21,10 +21,10 @@ public class TestHelper {
     private static final String ADMIN_PASSWORD = "Admin@123456";
 
     public static String getAdminToken(MockMvc mockMvc, ObjectMapper objectMapper) throws Exception {
-        UserLoginRequestDto loginDto = new UserLoginRequestDto();
+        LoginRequest loginDto = new LoginRequest();
         loginDto.setEmail(ADMIN_EMAIL);
         loginDto.setPassword(ADMIN_PASSWORD);
-        loginDto.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
+        loginDto.setSessionMetaRequest(new com.example.talentbridge.auth.presentation.SessionMetaRequest("test-device", "test", "junit"));
 
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -37,10 +37,10 @@ public class TestHelper {
     }
 
     public static String getUserToken(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password) throws Exception {
-        UserLoginRequestDto loginDto = new UserLoginRequestDto();
+        LoginRequest loginDto = new LoginRequest();
         loginDto.setEmail(email);
         loginDto.setPassword(password);
-        loginDto.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
+        loginDto.setSessionMetaRequest(new com.example.talentbridge.auth.presentation.SessionMetaRequest("test-device", "test", "junit"));
 
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

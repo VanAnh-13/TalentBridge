@@ -1,7 +1,7 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.dto.request.auth.UserLoginRequestDto;
-import com.example.talentbridge.dto.request.auth.UserRegisterRequestDto;
+import com.example.talentbridge.auth.presentation.LoginRequest;
+import com.example.talentbridge.auth.presentation.RegisterRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
@@ -39,7 +39,7 @@ public class AuthControllerTest {
     @Order(1)
     @DisplayName("AUTH_01: Đăng ký user mới với thông tin hợp lệ")
     void testRegisterWithValidData() throws Exception {
-        UserRegisterRequestDto request = new UserRegisterRequestDto();
+        RegisterRequest request = new RegisterRequest();
         request.setEmail(testEmail);
         request.setPassword(testPassword);
         request.setName("Test User");
@@ -56,7 +56,7 @@ public class AuthControllerTest {
     @Order(2)
     @DisplayName("AUTH_02: Đăng ký user với email đã tồn tại")
     void testRegisterWithDuplicateEmail() throws Exception {
-        UserRegisterRequestDto request = new UserRegisterRequestDto();
+        RegisterRequest request = new RegisterRequest();
         request.setEmail(testEmail);
         request.setPassword("AnotherPass@123");
         request.setName("Another User");
@@ -72,10 +72,10 @@ public class AuthControllerTest {
     @Order(3)
     @DisplayName("AUTH_03: Đăng nhập với thông tin đúng")
     void testLoginWithValidCredentials() throws Exception {
-        UserLoginRequestDto request = new UserLoginRequestDto();
+        LoginRequest request = new LoginRequest();
         request.setEmail(testEmail);
         request.setPassword(testPassword);
-        request.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
+        request.setSessionMetaRequest(new com.example.talentbridge.auth.presentation.SessionMetaRequest("test-device", "test", "junit"));
 
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,10 +96,10 @@ public class AuthControllerTest {
     @Order(4)
     @DisplayName("AUTH_04: Đăng nhập với mật khẩu sai")
     void testLoginWithWrongPassword() throws Exception {
-        UserLoginRequestDto request = new UserLoginRequestDto();
+        LoginRequest request = new LoginRequest();
         request.setEmail(testEmail);
         request.setPassword("WrongPassword@123");
-        request.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
+        request.setSessionMetaRequest(new com.example.talentbridge.auth.presentation.SessionMetaRequest("test-device", "test", "junit"));
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -112,10 +112,10 @@ public class AuthControllerTest {
     @Order(5)
     @DisplayName("AUTH_05: Đăng nhập với email không tồn tại")
     void testLoginWithNonExistentEmail() throws Exception {
-        UserLoginRequestDto request = new UserLoginRequestDto();
+        LoginRequest request = new LoginRequest();
         request.setEmail("nonexistent@test.com");
         request.setPassword("Password@123");
-        request.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
+        request.setSessionMetaRequest(new com.example.talentbridge.auth.presentation.SessionMetaRequest("test-device", "test", "junit"));
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

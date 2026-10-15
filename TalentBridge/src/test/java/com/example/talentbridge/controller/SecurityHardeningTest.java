@@ -1,6 +1,6 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.init.DataValidator;
+import com.example.talentbridge.user.infrastructure.bootstrap.AdminBootstrapRunner;
 import com.example.talentbridge.user.infrastructure.persistence.UserJpaEntity;
 import com.example.talentbridge.user.domain.Gender;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
@@ -31,7 +31,7 @@ class SecurityHardeningTest {
     @Autowired UserJpaRepository userRepository;
     @Autowired RoleJpaRepository roleRepository;
     @Autowired PasswordEncoder passwordEncoder;
-    @Autowired DataValidator dataValidator;
+    @Autowired AdminBootstrapRunner adminBootstrapRunner;
 
     @Test
     @DisplayName("Anonymous users cannot write companies or jobs")
@@ -69,7 +69,7 @@ class SecurityHardeningTest {
         legacy.setRole(roleRepository.findByName("ADMIN").orElseThrow());
         userRepository.save(legacy);
 
-        dataValidator.run();
+        adminBootstrapRunner.run();
 
         String hash = userRepository.findByEmail("admin@talentbridge.com").orElseThrow().getPassword();
         assertFalse(passwordEncoder.matches("admin123", hash));

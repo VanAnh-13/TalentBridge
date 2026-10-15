@@ -63,6 +63,23 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(ex.getMessage(), "VALIDATION_ERROR"));
     }
 
+    @ExceptionHandler(com.example.talentbridge.shared.domain.exception.InvalidTokenException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidTokenException(
+            com.example.talentbridge.shared.domain.exception.InvalidTokenException ex) {
+        String message = ex.getMessage() != null ? ex.getMessage() : "Invalid token (incorrect format or expired)";
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(message, "UNAUTHORIZED"));
+    }
+
+    @ExceptionHandler(com.example.talentbridge.shared.domain.exception.AuthenticationFailedException.class)
+    public ResponseEntity<ApiResponse<?>> handleAuthenticationFailedException(
+            com.example.talentbridge.shared.domain.exception.AuthenticationFailedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(ex.getMessage(), "BAD_CREDENTIALS"));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ex) {

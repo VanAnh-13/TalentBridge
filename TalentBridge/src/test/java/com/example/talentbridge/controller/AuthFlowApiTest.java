@@ -139,7 +139,6 @@ class AuthFlowApiTest {
     // ---------------------------------------------------------------- refresh / sessions / logout
     @Test @Order(5) @DisplayName("refresh rotates the refresh token: the old one stops working")
     void refreshRotates() throws Exception {
-        Thread.sleep(1100);   // legacy tokens carry no unique id: two issued within one second are identical
         MvcResult r = mockMvc.perform(post("/auth/refresh-token").cookie(new MockCookie("refresh_token", refresh))
                 .contentType(MediaType.APPLICATION_JSON).content(meta)).andReturn();
         assertEquals(200, r.getResponse().getStatus(), r.getResponse().getContentAsString());
@@ -157,7 +156,6 @@ class AuthFlowApiTest {
 
     @Test @Order(6) @DisplayName("sessions: list marks the current one; a session can be revoked; others' sessions cannot")
     void sessions() throws Exception {
-        Thread.sleep(1100);   // legacy tokens carry no unique id: a login within the same second would reuse the token
         MvcResult second = login(email, password);
         String other = second.getResponse().getCookie("refresh_token").getValue();
 
@@ -231,22 +229,17 @@ class AuthFlowApiTest {
         int used = reset("used-token-" + sfx, newPassword, newPassword);
         int expired = reset("expired-token-" + sfx, newPassword, newPassword);
         int unknown = reset("unknown-" + sfx, newPassword, newPassword);
-        assertEquals(REJECTION_STATUS, mismatch);
-        assertEquals(400, weak);                     // "weak" is shorter than 8 characters: bean validation
-        assertEquals(REJECTION_STATUS, used);
-        assertEquals(REJECTION_STATUS, expired);
-        assertEquals(REJECTION_STATUS, unknown);
+        // every rejection is a client error (the legacy code let an IllegalArgumentException escape as HTTP 500)
+        for (int status : new int[]{mismatch, weak, used, expired, unknown})
+            assertEquals(400, status);
 
         assertEquals(200, reset(t, newPassword, newPassword));
         assertEquals(401, login(email, password).getResponse().getStatus());
         assertEquals(200, login(email, newPassword).getResponse().getStatus());
-        assertEquals(REJECTION_STATUS, reset(t, newPassword, newPassword));          // single use
+        assertEquals(400, reset(t, newPassword, newPassword));                      // single use
         Integer pending = jdbc.queryForObject("SELECT COUNT(*) FROM password_reset_tokens WHERE user_id = ? AND used = false", Integer.class, userId);
         assertEquals(0, pending);
     }
-
-    /** Status of a rejected reset: the legacy code let an IllegalArgumentException escape (HTTP 500). */
-    static final int REJECTION_STATUS = 500;
 
     private int reset(String token, String password, String confirm) throws Exception {
         try {

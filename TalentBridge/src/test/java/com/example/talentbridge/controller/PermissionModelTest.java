@@ -22,11 +22,9 @@ import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaReposit
 
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 
-import com.example.talentbridge.model.*;
 import com.example.talentbridge.user.domain.Gender;
 import com.example.talentbridge.job.domain.Level;
 import com.example.talentbridge.resume.domain.ResumeStatus;
-import com.example.talentbridge.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

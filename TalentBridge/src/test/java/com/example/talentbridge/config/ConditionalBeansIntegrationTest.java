@@ -1,9 +1,9 @@
 package com.example.talentbridge.config;
 
-import com.example.talentbridge.service.RefreshTokenRedisService;
+import com.example.talentbridge.auth.application.port.RefreshTokenStore;
 import com.example.talentbridge.shared.application.FileStorage;
-import com.example.talentbridge.service.impl.RefreshTokenInMemoryServiceImpl;
-import com.example.talentbridge.service.impl.RefreshTokenRedisServiceImpl;
+import com.example.talentbridge.auth.infrastructure.refresh.InMemoryRefreshTokenStore;
+import com.example.talentbridge.auth.infrastructure.refresh.RedisRefreshTokenStore;
 import com.example.talentbridge.shared.infrastructure.storage.LocalFileStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class ConditionalBeansIntegrationTest {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private RefreshTokenRedisService refreshTokenRedisService;
+    private RefreshTokenStore refreshTokenStore;
 
     @Autowired
     private FileStorage fileStorage;
@@ -37,16 +37,16 @@ class ConditionalBeansIntegrationTest {
     @DisplayName("Should load in-memory RefreshTokenService when Redis is not configured")
     void testInMemoryRefreshTokenServiceLoaded() {
         // Assert
-        assertNotNull(refreshTokenRedisService, "RefreshTokenRedisService bean should be loaded");
+        assertNotNull(refreshTokenStore, "RefreshTokenStore bean should be loaded");
         assertInstanceOf(
-                RefreshTokenInMemoryServiceImpl.class,
-                refreshTokenRedisService,
+                InMemoryRefreshTokenStore.class,
+                refreshTokenStore,
                 "Should load in-memory implementation when Redis is not configured"
         );
 
         // Verify Redis implementation is NOT loaded
         assertFalse(
-                applicationContext.containsBean("refreshTokenRedisServiceImpl"),
+                applicationContext.containsBean("redisRefreshTokenStore"),
                 "Redis implementation should not be loaded when cache.type != redis"
         );
     }
@@ -95,7 +95,7 @@ class ConditionalBeansIntegrationTest {
         // This tests that the injected service actually works
         assertDoesNotThrow(() -> {
             // The service should function normally
-            boolean result = refreshTokenRedisService.validateToken("test-token", "test-user");
+            boolean result = refreshTokenStore.isValid("test-token", 999L);
             assertFalse(result, "Non-existent token should return false");
         }, "RefreshTokenService should be functional");
     }
@@ -119,8 +119,8 @@ class ConditionalBeansIntegrationTest {
         
         // Verify essential beans are loaded
         assertTrue(
-                applicationContext.containsBean("authServiceImpl"),
-                "AuthService should be loaded"
+                applicationContext.containsBean("login"),
+                "The authentication use cases should be loaded"
         );
         assertTrue(
                 applicationContext.containsBean("createUser"),

@@ -12,7 +12,8 @@ com.example.talentbridge
 │   ├── domain/    exception/ (NotFound, AlreadyExists, Forbidden, InvalidRequest, BusinessRuleViolation)
 │   │              query/     (PageQuery, PageResult, SortOrder, FilterExpression)  -- framework free
 │   ├── infrastructure/persistence/  BaseEntity (audit columns), JPA auditing, FilterSpecifications, PagingMapper
-│   └── presentation/  ApiResponse, ApiResponseAdvice, GlobalExceptionHandler, PageResponseDto, PageRequests
+│   └── presentation/  ApiResponse, ApiResponseAdvice, GlobalExceptionHandler, PageResponseDto, PageRequests,
+│                      security/ (HTTP security chain, CORS, JSON 401 entry point)
 └── <module>/                    skill, ... (one per business capability)
     ├── domain/          entities + value objects (plain Java) and the *ports* they need (e.g. SkillRepository)
     ├── application/     use cases: one class per operation (CreateSkill, SearchSkills, ...)
@@ -45,5 +46,5 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 * Adding a module = add it to `MIGRATED` in `ArchitectureTest` in the same commit.
 
 ### Status
-Migrated: `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`, `resume`, `user`. Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still
-present for: auth (login, tokens, password reset) and email/notifications.
+Migrated: `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`, `resume`, `user`, `auth` (login, tokens, sessions, password reset). Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still
+present for: email notifications (and the daily job-digest cron).
