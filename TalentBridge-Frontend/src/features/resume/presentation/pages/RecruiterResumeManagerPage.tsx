@@ -1,5 +1,6 @@
 import type { Resume, StatusChange } from "../../domain/resume";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ScheduleInterviewDialog } from "@/features/interview";
 import { ResumeSearchSection } from "../components/ResumeSearchSection.tsx";
 import Pagination from "@/shared/presentation/components/Pagination";
@@ -10,6 +11,7 @@ import { ResumeTable } from "../components/ResumeTable.tsx";
 import { ViewResumeDialog } from "../components/ViewResumeDialog.tsx";
 
 const ResumeManagerRecruiterPage = () => {
+  const navigate = useNavigate();
   const [inviting, setInviting] = useState<Resume | null>(null);
   // ============================
   // Data
@@ -120,6 +122,7 @@ const ResumeManagerRecruiterPage = () => {
         isLoading={isLoading}
         onViewResumePDF={handleViewResumeDialog}
         onScheduleInterview={(resume) => setInviting(resume)}
+        onChat={(resume) => navigate(`/recruiter/chat?resume=${resume.id}`)}
         theme={"purple"}
       />
 

@@ -5,6 +5,7 @@ import {
   Settings,
   FileText,
   CalendarDays,
+  MessageCircle,
   MonitorIcon as MonitorCog,
   type LucideIcon,
   Home,
@@ -66,6 +67,12 @@ const menuItems: MenuItem[] = [
     url: "/recruiter/interviews",
     icon: CalendarDays,
     permission: "GET /interviews/company",
+  },
+  {
+    title: "Tin nhắn",
+    url: "/recruiter/chat",
+    icon: MessageCircle,
+    permission: "GET /chats",
   },
 ];
 

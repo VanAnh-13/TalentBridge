@@ -8,7 +8,8 @@ import {
 import { Button } from "@/shared/presentation/ui/button";
 import type { Resume } from "../../domain/resume";
 import PDFViewer from "@/shared/presentation/components/PDFViewer";
-import { FileX, MapPin, Sparkles } from "lucide-react";
+import { FileX, MapPin, MessageCircle, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 import JobInfoDialog from "./JobInfoDialog";
 import { UpdateResumeDialog } from "./UpdateResumeDialog";
@@ -26,6 +27,7 @@ export default function ResumeCard({
   onDelete,
   onUpdateResumeFile,
 }: Props) {
+  const navigate = useNavigate();
   const submitUpdatedResumeFile = async (file: File) => {
     await onUpdateResumeFile(resume.id, file);
   };
@@ -111,6 +113,11 @@ export default function ResumeCard({
             companyName={resume.company.name}
             location={resume.job.location}
           />
+
+          <Button variant="outline" onClick={() => navigate(`/user/chat?resume=${resume.id}`)}>
+            <MessageCircle className="mr-2 h-4 w-4" />
+            Nhắn tin
+          </Button>
 
           <UpdateResumeDialog onSubmitFile={submitUpdatedResumeFile} />
 

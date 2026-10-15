@@ -2,6 +2,7 @@
  * Composition root: the only place that knows which implementation backs each port.
  * Presentation asks for use cases here; it never imports infrastructure.
  */
+import { StompConnection } from "@/shared/infrastructure/realtime/StompConnection";
 import { createNotificationUseCases } from "@/features/notification/application/notificationUseCases";
 import { HttpNotificationRepository } from "@/features/notification/infrastructure/HttpNotificationRepository";
 import { StompNotificationStream } from "@/features/notification/infrastructure/StompNotificationStream";
@@ -14,6 +15,9 @@ import { HttpAuthRepository } from "@/features/auth/infrastructure/HttpAuthRepos
 import { LocalStorageTokenStore } from "@/features/auth/infrastructure/LocalStorageTokenStore";
 import { createCompanyUseCases } from "@/features/company/application/companyUseCases";
 import { HttpCompanyRepository } from "@/features/company/infrastructure/HttpCompanyRepository";
+import { createChatUseCases } from "@/features/chat/application/chatUseCases";
+import { HttpChatRepository } from "@/features/chat/infrastructure/HttpChatRepository";
+import { StompChatStream } from "@/features/chat/infrastructure/StompChatStream";
 import { createInterviewUseCases } from "@/features/interview/application/interviewUseCases";
 import { HttpInterviewRepository } from "@/features/interview/infrastructure/HttpInterviewRepository";
 import { createJobUseCases } from "@/features/job/application/jobUseCases";
@@ -32,15 +36,18 @@ export const auth = createAuthUseCases(
   new LocalStorageTokenStore(),
   new BrowserDeviceInfoProvider(),
 );
+const realtime = new StompConnection(() => auth.accessToken());
+
 export const notifications = createNotificationUseCases(
   new HttpNotificationRepository(),
-  new StompNotificationStream(() => auth.accessToken()),
+  new StompNotificationStream(realtime),
 );
 export const skills = createSkillUseCases(new HttpSkillRepository());
 export const subscribers = createSubscriberUseCases(new HttpSubscriberRepository());
 export const roles = createRoleUseCases(new HttpRoleRepository());
 export const permissions = createPermissionUseCases(new HttpPermissionRepository());
 export const companies = createCompanyUseCases(new HttpCompanyRepository());
+export const chat = createChatUseCases(new HttpChatRepository(), new StompChatStream(realtime));
 export const interviews = createInterviewUseCases(new HttpInterviewRepository());
 export const jobs = createJobUseCases(new HttpJobRepository());
 export const resumes = createResumeUseCases(new HttpResumeRepository());

@@ -1,11 +1,12 @@
 import { useAuthState } from "@/features/auth";
-import { User, BarChart3, Settings, Mail, CalendarCheck } from "lucide-react";
+import { User, BarChart3, Settings, Mail, CalendarCheck, MessageCircle } from "lucide-react";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
 
 const navigationItems = [
   { title: "Thông tin", icon: User, href: "info" },
   { title: "Đăng ký thông báo", icon: Mail, href: "subscriber" },
   { title: "Hồ sơ tuyển dụng", icon: BarChart3, href: "resumes" },
+  { title: "Tin nhắn", icon: MessageCircle, href: "chat" },
   { title: "Lịch phỏng vấn", icon: CalendarCheck, href: "interviews" },
   { title: "Bảo mật", icon: Settings, href: "sessions" },
 ];
@@ -37,6 +38,9 @@ export default function UserPage() {
                 .filter((item) => {
                   if (item.title === "Hồ sơ tuyển dụng")
                     return user.permissions?.includes("POST /resumes");
+
+                  if (item.title === "Tin nhắn")
+                    return user.permissions?.includes("GET /chats");
 
                   if (item.title === "Lịch phỏng vấn")
                     return user.permissions?.includes("GET /interviews/me");

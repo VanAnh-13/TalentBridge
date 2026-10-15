@@ -35,6 +35,8 @@ import {
 } from "@/features/resume";
 import { SkillManagerPage } from "@/features/skill";
 import { MyInterviewsPage, RecruiterInterviewsPage } from "@/features/interview";
+import { ChatPage } from "@/features/chat";
+import ChatRedirect from "@/app/pages/ChatRedirect";
 import { AccessControlPage, PermissionManagerPage, RoleManagerPage } from "@/features/access";
 import { SubscriberPage } from "@/features/subscriber";
 
@@ -51,6 +53,7 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to={"/home"} /> },
       { path: "home", element: <HomePage /> },
       { path: "auth", element: <AuthPage /> },
+      { path: "chat", element: <ChatRedirect /> },
       { path: "companies", element: <CompanyBrowsePage /> },
       { path: "companies/:id", element: <CompanyDetailsPage /> },
       { path: "jobs", element: <JobBrowsePage /> },
@@ -80,6 +83,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute to="/user" requiredPermission="POST /resumes">
                 <MyResumesPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "chat",
+            element: (
+              <ProtectedRoute to="/user" requiredPermission="GET /chats">
+                <ChatPage />
               </ProtectedRoute>
             ),
           },
@@ -234,6 +245,16 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute to="/recruiter" requiredPermission="GET /skills">
             <SkillManagerPage theme="purple" />
+          </ProtectedRoute>
+        ),
+      },
+
+      // CHAT
+      {
+        path: "chat",
+        element: (
+          <ProtectedRoute to="/recruiter" requiredPermission="GET /chats">
+            <ChatPage />
           </ProtectedRoute>
         ),
       },
