@@ -1,10 +1,11 @@
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { Button } from "@/shared/presentation/ui/button";
 import { errorMessage } from "@/shared/domain/errors";
-import { CompanyForm } from "@/pages/admin/company-page/CompanyForm";
-import CompanySection from "@/pages/commons/company-details-components/CompanySection";
-import { findSelfCompany, updateSelfCompany } from "@/services/companyApi";
-import type { DefaultCompanyResponseDto } from "@/types/company";
+import { CompanyForm } from "../components/CompanyForm";
+import CompanySection from "../components/CompanySection";
+import { companies as companyUseCases } from "@/app/container";
+import type { CompanyData } from "../../domain/company";
+import type { Company } from "../../domain/company";
 import { NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -14,7 +15,7 @@ const CompanyManagerRecruiterPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [company, setCompany] = useState<
-    DefaultCompanyResponseDto | undefined
+    Company | undefined
   >();
 
   // ============================
@@ -23,8 +24,8 @@ const CompanyManagerRecruiterPage = () => {
   const fetchCompany = async () => {
     setIsLoading(true);
     try {
-      const res = (await findSelfCompany()).data.data;
-      setCompany(res);
+      const res = await companyUseCases.mine();
+      setCompany(res ?? undefined);
     } catch (err) {
       toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
     } finally {
@@ -39,10 +40,10 @@ const CompanyManagerRecruiterPage = () => {
   // ============================
   // HANDLE UPDATE SELF COMPANY
   // ============================
-  const handleUpdateSelfCompany = async (formData: FormData) => {
+  const handleUpdateSelfCompany = async (data: CompanyData, logo: File | null) => {
     try {
       setIsLoading(true);
-      await updateSelfCompany(formData);
+      await companyUseCases.updateMine(data, logo);
       fetchCompany();
       toast.success("Cập nhật công ty thành công.");
     } catch (err) {

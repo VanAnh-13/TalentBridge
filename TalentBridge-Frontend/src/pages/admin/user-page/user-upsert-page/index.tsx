@@ -28,7 +28,7 @@ import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import { getUserById, saveUser, updateUser } from "@/services/userApi";
 import type { CompanySummary } from "@/types/job";
-import CompanySelection from "@/pages/commons/CompanySelection.tsx";
+import { CompanySelection } from "@/features/company";
 import { RoleSelection } from "@/features/access";
 import type { RoleRef } from "@/features/access";
 

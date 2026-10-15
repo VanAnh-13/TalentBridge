@@ -1,22 +1,18 @@
 import { useAuthState } from "@/features/auth";
 import { errorMessage } from "@/shared/domain/errors";
-import type { RecruiterInfoResponseDto } from "@/types/user";
+import type { Member } from "../../domain/company";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { MemberTable } from "./MemberTable";
-import {
-  addMemberToCompany,
-  findAllRecruitersBySelfCompany,
-  removeMemberFromCompany,
-} from "@/services/companyApi";
-import MemberInviteFrom from "./MemberInviteFrom";
+import { MemberTable } from "../components/MemberTable";
+import { companies as companyUseCases } from "@/app/container";
+import MemberInviteFrom from "../components/MemberInviteForm";
 
 const MemberManagePage = () => {
   const { user } = useAuthState();
 
   // Data State
   const [isLoading, setIsLoading] = useState(false);
-  const [members, setMembers] = useState<RecruiterInfoResponseDto[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [isOwner, setIsOwner] = useState(false);
 
   // ============================
@@ -25,7 +21,7 @@ const MemberManagePage = () => {
   const fetchMembers = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = (await findAllRecruitersBySelfCompany()).data.data;
+      const res = await companyUseCases.members();
       setMembers(res);
 
       const owner = res.find((m) => m.owner);
@@ -47,7 +43,7 @@ const MemberManagePage = () => {
   const addMember = async (email: string) => {
     setIsLoading(true);
     try {
-      await addMemberToCompany({ email: email });
+      await companyUseCases.addMember(email);
       await fetchMembers();
       toast.success("Thêm thành viên mới thành công");
     } catch (err) {
@@ -63,7 +59,7 @@ const MemberManagePage = () => {
   const removeMember = async (email: string) => {
     setIsLoading(true);
     try {
-      await removeMemberFromCompany({ email: email });
+      await companyUseCases.removeMember(email);
       await fetchMembers();
       toast.success("Thêm thành viên mới thành công");
     } catch (err) {

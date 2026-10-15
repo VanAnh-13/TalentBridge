@@ -1,10 +1,10 @@
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import type { Company } from "../../domain/company";
 import { Building2, MapPin, CalendarDays } from "lucide-react";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
 
 type CompanySectionProps = {
-  company: DefaultCompanyResponseDto;
+  company: Company;
   jobsCount: number;
   isRecruiter?: boolean;
 };

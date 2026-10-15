@@ -3,16 +3,16 @@ import { X, Building2, MapPin, Calendar, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/shared/presentation/ui/button";
 import { Badge } from "@/shared/presentation/ui/badge";
 import { Separator } from "@/shared/presentation/ui/separator";
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import type { Company } from "../../domain/company";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 import { formatISO } from "@/shared/presentation/format.ts";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview";
 
 interface CompanyDetailsSidebarProps {
-  company: DefaultCompanyResponseDto | null;
+  company: Company | null;
   isOpen: boolean;
   onClose: () => void;
-  onEdit?: (company: DefaultCompanyResponseDto) => void;
+  onEdit?: (company: Company) => void;
   onDelete?: (id: number) => void;
 }
 

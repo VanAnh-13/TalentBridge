@@ -5,8 +5,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import RootPage from "@/pages/client";
 import AuthPage from "@/features/auth/presentation/pages/AuthPage";
 import HomePage from "@/pages/client/home-page";
-import CompanyClientPage from "@/pages/client/company-page";
-import CompanyDetailsClientPage from "@/pages/client/company-details-page";
+import { CompanyBrowsePage as CompanyClientPage, CompanyDetailsPage as CompanyDetailsClientPage, CompanyManagerPage, MyCompanyPage as CompanyManagerRecruiterPage, MembersPage as MemberManagePage } from "@/features/company";
 import JobClientPage from "@/pages/client/job-page";
 import JobDetailsClientPage from "@/pages/client/job-details-page";
 import UserPage from "@/pages/user";
@@ -16,7 +15,6 @@ import UserSessionPage from "@/features/auth/presentation/pages/SessionsPage";
 
 // ADMIN PAGE
 import AdminPage from "@/pages/admin";
-import CompanyManagerPage from "@/pages/admin/company-page";
 import DashboardPage from "@/pages/admin/dashboard-page";
 import RecruitmentManagerPage from "@/pages/admin/recruitment-page";
 import { SkillManagerPage } from "@/features/skill";
@@ -33,8 +31,6 @@ import RecruiterPage from "@/pages/recruiter";
 import ResumeManagerRecruiterPage from "@/pages/recruiter/resume-page";
 import JobManagerRecruiterPage from "@/pages/recruiter/job-page";
 import JobUpsertRecruiterPage from "@/pages/recruiter/job-upsert-page";
-import CompanyManagerRecruiterPage from "@/pages/recruiter/self-company-page";
-import MemberManagePage from "@/pages/recruiter/member-page";
 
 // Components
 import ErrorPage from "@/shared/presentation/components/ErrorPage";

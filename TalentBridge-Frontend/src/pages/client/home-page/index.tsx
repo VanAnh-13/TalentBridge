@@ -1,7 +1,7 @@
 import HeroSection from "./HeroSection";
 import HowItWorksSection from "./HowItWorksSection";
 import SearchBar from "./SearchBar";
-import TopCompaniesSection from "./TopCompaniesSection";
+import { TopCompaniesSection } from "@/features/company";
 
 const HomePage = () => {
   return (

@@ -8,7 +8,7 @@ import {
 } from "@/shared/presentation/ui/table";
 import { Building2, Edit } from "lucide-react";
 import { Button } from "@/shared/presentation/ui/button";
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import type { Company } from "../../domain/company";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { formatISO } from "@/shared/presentation/format.ts";
@@ -16,11 +16,11 @@ import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { HasPermission } from "@/features/auth";
 
 interface CompanyTableProps {
-  companies: DefaultCompanyResponseDto[];
+  companies: Company[];
   isLoading: boolean;
-  hoveredCompany: DefaultCompanyResponseDto | null;
-  onViewDetails: (company: DefaultCompanyResponseDto) => void;
-  onEdit: (company: DefaultCompanyResponseDto) => void;
+  hoveredCompany: Company | null;
+  onViewDetails: (company: Company) => void;
+  onEdit: (company: Company) => void;
   onDelete: (id: number) => void;
 }
 

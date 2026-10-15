@@ -2,25 +2,21 @@ import { useEffect, useState } from "react";
 
 import { Plus } from "lucide-react";
 import { Button } from "@/shared/presentation/ui/button";
-import { CompanyForm } from "./CompanyForm";
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
-import {
-  saveCompany,
-  deleteCompanyById,
-  findAllCompanies,
-  updateCompanyById,
-} from "@/services/companyApi";
+import { CompanyForm } from "../components/CompanyForm";
+import type { Company } from "../../domain/company";
+import { companies as companyUseCases } from "@/app/container";
+import type { CompanyData } from "../../domain/company";
 import Pagination from "@/shared/presentation/components/Pagination";
-import { CompanyDetailsSidebar } from "./CompanyDetailsSidebar";
-import { CompanySearchSection } from "./CompanySearchSection";
+import { CompanyDetailsSidebar } from "../components/CompanyDetailsSidebar";
+import { CompanySearchSection } from "../components/CompanySearchSection";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
-import { CompanyTable } from "./CompanyTable";
+import { CompanyTable } from "../components/CompanyTable";
 import { HasPermission } from "@/features/auth";
 
 export default function CompanyManagerPage() {
   // Data
-  const [companies, setCompanies] = useState<DefaultCompanyResponseDto[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Search
@@ -35,18 +31,18 @@ export default function CompanyManagerPage() {
 
   // Show Details Form
   const [hoveredCompany, setHoveredCompany] =
-    useState<DefaultCompanyResponseDto | null>(null);
+    useState<Company | null>(null);
   const [showDetailsSidebar, setShowDetailsSidebar] = useState(false);
 
   // Form State
   const [editingCompany, setEditingCompany] =
-    useState<DefaultCompanyResponseDto | null>(null);
+    useState<Company | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // ============================
   // HANDLE VIEW DETAILS
   // ============================
-  const handleViewDetails = (company: DefaultCompanyResponseDto) => {
+  const handleViewDetails = (company: Company) => {
     setHoveredCompany(company);
     setShowDetailsSidebar(true);
   };
@@ -59,7 +55,7 @@ export default function CompanyManagerPage() {
   // ============================
   // HANDLE OPEN FORM
   // ============================
-  const openEditForm = (company: DefaultCompanyResponseDto) => {
+  const openEditForm = (company: Company) => {
     setEditingCompany(company);
     setIsFormOpen(true);
     handleCloseSidebar();
@@ -82,14 +78,11 @@ export default function CompanyManagerPage() {
     setIsLoading(true);
 
     try {
-      const filters: string[] = [];
-
-      if (searchName) filters.push(`name ~ '*${searchName}*'`);
-      if (searchAddress) filters.push(`address ~ '*${searchAddress}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await findAllCompanies({ page, size, filter })).data.data;
+      const res = await companyUseCases.search(
+        { name: searchName, address: searchAddress },
+        page,
+        size,
+      );
       setCompanies(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -125,14 +118,18 @@ export default function CompanyManagerPage() {
   // ============================
   // HANDLE CREATE, UPDATE, DELETE
   // ============================
-  const handleAddOrUpdateCompany = async (formData: FormData, id?: number) => {
+  const handleAddOrUpdateCompany = async (
+    data: CompanyData,
+    logo: File | null,
+    id?: number,
+  ) => {
     try {
       setIsLoading(true);
       if (id) {
-        await updateCompanyById(formData, id);
+        await companyUseCases.update(id, data, logo);
         toast.success("Cập nhật công ty thành công.");
       } else {
-        await saveCompany(formData);
+        await companyUseCases.create(data, logo);
         toast.success("Thêm công ty thành công.");
       }
       setIsLoading(false);
@@ -148,7 +145,7 @@ export default function CompanyManagerPage() {
     try {
       setIsLoading(true);
       if (hoveredCompany?.id === id) handleCloseSidebar();
-      await deleteCompanyById(id);
+      await companyUseCases.remove(id);
       toast.success("Xóa công ty thành công.");
 
       await handleReset();

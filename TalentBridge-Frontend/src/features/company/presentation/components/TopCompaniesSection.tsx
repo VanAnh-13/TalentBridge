@@ -1,22 +1,21 @@
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { errorMessage } from "@/shared/domain/errors";
-import { findAllCompanies } from "@/services/companyApi";
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import { companies as companyUseCases } from "@/app/container";
+import type { Company } from "../../domain/company";
 import { Building2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const TopCompaniesSection = () => {
-  const [companies, setCompanies] = useState<DefaultCompanyResponseDto[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchCompanies = async () => {
     setIsLoading(true);
     try {
-      const res = (await findAllCompanies({ page: 0, size: 5, filter: null }))
-        .data.data;
+      const res = await companyUseCases.featured();
       setCompanies(res.content);
     } catch (err) {
       toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));

@@ -1,4 +1,4 @@
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import type { Company } from "../../domain/company";
 import { Building2, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { getFirstLineFromHtml } from "@/shared/presentation/format.ts";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 type CompanyGridProps = {
   isLoading: boolean;
-  companies: DefaultCompanyResponseDto[];
+  companies: Company[];
 };
 
 const CompanyGrid = ({ isLoading, companies }: CompanyGridProps) => {

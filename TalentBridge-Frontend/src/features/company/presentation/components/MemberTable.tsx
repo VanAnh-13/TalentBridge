@@ -12,11 +12,11 @@ import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConf
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 
-import type { RecruiterInfoResponseDto } from "@/types/user";
+import type { Member } from "../../domain/company";
 import { Badge } from "@/shared/presentation/ui/badge";
 
 interface MemberTableProps {
-  users: RecruiterInfoResponseDto[];
+  users: Member[];
   isLoading: boolean;
   onDelete: (email: string) => void;
   isOwner: boolean;

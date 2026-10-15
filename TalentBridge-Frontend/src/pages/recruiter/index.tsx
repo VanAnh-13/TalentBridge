@@ -5,8 +5,9 @@ import { RecruiterTopBar } from "./Topbar";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
-import { findSelfCompany, saveSelfCompany } from "@/services/companyApi";
-import { CompanyForm } from "../admin/company-page/CompanyForm";
+import { companies as companyUseCases } from "@/app/container";
+import type { CompanyData } from "@/features/company/domain/company";
+import { CompanyForm } from "@/features/company";
 import { Button } from "@/shared/presentation/ui/button";
 import { Building2 } from "lucide-react";
 
@@ -22,7 +23,7 @@ const RecruiterPage = () => {
   const fetchCompany = async () => {
     setIsChecking(true);
     try {
-      const res = (await findSelfCompany()).data.data;
+      const res = await companyUseCases.mine();
       if (res) setHasCompany(true);
     } catch (err) {
       toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
@@ -35,10 +36,10 @@ const RecruiterPage = () => {
     fetchCompany();
   }, []);
 
-  const handleSelfCreateCompany = async (formData: FormData) => {
+  const handleSelfCreateCompany = async (data: CompanyData, logo: File | null) => {
     try {
       setIsLoading(true);
-      await saveSelfCompany(formData);
+      await companyUseCases.createMine(data, logo);
       fetchCompany();
       toast.success("Tạo công ty thành công.");
     } catch (err) {

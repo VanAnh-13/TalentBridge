@@ -11,18 +11,17 @@ import { Label } from "@/shared/presentation/ui/label.tsx";
 import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Search, Building2, X } from "lucide-react";
 import { toast } from "sonner";
-import type { CompanySummary } from "@/types/job";
-import { findAllCompanies } from "@/services/companyApi.ts";
+import { companies as companyUseCases } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import type { CompanyRef } from "../../domain/company";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface CompanySelectionProps {
-  selectedCompany: CompanySummary | undefined;
-  addCompany: (company: CompanySummary) => void;
+  selectedCompany: CompanyRef | undefined;
+  addCompany: (company: CompanyRef) => void;
   removeCompany: () => void;
 }
 
@@ -49,7 +48,7 @@ const CompanySelection = ({
   // Fetching State
   // ============================
   const [searchName, setsearchName] = useState("");
-  const [companies, setCompanies] = useState<CompanySummary[]>([]);
+  const [companies, setCompanies] = useState<CompanyRef[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchCompanies = async (
@@ -59,13 +58,10 @@ const CompanySelection = ({
   ) => {
     setIsLoading(true);
     try {
-      const filter = searchName ? `name ~ '*${searchName}*'` : null;
+      const data = await companyUseCases.search({ name: searchName }, page, size);
 
-      const res = await findAllCompanies({ page, size, filter });
-      const data = res.data.data;
-
-      const mapped: CompanySummary[] = data.content.map(
-        (company: DefaultCompanyResponseDto) => ({
+      const mapped: CompanyRef[] = data.content.map(
+        (company) => ({
           id: company.id,
           name: company.name,
           address: company.address,
@@ -91,7 +87,7 @@ const CompanySelection = ({
   // ============================
   // Handle Add Company
   // ============================
-  const onAddCompany = (company: CompanySummary) => {
+  const onAddCompany = (company: CompanyRef) => {
     addCompany(company);
     closeModal();
   };

@@ -10,15 +10,12 @@ import {
 import { Input } from "@/shared/presentation/ui/input";
 import { Label } from "@/shared/presentation/ui/label";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor";
-import type {
-  DefaultCompanyResponseDto,
-  CreateAndUpdateRequestDto,
-} from "@/types/company.d.ts";
+import type { Company, CompanyData } from "../../domain/company";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface CompanyFormProps {
-  onSubmit: (formData: FormData, id?: number) => Promise<unknown>;
-  initialData: DefaultCompanyResponseDto | null;
+  onSubmit: (data: CompanyData, logo: File | null, id?: number) => Promise<unknown>;
+  initialData: Company | null;
   onCloseForm?: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -35,7 +32,7 @@ export function CompanyForm({
   isRecruiter = false,
   isLoading,
 }: CompanyFormProps) {
-  const [formData, setFormData] = useState<CreateAndUpdateRequestDto>({
+  const [formData, setFormData] = useState<CompanyData>({
     name: "",
     description: "",
     address: "",
@@ -61,18 +58,8 @@ export function CompanyForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // DATA PREPARATION
-    const data = new FormData();
-    data.append(
-      "company",
-      new Blob([JSON.stringify(formData)], { type: "application/json" }),
-    );
-    if (logoFile) {
-      data.append("logoFile", logoFile);
-    }
-
     // SUBMIT
-    await onSubmit(data, initialData?.id);
+    await onSubmit(formData, logoFile, initialData?.id);
 
     // HANDLE AFTER SUBMIT
     if (!isRecruiter) handleReset();
@@ -81,7 +68,7 @@ export function CompanyForm({
   };
 
   const handleChange = (
-    field: keyof CreateAndUpdateRequestDto,
+    field: keyof CompanyData,
     value: string,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

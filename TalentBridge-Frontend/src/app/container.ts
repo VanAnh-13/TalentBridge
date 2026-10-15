@@ -29,3 +29,8 @@ import { HttpRoleRepository } from "@/features/access/infrastructure/HttpRoleRep
 
 export const roles = createRoleUseCases(new HttpRoleRepository());
 export const permissions = createPermissionUseCases(new HttpPermissionRepository());
+
+import { createCompanyUseCases } from "@/features/company/application/companyUseCases";
+import { HttpCompanyRepository } from "@/features/company/infrastructure/HttpCompanyRepository";
+
+export const companies = createCompanyUseCases(new HttpCompanyRepository());

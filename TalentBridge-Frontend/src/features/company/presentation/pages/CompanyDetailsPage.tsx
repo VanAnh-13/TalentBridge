@@ -8,23 +8,23 @@ import {
   BreadcrumbSeparator,
 } from "@/shared/presentation/ui/breadcrumb.tsx";
 import { errorMessage } from "@/shared/domain/errors";
-import { findCompanyById } from "@/services/companyApi.ts";
+import { companies as companyUseCases } from "@/app/container";
 import { findJobByCompanyId } from "@/services/jobApi.ts";
-import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
+import type { Company } from "../../domain/company";
 import type { Job } from "@/types/job";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import CompanySection from "../../commons/company-details-components/CompanySection.tsx";
-import JobsSection from "../../commons/company-details-components/JobsSection.tsx";
+import CompanySection from "../components/CompanySection.tsx";
+import JobsSection from "../components/CompanyJobsSection.tsx";
 
 type CompanyDetailsProp = {
-  initialCompany?: DefaultCompanyResponseDto;
+  initialCompany?: Company;
 };
 
 const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [company, setCompany] = useState<DefaultCompanyResponseDto | undefined>(
+  const [company, setCompany] = useState<Company | undefined>(
     initialCompany,
   );
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -40,7 +40,7 @@ const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
     const fetchCompany = async () => {
       setIsLoading(true);
       try {
-        const res = (await findCompanyById(parseInt(id))).data.data;
+        const res = await companyUseCases.find(parseInt(id));
         const jobRes = (await findJobByCompanyId(parseInt(id))).data.data;
         setCompany(res);
         setJobs(jobRes || []);
