@@ -1,9 +1,9 @@
 package com.example.talentbridge.init;
 
-import com.example.talentbridge.model.Role;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
 import com.example.talentbridge.model.User;
 import com.example.talentbridge.model.constant.Gender;
-import com.example.talentbridge.repository.RoleRepository;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 import com.example.talentbridge.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class DataValidator implements CommandLineRunner {
     private static final String LEGACY_ADMIN_EMAIL = "admin@talentbridge.com";
     private static final String LEGACY_ADMIN_PASSWORD = "admin123";
 
-    private final RoleRepository roleRepository;
+    private final RoleJpaRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -74,7 +74,7 @@ public class DataValidator implements CommandLineRunner {
         if (bootstrapAdminEmail.isBlank() || bootstrapAdminPassword.isBlank()) return;
         if (userRepository.existsByEmail(bootstrapAdminEmail)) return;
 
-        Role adminRole = roleRepository.findByName("ADMIN")
+        RoleJpaEntity adminRole = roleRepository.findByName("ADMIN")
                 .orElseThrow(() -> new IllegalStateException("ADMIN role not found"));
 
         User admin = new User();

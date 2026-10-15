@@ -11,9 +11,9 @@ import com.example.talentbridge.dto.response.auth.AuthTokenResponseDto;
 import com.example.talentbridge.dto.response.auth.SessionMetaResponse;
 import com.example.talentbridge.dto.response.user.UserDetailsResponseDto;
 import com.example.talentbridge.dto.response.user.UserSessionResponseDto;
-import com.example.talentbridge.model.Role;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
 import com.example.talentbridge.model.User;
-import com.example.talentbridge.repository.RoleRepository;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 import com.example.talentbridge.repository.UserRepository;
 import com.example.talentbridge.service.RefreshTokenRedisService;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +46,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
 
     private final RefreshTokenRedisService refreshTokenRedisService;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleJpaRepository roleRepository;
 
     @Value("${jwt.access-token-expiration}")
     public Long accessTokenExpiration;
@@ -72,7 +72,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
                 userRegisterRequestDto.getGender()
         );
 
-        Role role;
+        RoleJpaEntity role;
         if (userRegisterRequestDto.isRecruiter())
             role = roleRepository
                     .findByName("RECRUITER")
@@ -216,7 +216,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         if (user == null)
             throw new EntityNotFoundException("Không tìm thấy người dùng");
 
-        Role role = user.getRole();
+        RoleJpaEntity role = user.getRole();
         List<String> permissions = null;
         if (user.getRole() != null && user.getRole().getPermissions() != null)
             permissions = role
@@ -302,7 +302,7 @@ public class AuthServiceImpl implements com.example.talentbridge.service.AuthSer
         JwsHeader jwsHeader = JwsHeader.with(AuthConfiguration.MAC_ALGORITHM).build();
 
         // Payload
-        Role role = user.getRole();
+        RoleJpaEntity role = user.getRole();
         List<String> permissions = role != null && role.getPermissions() != null
                 ? role.getPermissions().stream().map(p -> p.getMethod() + " " + p.getApiPath()).toList()
                 : List.of();

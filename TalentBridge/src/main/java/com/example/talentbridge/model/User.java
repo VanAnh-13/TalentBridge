@@ -1,5 +1,7 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,7 +55,7 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "role_id")
     @ToString.Exclude
-    private Role role;
+    private RoleJpaEntity role;
 
     public User(String email, String name, String password, LocalDate dob, String address, Gender gender) {
         this.email = email;

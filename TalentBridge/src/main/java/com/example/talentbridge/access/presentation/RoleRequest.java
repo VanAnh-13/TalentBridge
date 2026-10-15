@@ -1,9 +1,8 @@
-package com.example.talentbridge.dto.request.role;
+package com.example.talentbridge.access.presentation;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DefaultRoleRequestDto {
+public class RoleRequest {
 
     @NotBlank(message = "Tên chức vụ không được để trống")
     private String name;
@@ -33,5 +32,9 @@ public class DefaultRoleRequestDto {
     public static class PermissionId {
         @NotNull(message = "ID quyền hạn không được để trống")
         private Long id;
+    }
+
+    public List<Long> permissionIds() {
+        return permissions == null ? null : permissions.stream().map(PermissionId::getId).toList();
     }
 }

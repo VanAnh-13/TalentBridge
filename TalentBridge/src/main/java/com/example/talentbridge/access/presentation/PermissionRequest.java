@@ -1,4 +1,4 @@
-package com.example.talentbridge.dto.request.permission;
+package com.example.talentbridge.access.presentation;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DefaultPermissionRequestDto {
+public class PermissionRequest {
 
     @NotBlank(message = "Tên không được để trống")
     private String name;
@@ -21,5 +21,4 @@ public class DefaultPermissionRequestDto {
 
     @NotBlank(message = "Module không được để trống")
     private String module;
-    
 }

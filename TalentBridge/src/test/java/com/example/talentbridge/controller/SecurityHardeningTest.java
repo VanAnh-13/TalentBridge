@@ -3,7 +3,7 @@ package com.example.talentbridge.controller;
 import com.example.talentbridge.init.DataValidator;
 import com.example.talentbridge.model.User;
 import com.example.talentbridge.model.constant.Gender;
-import com.example.talentbridge.repository.RoleRepository;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 import com.example.talentbridge.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class SecurityHardeningTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired UserRepository userRepository;
-    @Autowired RoleRepository roleRepository;
+    @Autowired RoleJpaRepository roleRepository;
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired DataValidator dataValidator;
 

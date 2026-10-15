@@ -1,5 +1,7 @@
 package com.example.talentbridge.controller;
 
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
+
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository;
 
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
@@ -54,7 +56,7 @@ class PermissionModelTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired UserRepository userRepository;
-    @Autowired RoleRepository roleRepository;
+    @Autowired RoleJpaRepository roleRepository;
     @Autowired CompanyRepository companyRepository;
     @Autowired JobRepository jobRepository;
     @Autowired ResumeRepository resumeRepository;

@@ -9,10 +9,10 @@ import com.example.talentbridge.dto.request.user.UserUpdateRequestDto;
 import com.example.talentbridge.dto.response.user.DefaultUserResponseDto;
 import com.example.talentbridge.model.Company;
 import com.example.talentbridge.model.Resume;
-import com.example.talentbridge.model.Role;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
 import com.example.talentbridge.model.User;
 import com.example.talentbridge.repository.CompanyRepository;
-import com.example.talentbridge.repository.RoleRepository;
+import com.example.talentbridge.access.infrastructure.persistence.RoleJpaRepository;
 import com.example.talentbridge.repository.UserRepository;
 import com.example.talentbridge.service.S3Service;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
 
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
-    private final RoleRepository roleRepository;
+    private final RoleJpaRepository roleRepository;
 
     private final S3Service s3Service;
 
@@ -237,7 +237,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
     }
 
     private void handleSetRole(User user, Long id) {
-        Role role = roleRepository
+        RoleJpaEntity role = roleRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy chức vụ"));
         user.setRole(role);

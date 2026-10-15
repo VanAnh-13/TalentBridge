@@ -1,8 +1,13 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.access.infrastructure.persistence;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.example.talentbridge.model.User;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Set;
@@ -13,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Role extends BaseEntity {
+public class RoleJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,21 +41,9 @@ public class Role extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
     @ToString.Exclude
-    private Set<Permission> permissions;
+    private Set<PermissionJpaEntity> permissions;
 
     @OneToMany(mappedBy = "role")
     @ToString.Exclude
     private List<User> users;
-
-    public Role(String name, String description) {
-        this.name = name;
-        this.description = description;
-        this.active = true;
-    }
-
-    public Role(String name, String description, boolean active) {
-        this.name = name;
-        this.description = description;
-        this.active = active;
-    }
 }

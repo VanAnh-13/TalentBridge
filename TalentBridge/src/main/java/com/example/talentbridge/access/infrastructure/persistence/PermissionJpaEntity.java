@@ -1,11 +1,11 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.access.infrastructure.persistence;
 
+import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 
 import java.util.Set;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Permission extends BaseEntity {
+public class PermissionJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +38,5 @@ public class Permission extends BaseEntity {
     private String module;
 
     @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles;
-
-    public Permission(String name, String apiPath, String method, String module) {
-        this.name = name;
-        this.apiPath = apiPath;
-        this.method = method;
-        this.module = module;
-    }
+    private Set<RoleJpaEntity> roles;
 }
