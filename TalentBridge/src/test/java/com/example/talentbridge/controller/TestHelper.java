@@ -17,13 +17,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TestHelper {
 
     // Admin credentials - should be seeded in test database
-    private static final String ADMIN_EMAIL = "admin@talentbridge.com";
+    private static final String ADMIN_EMAIL = "test-admin@talentbridge.com";
     private static final String ADMIN_PASSWORD = "Admin@123456";
 
     public static String getAdminToken(MockMvc mockMvc, ObjectMapper objectMapper) throws Exception {
         UserLoginRequestDto loginDto = new UserLoginRequestDto();
         loginDto.setEmail(ADMIN_EMAIL);
         loginDto.setPassword(ADMIN_PASSWORD);
+        loginDto.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
 
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -32,13 +33,14 @@ public class TestHelper {
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        return objectMapper.readTree(response).get("data").get("access_token").asText();
+        return objectMapper.readTree(response).get("data").get("accessToken").asText();
     }
 
     public static String getUserToken(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password) throws Exception {
         UserLoginRequestDto loginDto = new UserLoginRequestDto();
         loginDto.setEmail(email);
         loginDto.setPassword(password);
+        loginDto.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
 
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +49,7 @@ public class TestHelper {
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        return objectMapper.readTree(response).get("data").get("access_token").asText();
+        return objectMapper.readTree(response).get("data").get("accessToken").asText();
     }
 
     public static Long createJobForCompany(MockMvc mockMvc, ObjectMapper objectMapper, String token, Long companyId) throws Exception {

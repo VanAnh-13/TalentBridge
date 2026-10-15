@@ -64,7 +64,7 @@ public class AuthControllerTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message", containsString("already exists")));
     }
 
@@ -75,18 +75,18 @@ public class AuthControllerTest {
         UserLoginRequestDto request = new UserLoginRequestDto();
         request.setEmail(testEmail);
         request.setPassword(testPassword);
+        request.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
 
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.access_token").exists())
-                .andExpect(jsonPath("$.data.refresh_token").exists())
+                .andExpect(jsonPath("$.data.accessToken").exists())
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
         JsonNode jsonResponse = objectMapper.readTree(response);
-        accessToken = jsonResponse.get("data").get("access_token").asText();
+        accessToken = jsonResponse.get("data").get("accessToken").asText();
         
         // Get refresh token from cookie
         refreshToken = result.getResponse().getCookie("refresh_token").getValue();
@@ -99,6 +99,7 @@ public class AuthControllerTest {
         UserLoginRequestDto request = new UserLoginRequestDto();
         request.setEmail(testEmail);
         request.setPassword("WrongPassword@123");
+        request.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -114,6 +115,7 @@ public class AuthControllerTest {
         UserLoginRequestDto request = new UserLoginRequestDto();
         request.setEmail("nonexistent@test.com");
         request.setPassword("Password@123");
+        request.setSessionMetaRequest(new com.example.talentbridge.dto.request.auth.SessionMetaRequest("test-device", "test", "junit"));
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

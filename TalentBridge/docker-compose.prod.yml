@@ -70,7 +70,7 @@ services:
       SPRING_CACHE_TYPE: redis
       
       # JWT Configuration
-      JWT_SECRET: ${JWT_SECRET:-your-production-secret-key-change-this-to-something-very-secure-at-least-256-bits}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
       JWT_ACCESS_TOKEN_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-900}
       JWT_REFRESH_TOKEN_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-86400}
       

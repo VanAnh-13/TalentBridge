@@ -59,6 +59,11 @@ public class AuthConfiguration {
 
     public SecretKey getSecretKey() {
         byte[] keyBytes = Base64.from(jwtKey).decode();
+        if (keyBytes.length < 64) {
+            throw new IllegalStateException(
+                    "jwt.secret must be a Base64 string decoding to at least 64 bytes for HS512 "
+                            + "(generate one with: openssl rand -base64 64)");
+        }
 
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, MAC_ALGORITHM.getName());
     }
