@@ -1,23 +1,23 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
+} from "@/shared/presentation/ui/dialog.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Search, Building2, X } from "lucide-react";
 import { toast } from "sonner";
 import type { CompanySummary } from "@/types/job";
 import { findAllCompanies } from "@/services/companyApi.ts";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
-import Pagination from "@/components/custom/Pagination.tsx";
+import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface CompanySelectionProps {

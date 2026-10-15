@@ -1,5 +1,5 @@
-import { EmptyState } from "@/components/custom/EmptyState";
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
+import { EmptyState } from "@/shared/presentation/components/EmptyState";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { findAllCompanies } from "@/services/companyApi";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";

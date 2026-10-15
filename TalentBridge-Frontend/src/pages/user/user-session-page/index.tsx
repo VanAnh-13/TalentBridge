@@ -3,17 +3,17 @@ import { getSessions, removeSessionId } from "@/services/authApi";
 import type { SessionMetaResponse } from "@/types/user";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
+import { Button } from "@/shared/presentation/ui/button";
+import { Skeleton } from "@/shared/presentation/ui/skeleton";
 import { LogOut, Shield, Clock, AlertTriangle } from "lucide-react";
 import {
   getBrowserInfo,
   getDeviceIcon,
   getLocationInfo,
 } from "@/utils/sessionHelper";
-import { formatLoginTime } from "@/utils/convertHelper";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
+import { formatLoginTime } from "@/shared/presentation/format";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 
 const UserSessionPage = () => {
   // Data

@@ -1,16 +1,16 @@
 "use client";
 
 import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
+import { Button } from "@/shared/presentation/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/presentation/ui/select";
 
 interface JobSearchSectionProps {
   searchName: string;

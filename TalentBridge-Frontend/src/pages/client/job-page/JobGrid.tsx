@@ -7,13 +7,13 @@ import {
   DollarSign,
   Clock,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
-import { EmptyState } from "@/components/custom/EmptyState";
+import { Card, CardContent } from "@/shared/presentation/ui/card";
+import { Badge } from "@/shared/presentation/ui/badge";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
+import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { useNavigate } from "react-router-dom";
-import { formatISO, formatSalary } from "@/utils/convertHelper.ts";
-import { levelColors, levelLabels } from "@/utils/tagColorMapper.ts";
+import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
+import { levelColors, levelLabels } from "@/shared/presentation/tagColors.ts";
 
 type JobGridProps = {
   isLoading: boolean;

@@ -4,9 +4,9 @@ import type {
 } from "@/types/role.d.ts";
 import { useEffect, useState } from "react";
 import { RoleSearchSection } from "@/pages/admin/access-control-page/role-page/RoleSearchSection.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Plus } from "lucide-react";
-import Pagination from "@/components/custom/Pagination.tsx";
+import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import {
   deleteRoleById,
   findAllRoles,

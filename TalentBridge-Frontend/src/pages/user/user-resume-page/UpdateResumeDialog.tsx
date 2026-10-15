@@ -1,19 +1,19 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import { FileEdit, Upload, X, FileText } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import PDFViewer from "@/components/custom/PDFViewer";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/shared/presentation/ui/dialog";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
+import PDFViewer from "@/shared/presentation/components/PDFViewer";
+import { ScrollArea } from "@/shared/presentation/ui/scroll-area";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
-import { checkFileSizeAndFileType } from "@/utils/fileMetadata";
+import { checkFileSizeAndFileType } from "@/shared/presentation/files";
 
 interface UpdateResumeDialogProps {
   onSubmitFile: (file: File) => Promise<void>;

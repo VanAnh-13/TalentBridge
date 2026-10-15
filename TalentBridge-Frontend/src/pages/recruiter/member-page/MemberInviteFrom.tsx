@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/shared/presentation/ui/button";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
 import { useState } from "react";
 
 interface MemberInviteFromProps {

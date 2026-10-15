@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { Clock } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/shared/presentation/ui/sidebar";
 import { useAppSelector } from "@/features/hooks";
 import UserMenu from "@/pages/commons/UserMenu.tsx";
 

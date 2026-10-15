@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Checkbox } from "@/components/ui/checkbox.tsx";
+} from "@/shared/presentation/ui/dialog.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
+import { Checkbox } from "@/shared/presentation/ui/checkbox.tsx";
 import { Search, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 import { findAllSkills } from "@/services/skillApi.ts";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
 import type { SkillSummary } from "@/types/job";
 import type { DefaultSkillResponseDto } from "@/types/skill.d.ts";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import Pagination from "@/components/custom/Pagination.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface SkillSelectionProps {

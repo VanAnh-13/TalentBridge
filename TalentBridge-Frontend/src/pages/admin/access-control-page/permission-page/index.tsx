@@ -12,9 +12,9 @@ import type {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PermissionSearchSection } from "./PermissionSearchSection";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import { Plus } from "lucide-react";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 import { PermissionTable } from "./PermissionTable";
 import { PermissionForm } from "./PermissionForm";
 

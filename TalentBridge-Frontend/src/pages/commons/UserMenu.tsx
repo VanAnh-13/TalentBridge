@@ -6,7 +6,7 @@ import {
   Shield,
   Mail,
 } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,16 +14,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
+} from "@/shared/presentation/ui/dropdown-menu.tsx";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar.tsx";
+} from "@/shared/presentation/ui/avatar.tsx";
 import { useAppDispatch, useAppSelector } from "@/features/hooks.ts";
 import { logout } from "@/features/slices/auth/authThunk.ts";
 import { Link } from "react-router-dom";
-import { Badge } from "../../components/ui/badge.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import HasPermission from "./HasPermission.tsx";
 import { useEffect, useState } from "react";
 

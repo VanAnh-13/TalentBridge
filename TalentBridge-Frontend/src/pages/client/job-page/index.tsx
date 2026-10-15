@@ -5,7 +5,7 @@ import { JobSearchSection } from "./JobSearchSection";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { findAllJobs } from "@/services/jobApi";
 import { toast } from "sonner";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 
 export default function JobClientPage() {
   // ============================

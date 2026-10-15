@@ -17,9 +17,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/shared/presentation/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/presentation/lib/utils";
 import { useAppSelector } from "@/features/hooks.ts";
 
 interface MenuItem {

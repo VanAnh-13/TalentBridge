@@ -1,9 +1,9 @@
 import type React from "react";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/shared/presentation/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
 import type { SelfUserUpdatePasswordRequestDto } from "@/types/user.d.ts";
 import { Eye, EyeOff, Lock, X } from "lucide-react";
 import { useState } from "react";

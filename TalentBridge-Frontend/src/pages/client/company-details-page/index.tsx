@@ -1,4 +1,4 @@
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb.tsx";
+} from "@/shared/presentation/ui/breadcrumb.tsx";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
 import { findCompanyById } from "@/services/companyApi.ts";
 import { findJobByCompanyId } from "@/services/jobApi.ts";

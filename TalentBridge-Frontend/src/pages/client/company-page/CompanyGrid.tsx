@@ -1,9 +1,9 @@
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { Building2, MapPin } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { getFirstLineFromHtml } from "@/utils/convertHelper.ts";
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
-import { EmptyState } from "@/components/custom/EmptyState";
+import { Card, CardContent } from "@/shared/presentation/ui/card";
+import { getFirstLineFromHtml } from "@/shared/presentation/format.ts";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
+import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { useNavigate } from "react-router-dom";
 
 type CompanyGridProps = {

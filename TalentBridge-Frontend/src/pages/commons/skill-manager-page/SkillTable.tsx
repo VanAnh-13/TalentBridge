@@ -1,5 +1,5 @@
 import { Edit, Trash2, Wrench } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Table,
   TableBody,
@@ -7,12 +7,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table.tsx";
+} from "@/shared/presentation/ui/table.tsx";
 import type { DefaultSkillResponseDto } from "@/types/skill.d.ts";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog.tsx";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
-import { formatISO } from "@/utils/convertHelper.ts";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
+import { formatISO } from "@/shared/presentation/format.ts";
 import HasPermission from "@/pages/commons/HasPermission.tsx";
 
 interface SkillTableProps {

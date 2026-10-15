@@ -1,5 +1,5 @@
 import { KeyRound, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Table,
   TableBody,
@@ -7,13 +7,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table.tsx";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog.tsx";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
+} from "@/shared/presentation/ui/table.tsx";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 
 import type { RecruiterInfoResponseDto } from "@/types/user";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/shared/presentation/ui/badge";
 
 interface MemberTableProps {
   users: RecruiterInfoResponseDto[];

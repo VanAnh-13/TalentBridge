@@ -1,17 +1,17 @@
 import type React from "react";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/shared/presentation/ui/button";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+} from "@/shared/presentation/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,7 +19,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@/shared/presentation/ui/breadcrumb";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { UserCreateRequestDto, UserUpdateRequestDto } from "@/types/user";

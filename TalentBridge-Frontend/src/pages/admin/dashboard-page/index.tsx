@@ -16,7 +16,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/shared/presentation/ui/card";
 
 export default function DashboardPage() {
   // const stats = [

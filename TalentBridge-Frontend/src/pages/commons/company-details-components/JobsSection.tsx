@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/badge.tsx";
-import { ScrollArea } from "@/components/ui/scroll-area.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
+import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
 import type { Job } from "@/types/job";
-import { formatISO, formatSalary } from "@/utils/convertHelper.ts";
+import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
 import { useNavigate } from "react-router-dom";
 
 type JobsSection = {

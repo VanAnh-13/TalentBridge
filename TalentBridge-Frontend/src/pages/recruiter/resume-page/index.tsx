@@ -4,7 +4,7 @@ import type {
 } from "@/types/resume";
 import { useEffect, useState } from "react";
 import { ResumeSearchSection } from "../../commons/resume-manager-components/ResumeSearchSection.tsx";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 import {
   findAllResumesForRecruiterCompany,
   updateResumeStatusForRecruiterCompany

@@ -10,13 +10,13 @@ import {
   Users,
   Building2,
 } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog.tsx";
-import { formatISO } from "@/utils/convertHelper.ts";
+import { Button } from "@/shared/presentation/ui/button.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
+import { Separator } from "@/shared/presentation/ui/separator.tsx";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
+import { formatISO } from "@/shared/presentation/format.ts";
 import type { Job } from "@/types/job";
-import RichTextPreview from "@/components/custom/RichText/index-preview.tsx";
+import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 
 interface JobDetailsSidebarProps {
   job: Job | null;

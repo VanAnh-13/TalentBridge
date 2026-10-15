@@ -18,10 +18,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+} from "@/shared/presentation/ui/card";
+import { Button } from "@/shared/presentation/ui/button";
+import { Badge } from "@/shared/presentation/ui/badge";
+import { Separator } from "@/shared/presentation/ui/separator";
 
 import {
   Bell,
@@ -34,9 +34,9 @@ import {
   User,
   Wrench,
 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/shared/presentation/ui/alert";
 import SkillSelection from "@/pages/commons/SkillSelection";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 
 const UserSubscriberPage = () => {
   // Data

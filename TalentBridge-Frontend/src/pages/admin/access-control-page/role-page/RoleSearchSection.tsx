@@ -1,7 +1,7 @@
 import { RotateCcw } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Label } from "@/shared/presentation/ui/label";
+import { Input } from "@/shared/presentation/ui/input";
+import { Button } from "@/shared/presentation/ui/button";
 
 interface RoleSearchSectionProps {
   searchRoleName: string;

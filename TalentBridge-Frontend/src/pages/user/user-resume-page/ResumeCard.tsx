@@ -4,16 +4,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/shared/presentation/ui/card";
+import { Button } from "@/shared/presentation/ui/button";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
-import PDFViewer from "@/components/custom/PDFViewer";
+import PDFViewer from "@/shared/presentation/components/PDFViewer";
 import { FileX, MapPin, Sparkles } from "lucide-react";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 import JobInfoDialog from "./JobInfoDialog";
 import { UpdateResumeDialog } from "./UpdateResumeDialog";
-import { formatISO } from "@/utils/convertHelper.ts";
-import { Badge } from "@/components/ui/badge";
+import { formatISO } from "@/shared/presentation/format.ts";
+import { Badge } from "@/shared/presentation/ui/badge";
 
 type Props = {
   resume: ResumeForDisplayResponseDto;

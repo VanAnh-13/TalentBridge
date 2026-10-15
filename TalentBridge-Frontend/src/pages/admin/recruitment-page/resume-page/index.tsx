@@ -4,7 +4,7 @@ import type {
 } from "@/types/resume";
 import { useEffect, useState } from "react";
 import { ResumeSearchSection } from "../../../commons/resume-manager-components/ResumeSearchSection.tsx";
-import Pagination from "@/components/custom/Pagination.tsx";
+import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { findAllResumes, updateResumeStatus } from "@/services/resumeApi.ts";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
 import { toast } from "sonner";

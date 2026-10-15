@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -17,7 +17,7 @@ import type {
   DefaultSkillResponseDto,
   updateSkillRequestDto,
 } from "@/types/skill.d.ts";
-import Pagination from "@/components/custom/Pagination.tsx";
+import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
 import { SkillForm } from "./SkillForm.tsx";
 import { SkillSearchSection } from "./SkillSearchSection.tsx";

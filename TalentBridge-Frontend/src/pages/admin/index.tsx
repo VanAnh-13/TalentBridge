@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/shared/presentation/ui/sidebar";
 import { useAppSelector } from "@/features/hooks";
 import { Navigate, Outlet } from "react-router-dom";
 import { AdminTopBar } from "./Topbar";

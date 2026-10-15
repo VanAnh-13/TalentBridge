@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 
 import { Plus } from "lucide-react";
 import type { Job } from "@/types/job";
@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { deleteJobById, findAllJobs } from "@/services/jobApi";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 
 import { JobDetailsSidebar } from "../../../commons/job-manager-components/JobDetailsSidebar.tsx";
 import { JobTable } from "../../../commons/job-manager-components/JobTable.tsx";

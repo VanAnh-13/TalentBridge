@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { X, Building2, MapPin, Calendar, Edit, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/shared/presentation/ui/button";
+import { Badge } from "@/shared/presentation/ui/badge";
+import { Separator } from "@/shared/presentation/ui/separator";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
-import { formatISO } from "@/utils/convertHelper.ts";
-import RichTextPreview from "@/components/custom/RichText/index-preview";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
+import { formatISO } from "@/shared/presentation/format.ts";
+import RichTextPreview from "@/shared/presentation/components/RichText/index-preview";
 
 interface CompanyDetailsSidebarProps {
   company: DefaultCompanyResponseDto | null;

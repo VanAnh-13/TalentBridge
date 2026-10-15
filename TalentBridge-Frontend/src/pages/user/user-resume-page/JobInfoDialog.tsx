@@ -5,13 +5,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/shared/presentation/ui/dialog";
+import { Button } from "@/shared/presentation/ui/button";
 import { BookText } from "lucide-react";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
-import RichTextPreview from "@/components/custom/RichText/index-preview";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+import RichTextPreview from "@/shared/presentation/components/RichText/index-preview";
+import { ScrollArea } from "@/shared/presentation/ui/scroll-area";
+import { Badge } from "@/shared/presentation/ui/badge";
 
 type Props = {
   job: ResumeForDisplayResponseDto["job"];

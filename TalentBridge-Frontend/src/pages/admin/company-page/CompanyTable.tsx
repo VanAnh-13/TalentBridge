@@ -5,14 +5,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/shared/presentation/ui/table";
 import { Building2, Edit } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
-import { EmptyState } from "@/components/custom/EmptyState";
-import { formatISO } from "@/utils/convertHelper.ts";
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
+import { EmptyState } from "@/shared/presentation/components/EmptyState";
+import { formatISO } from "@/shared/presentation/format.ts";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import HasPermission from "@/pages/commons/HasPermission.tsx";
 
 interface CompanyTableProps {

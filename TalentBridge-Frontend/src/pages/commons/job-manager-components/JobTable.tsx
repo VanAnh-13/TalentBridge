@@ -5,15 +5,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
+} from "@/shared/presentation/ui/table.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { Edit, Briefcase } from "lucide-react";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog.tsx";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import { formatISO } from "@/utils/convertHelper.ts";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import { formatISO } from "@/shared/presentation/format.ts";
 import type { Job } from "@/types/job";
-import { levelColors } from "@/utils/tagColorMapper.ts";
+import { levelColors } from "@/shared/presentation/tagColors.ts";
 import HasPermission from "@/pages/commons/HasPermission.tsx";
 
 interface JobTableProps {

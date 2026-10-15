@@ -1,5 +1,5 @@
 import { Edit, Trash2, Wrench } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import {
   Table,
   TableBody,
@@ -7,13 +7,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { DeleteConfirmDialog } from "@/components/custom/DeleteConfirmationDialog";
-import { EmptyState } from "@/components/custom/EmptyState";
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
-import { formatISO } from "@/utils/convertHelper.ts";
+} from "@/shared/presentation/ui/table";
+import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
+import { EmptyState } from "@/shared/presentation/components/EmptyState";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
+import { formatISO } from "@/shared/presentation/format.ts";
 import type { DefaultRoleResponseDto } from "@/types/role.d.ts";
-import { Badge } from "@/components/ui/badge.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import HasPermission from "@/pages/commons/HasPermission.tsx";
 
 interface RoleTableProps {

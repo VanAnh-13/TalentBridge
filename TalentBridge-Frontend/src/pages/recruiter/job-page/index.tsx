@@ -1,5 +1,5 @@
-import Pagination from "@/components/custom/Pagination";
-import { Button } from "@/components/ui/button";
+import Pagination from "@/shared/presentation/components/Pagination";
+import { Button } from "@/shared/presentation/ui/button";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { JobDetailsSidebar } from "@/pages/commons/job-manager-components/JobDetailsSidebar.tsx";
 import { JobSearchSection } from "@/pages/commons/job-manager-components/JobSearchSection.tsx";

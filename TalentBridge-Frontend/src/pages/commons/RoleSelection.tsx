@@ -1,23 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
+} from "@/shared/presentation/ui/dialog.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Search, Shield, X } from "lucide-react";
 import { toast } from "sonner";
 import { findAllRoles } from "@/services/roleApi.ts";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
-import Pagination from "@/components/custom/Pagination.tsx";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
+import Pagination from "@/shared/presentation/components/Pagination.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import type { RoleSummary } from "@/types/role";
 

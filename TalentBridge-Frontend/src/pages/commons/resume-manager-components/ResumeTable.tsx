@@ -1,5 +1,5 @@
 import { Edit, Wrench } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Table,
   TableBody,
@@ -7,10 +7,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table.tsx";
-import { EmptyState } from "@/components/custom/EmptyState.tsx";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
-import { formatISO } from "@/utils/convertHelper.ts";
+} from "@/shared/presentation/ui/table.tsx";
+import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
+import { formatISO } from "@/shared/presentation/format.ts";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
 import {
   Tooltip,
@@ -18,8 +18,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@radix-ui/react-tooltip";
-import { Badge } from "@/components/ui/badge.tsx";
-import { getResumeStatusColor } from "@/utils/tagColorMapper.ts";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
+import { getResumeStatusColor } from "@/shared/presentation/tagColors.ts";
 
 interface ResumeTableProps {
   resumes: ResumeForDisplayResponseDto[];

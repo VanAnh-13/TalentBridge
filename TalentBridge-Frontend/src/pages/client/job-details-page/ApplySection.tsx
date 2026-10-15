@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Send, Upload, X, FileText } from "lucide-react";
 import {
   Dialog,
@@ -8,17 +8,17 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
+} from "@/shared/presentation/ui/dialog.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
 import { toast } from "sonner";
 import { useAppSelector } from "@/features/hooks.ts";
-import PDFViewer from "@/components/custom/PDFViewer.tsx";
+import PDFViewer from "@/shared/presentation/components/PDFViewer.tsx";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
 import type { CreateResumeRequestDto } from "@/types/resume";
 import { saveResume } from "@/services/resumeApi.ts";
-import { ScrollArea } from "@/components/ui/scroll-area.tsx";
-import { checkFileSizeAndFileType } from "@/utils/fileMetadata.ts";
+import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
+import { checkFileSizeAndFileType } from "@/shared/presentation/files.ts";
 
 interface ApplySectionProps {
   jobId: number;

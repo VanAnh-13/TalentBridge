@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/shared/presentation/ui/dialog";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/shared/presentation/ui/badge";
 import type {
   DefaultPermissionRequestDto,
   DefaultPermissionResponseDto,
@@ -20,7 +20,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/presentation/ui/select";
 
 const METHOD_COLORS: Record<string, string> = {
   GET: "bg-green-500",

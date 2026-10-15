@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
+} from "@/shared/presentation/ui/dialog.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
 import type {
   DefaultSkillResponseDto,
   createSkillRequestDto,

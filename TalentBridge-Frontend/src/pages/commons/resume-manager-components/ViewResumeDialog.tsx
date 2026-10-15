@@ -4,27 +4,27 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog.tsx";
+} from "@/shared/presentation/ui/dialog.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { Button } from "@/components/ui/button.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
-import { ScrollArea } from "@/components/ui/scroll-area.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
+import { Badge } from "@/shared/presentation/ui/badge.tsx";
+import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select.tsx";
+} from "@/shared/presentation/ui/select.tsx";
 import { BetweenVerticalStart } from "lucide-react";
 
 import type {
   ResumeForDisplayResponseDto,
   UpdateResumeStatusRequestDto,
 } from "@/types/resume";
-import PDFViewer from "@/components/custom/PDFViewer.tsx";
-import RichTextPreview from "@/components/custom/RichText/index-preview.tsx";
-import { statusOptions } from "@/utils/tagColorMapper.ts";
+import PDFViewer from "@/shared/presentation/components/PDFViewer.tsx";
+import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
+import { statusOptions } from "@/shared/presentation/tagColors.ts";
 
 interface ViewResumeDialogProps {
   open: boolean;

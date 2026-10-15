@@ -1,14 +1,14 @@
 import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select.tsx";
+} from "@/shared/presentation/ui/select.tsx";
 
 interface JobSearchSectionProps {
   searchName: string;

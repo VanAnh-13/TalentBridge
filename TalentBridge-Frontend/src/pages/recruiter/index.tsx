@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/shared/presentation/ui/sidebar";
 import { Link, Outlet } from "react-router-dom";
 import { RecruiterSidebar } from "./Sidebar";
 import { RecruiterTopBar } from "./Topbar";
@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { findSelfCompany, saveSelfCompany } from "@/services/companyApi";
 import { CompanyForm } from "../admin/company-page/CompanyForm";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import { Building2 } from "lucide-react";
 
 const RecruiterPage = () => {

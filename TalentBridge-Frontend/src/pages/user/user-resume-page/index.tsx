@@ -1,5 +1,5 @@
 import { FileText } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { useEffect, useState, useCallback } from "react";
 import {
   findSelfResumes,
@@ -9,11 +9,11 @@ import {
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { toast } from "sonner";
 import { useAppSelector } from "@/features/hooks";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 import ResumeCard from "./ResumeCard";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
-import { EmptyState } from "@/components/custom/EmptyState";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
+import { EmptyState } from "@/shared/presentation/components/EmptyState";
 
 export default function UserResumePage() {
   const { user } = useAppSelector((state) => state.auth);

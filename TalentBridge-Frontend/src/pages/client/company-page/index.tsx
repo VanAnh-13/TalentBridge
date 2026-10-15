@@ -3,7 +3,7 @@ import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { findAllCompaniesWithJobsCount } from "@/services/companyApi";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 import CompanyGrid from "./CompanyGrid";
 import { CompanySearchSection } from "./CompanySearchSection";
 

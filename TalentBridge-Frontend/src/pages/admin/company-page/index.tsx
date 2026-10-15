@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import { CompanyForm } from "./CompanyForm";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import {
@@ -10,7 +10,7 @@ import {
   findAllCompanies,
   updateCompanyById,
 } from "@/services/companyApi";
-import Pagination from "@/components/custom/Pagination";
+import Pagination from "@/shared/presentation/components/Pagination";
 import { CompanyDetailsSidebar } from "./CompanyDetailsSidebar";
 import { CompanySearchSection } from "./CompanySearchSection";
 import { toast } from "sonner";

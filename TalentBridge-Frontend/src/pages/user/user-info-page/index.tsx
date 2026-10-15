@@ -1,8 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/presentation/ui/avatar";
+import { Badge } from "@/shared/presentation/ui/badge";
+import { Button } from "@/shared/presentation/ui/button";
+import { Card, CardContent } from "@/shared/presentation/ui/card";
+import { Skeleton } from "@/shared/presentation/ui/skeleton";
 import { useAppDispatch } from "@/features/hooks";
 import {
   getAccount,

@@ -1,29 +1,29 @@
 import type React from "react";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/presentation/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/shared/presentation/ui/dialog";
+import { Input } from "@/shared/presentation/ui/input";
+import { Label } from "@/shared/presentation/ui/label";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@/shared/presentation/ui/switch";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/shared/presentation/ui/collapsible";
 import type {
   DefaultRoleRequestDto,
   DefaultRoleResponseDto,
 } from "@/types/role";
 import type { DefaultPermissionResponseDto } from "@/types/permission";
-import { getMethodColor } from "@/utils/tagColorMapper";
+import { getMethodColor } from "@/shared/presentation/tagColors";
 
 interface RoleFormProps {
   open: boolean;

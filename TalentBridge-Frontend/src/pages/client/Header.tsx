@@ -1,8 +1,8 @@
 // src/components/layout/Header.tsx
 
 import { Home, Code, Building2, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/shared/presentation/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/shared/presentation/ui/sheet";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAppSelector } from "@/features/hooks";

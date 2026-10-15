@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { findJobById } from "@/services/jobApi.ts";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
-import LoadingSpinner from "@/components/custom/LoadingSpinner.tsx";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import type { Job } from "@/types/job";
 import {
   Breadcrumb,
@@ -12,7 +12,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb.tsx";
+} from "@/shared/presentation/ui/breadcrumb.tsx";
 import JobSection from "./JobSection.tsx";
 import { ApplySection } from "./ApplySection.tsx";
 import HasPermission from "@/pages/commons/HasPermission.tsx";

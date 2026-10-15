@@ -1,7 +1,7 @@
 import { RotateCcw } from "lucide-react";
-import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Label } from "@/shared/presentation/ui/label.tsx";
+import { Input } from "@/shared/presentation/ui/input.tsx";
+import { Button } from "@/shared/presentation/ui/button.tsx";
 
 interface ResumeSearchSectionProps {
   onReset: () => void;

@@ -1,5 +1,5 @@
-import LoadingSpinner from "@/components/custom/LoadingSpinner";
-import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
+import { Button } from "@/shared/presentation/ui/button";
 import { getErrorMessage } from "@/features/slices/auth/authThunk";
 import { CompanyForm } from "@/pages/admin/company-page/CompanyForm";
 import CompanySection from "@/pages/commons/company-details-components/CompanySection";
