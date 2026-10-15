@@ -1,7 +1,7 @@
-package com.example.talentbridge.notification.infrastructure.mail;
+package com.example.talentbridge.digest.infrastructure.mail;
 
-import com.example.talentbridge.notification.application.port.DigestMailer;
-import com.example.talentbridge.notification.domain.JobDigest;
+import com.example.talentbridge.digest.application.port.DigestMailer;
+import com.example.talentbridge.digest.domain.JobDigest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

@@ -22,10 +22,17 @@ spring:
                 - Path=/actuator/**
               filters:
                 - SetStatus=404
-            - id: realtime
-              uri: ${MONOLITH_WS_URI:lb:ws://monolith}
+            # extracted: in-app notifications and the browsers' live channel (STOMP over WebSocket)
+            - id: notification-service-ws
+              uri: ${NOTIFICATION_WS_URI:lb:ws://notification-service}
               predicates:
                 - Path=/ws/**
+            - id: notification-service
+              uri: ${NOTIFICATION_URI:lb://notification-service}
+              predicates:
+                - Path=/notifications/**
+              filters:
+                - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials Vary, RETAIN_UNIQUE
             - id: monolith
               uri: ${MONOLITH_URI:lb://monolith}
               predicates:

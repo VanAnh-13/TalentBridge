@@ -1,4 +1,4 @@
-package com.example.talentbridge.notification.presentation;
+package com.example.talentbridge.digest.presentation;
 
 import com.example.talentbridge.controller.TestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;

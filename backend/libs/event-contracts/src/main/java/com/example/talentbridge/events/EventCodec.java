@@ -25,6 +25,11 @@ public final class EventCodec {
         return new EventEnvelope(UUID.randomUUID().toString(), type, version, occurredAt, JSON.valueToTree(payload));
     }
 
+    /** Any value as a JSON tree, e.g. the data of a {@link RealtimePush}. */
+    public static com.fasterxml.jackson.databind.JsonNode toJson(Object value) {
+        return JSON.valueToTree(value);
+    }
+
     public static String write(EventEnvelope envelope) {
         try {
             return JSON.writeValueAsString(envelope);

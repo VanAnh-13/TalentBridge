@@ -14,6 +14,14 @@ jwt:
   issuer: talentbridge-auth
   jwk-set-uri: ${JWKS_URI:http://localhost:8081/.well-known/jwks.json}
 
+# API contract of every service: ?page= is 1-based, at most 20 items per page
+spring:
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        max-page-size: 20
+
 management:
   endpoints:
     web:

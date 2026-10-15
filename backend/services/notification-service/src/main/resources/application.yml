@@ -1,0 +1,61 @@
+server:
+  port: ${PORT:8082}
+
+spring:
+  application:
+    name: notification-service
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+  cloud:
+    config:
+      enabled: ${CONFIG_SERVER_ENABLED:false}
+  # Its own database. Development: an H2 file next to the process; production: see application-prod.yml.
+  datasource:
+    url: ${DB_URL:jdbc:h2:file:./data/notification-db;MODE=MySQL;DATABASE_TO_LOWER=TRUE;AUTO_SERVER=TRUE}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+    listener:
+      # start even when Kafka is not up yet; listeners connect as soon as it is
+      missing-topics-fatal: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  # API contract shared with every TalentBridge service: ?page= is 1-based, at most 20 items per page
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        max-page-size: 20
+
+# Access tokens are issued by the monolith's auth module; this service only verifies them (security-lib).
+jwt:
+  issuer: talentbridge-auth
+  jwk-set-uri: ${JWKS_URI:http://localhost:8080/.well-known/jwks.json}
+
+eureka:
+  client:
+    enabled: ${EUREKA_ENABLED:false}
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  health:
+    # a broker that is briefly away must not mark the service down: consumers resume on their own
+    kafka:
+      enabled: false

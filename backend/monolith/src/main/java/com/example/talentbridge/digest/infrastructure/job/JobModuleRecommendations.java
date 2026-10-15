@@ -1,7 +1,7 @@
-package com.example.talentbridge.notification.infrastructure.job;
+package com.example.talentbridge.digest.infrastructure.job;
 
-import com.example.talentbridge.notification.application.port.JobRecommendations;
-import com.example.talentbridge.notification.domain.DigestJob;
+import com.example.talentbridge.digest.application.port.JobRecommendations;
+import com.example.talentbridge.digest.domain.DigestJob;
 import com.example.talentbridge.job.application.RecommendJobs;
 import com.example.talentbridge.job.domain.JobDetails;
 import lombok.RequiredArgsConstructor;

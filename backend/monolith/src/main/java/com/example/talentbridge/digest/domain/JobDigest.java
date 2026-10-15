@@ -1,4 +1,4 @@
-package com.example.talentbridge.notification.domain;
+package com.example.talentbridge.digest.domain;
 
 import java.util.List;
 

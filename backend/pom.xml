@@ -24,6 +24,7 @@
         <module>platform/discovery-server</module>
         <module>platform/config-server</module>
         <module>platform/api-gateway</module>
+        <module>services/notification-service</module>
     </modules>
 
     <properties>

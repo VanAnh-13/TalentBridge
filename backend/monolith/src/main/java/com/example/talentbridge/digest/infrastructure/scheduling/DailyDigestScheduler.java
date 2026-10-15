@@ -1,6 +1,6 @@
-package com.example.talentbridge.notification.infrastructure.scheduling;
+package com.example.talentbridge.digest.infrastructure.scheduling;
 
-import com.example.talentbridge.notification.application.SendJobDigest;
+import com.example.talentbridge.digest.application.SendJobDigest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.scheduling.annotation.Scheduled;

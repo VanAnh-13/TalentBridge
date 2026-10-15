@@ -1,6 +1,6 @@
-package com.example.talentbridge.notification.infrastructure.mail;
+package com.example.talentbridge.digest.infrastructure.mail;
 
-import com.example.talentbridge.notification.domain.DigestJob;
+import com.example.talentbridge.digest.domain.DigestJob;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

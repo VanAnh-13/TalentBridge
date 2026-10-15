@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,6 +34,12 @@ class InterviewApiTest {
 
     final String sfx = String.valueOf(System.nanoTime());
     String recruiter, colleague, outsider, candidate, otherCandidate;
+    long recruiterId, candidateId;
+    @Autowired com.example.talentbridge.shared.infrastructure.messaging.OutboxEventJpaRepository outbox;
+
+    private com.example.talentbridge.support.OutboxProbe probe() {
+        return new com.example.talentbridge.support.OutboxProbe(outbox);
+    }
     long resumeId, interviewId;
     final Instant day1 = Instant.now().plus(2, ChronoUnit.DAYS).truncatedTo(ChronoUnit.SECONDS);
     final Instant day2 = day1.plus(Duration.ofDays(1));
@@ -80,6 +87,8 @@ class InterviewApiTest {
         otherCandidate = user("ivother-" + sfx + "@test.com", false);
         outsider = user("ivout-" + sfx + "@test.com", true);   // a recruiter of no company
         long candId = id(call(get("/auth/me"), candidate, null));
+        candidateId = candId;
+        recruiterId = id(call(get("/auth/me"), recruiter, null));
         resumeId = id(mockMvc.perform(multipart(HttpMethod.POST, "/resumes")
                 .file(new MockMultipartFile("resume", "r.json", MediaType.APPLICATION_JSON_VALUE,
                         ("{\"email\":\"" + candEmail + "\",\"status\":\"PENDING\",\"user\":{\"id\":" + candId + "},\"job\":{\"id\":" + job + "}}").getBytes()))
@@ -105,8 +114,8 @@ class InterviewApiTest {
         call(post("/interviews"), recruiter, body(resumeId, day1)).andExpect(status().isConflict());
 
         // the candidate was told
-        call(get("/notifications"), candidate, null).andExpect(jsonPath("$.data.content[0].type").value("INTERVIEW_PROPOSED"))
-                .andExpect(jsonPath("$.data.content[0].link").value("/user/interviews"));
+        assertEquals("INTERVIEW_PROPOSED", probe().latestNotificationFor(candidateId).type());
+        assertEquals("/user/interviews", probe().latestNotificationFor(candidateId).link());
     }
 
     @Test @Order(2) @DisplayName("lists: the candidate sees theirs with the job; the company sees its own; others see nothing")
@@ -137,7 +146,7 @@ class InterviewApiTest {
                 .andExpect(jsonPath("$.data.confirmedSlot").value(day1.toString()));
         call(put("/interviews/" + interviewId + "/confirm"), candidate, "{\"slot\":\"" + day1 + "\"}").andExpect(status().isConflict());
 
-        call(get("/notifications"), recruiter, null).andExpect(jsonPath("$.data.content[0].type").value("INTERVIEW_CONFIRMED"));
+        assertEquals("INTERVIEW_CONFIRMED", probe().latestNotificationFor(recruiterId).type());
     }
 
     @Test @Order(4) @DisplayName("the calendar file is for the two parties only")
@@ -165,11 +174,11 @@ class InterviewApiTest {
                 .andExpect(jsonPath("$.data.status").value("PROPOSED"))
                 .andExpect(jsonPath("$.data.mode").value("ONSITE"))
                 .andExpect(jsonPath("$.data.confirmedSlot").doesNotExist());
-        call(get("/notifications"), candidate, null).andExpect(jsonPath("$.data.content[0].type").value("INTERVIEW_RESCHEDULED"));
+        assertEquals("INTERVIEW_RESCHEDULED", probe().latestNotificationFor(candidateId).type());
 
         call(put("/interviews/" + interviewId + "/decline"), candidate, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value("DECLINED"));
-        call(get("/notifications"), recruiter, null).andExpect(jsonPath("$.data.content[0].type").value("INTERVIEW_DECLINED"));
+        assertEquals("INTERVIEW_DECLINED", probe().latestNotificationFor(recruiterId).type());
 
         // a declined interview can be offered again
         call(put("/interviews/" + interviewId + "/reschedule"), recruiter, body(resumeId, day1, day2)).andExpect(status().isOk());
@@ -177,7 +186,7 @@ class InterviewApiTest {
         call(put("/interviews/" + interviewId + "/cancel"), outsider, null).andExpect(status().isForbidden());
         call(put("/interviews/" + interviewId + "/cancel"), recruiter, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value("CANCELLED"));
-        call(get("/notifications"), candidate, null).andExpect(jsonPath("$.data.content[0].type").value("INTERVIEW_CANCELLED"));
+        assertEquals("INTERVIEW_CANCELLED", probe().latestNotificationFor(candidateId).type());
         call(put("/interviews/" + interviewId + "/cancel"), recruiter, null).andExpect(status().isConflict());
         call(put("/interviews/" + interviewId + "/reschedule"), recruiter, body(resumeId, day1)).andExpect(status().isConflict());
 

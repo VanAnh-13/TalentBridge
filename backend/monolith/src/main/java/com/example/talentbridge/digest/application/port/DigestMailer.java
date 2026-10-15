@@ -1,6 +1,6 @@
-package com.example.talentbridge.notification.application.port;
+package com.example.talentbridge.digest.application.port;
 
-import com.example.talentbridge.notification.domain.JobDigest;
+import com.example.talentbridge.digest.domain.JobDigest;
 
 /** Output port: delivers a digest to its recipient. */
 public interface DigestMailer {

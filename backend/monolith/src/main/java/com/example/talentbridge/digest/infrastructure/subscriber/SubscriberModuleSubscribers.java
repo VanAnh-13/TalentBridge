@@ -1,6 +1,6 @@
-package com.example.talentbridge.notification.infrastructure.subscriber;
+package com.example.talentbridge.digest.infrastructure.subscriber;
 
-import com.example.talentbridge.notification.application.port.Subscribers;
+import com.example.talentbridge.digest.application.port.Subscribers;
 import com.example.talentbridge.subscriber.application.SubscriberDirectory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:notification-test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+  kafka:
+    listener:
+      # only the Kafka tests start the listeners (against an in-process broker)
+      auto-startup: false

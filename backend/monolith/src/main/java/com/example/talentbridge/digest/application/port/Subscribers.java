@@ -1,4 +1,4 @@
-package com.example.talentbridge.notification.application.port;
+package com.example.talentbridge.digest.application.port;
 
 import java.util.List;
 import java.util.Optional;

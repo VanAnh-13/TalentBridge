@@ -23,14 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApiGatewayTest {
 
-    static final HttpServer monolith = start();
+    static final HttpServer monolith = start("monolith");
+    static final HttpServer notifications = start("notification-service");
 
-    static HttpServer start() {
+    static HttpServer start(String name) {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
             server.createContext("/", exchange -> {
-                String echo = exchange.getRequestMethod() + " " + exchange.getRequestURI() + " id="
-                        + exchange.getRequestHeaders().getFirst("X-Request-Id");
+                String echo = (name.equals("monolith") ? "" : name + ": ") + exchange.getRequestMethod() + " "
+                        + exchange.getRequestURI() + " id=" + exchange.getRequestHeaders().getFirst("X-Request-Id");
                 byte[] body = echo.getBytes(StandardCharsets.UTF_8);
                 String origin = exchange.getRequestHeaders().getFirst("Origin");
                 if (origin != null) {   // the monolith answers CORS as well
@@ -51,11 +52,13 @@ class ApiGatewayTest {
     @AfterAll
     static void stop() {
         monolith.stop(0);
+        notifications.stop(0);
     }
 
     @DynamicPropertySource
     static void routes(DynamicPropertyRegistry registry) {
         registry.add("MONOLITH_URI", () -> "http://127.0.0.1:" + monolith.getAddress().getPort());
+        registry.add("NOTIFICATION_URI", () -> "http://127.0.0.1:" + notifications.getAddress().getPort());
         registry.add("ALLOWED_ORIGINS", () -> "http://localhost:3000");
     }
 
@@ -82,6 +85,18 @@ class ApiGatewayTest {
         // a header that could smuggle anything into logs is replaced
         web.get().uri("/jobs").header("X-Request-Id", "bad value; injected=1").exchange()
                 .expectHeader().value("X-Request-Id", id -> assertThat(id).hasSize(36));
+    }
+
+    @Test @DisplayName("extracted paths go to their service, everything else to the monolith")
+    void routes() {
+        web.get().uri("/notifications?unread=true").exchange().expectStatus().isOk()
+                .expectBody(String.class).value(body -> assertThat(body).startsWith("notification-service: GET /notifications?unread=true"));
+        web.patch().uri("/notifications/5/read").exchange().expectStatus().isOk()
+                .expectBody(String.class).value(body -> assertThat(body).startsWith("notification-service: PATCH /notifications/5/read"));
+        web.get().uri("/notificationsfoo").exchange().expectStatus().isOk()
+                .expectBody(String.class).value(body -> assertThat(body).startsWith("GET /notificationsfoo"));
+        web.get().uri("/emails/job-recommendation/x").exchange()
+                .expectBody(String.class).value(body -> assertThat(body).startsWith("GET /emails"));
     }
 
     @Test @DisplayName("the gateway answers CORS preflights and the browser sees each CORS header once")

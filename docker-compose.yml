@@ -14,6 +14,7 @@ services:
       TZ: Asia/Ho_Chi_Minh
     volumes:
       - mariadb-data:/var/lib/mysql
+      - ./infra/mariadb/initdb:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -32,6 +33,30 @@ services:
       retries: 10
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_password}
+
+  kafka:
+    image: apache/kafka:3.9.1
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
 
   discovery:
     build:
@@ -88,6 +113,8 @@ services:
       CONFIG_SERVER_URL: http://config:8888
       EUREKA_ENABLED: "true"
       EUREKA_URL: http://discovery:8761/eureka
+      EVENTS_RELAY_ENABLED: "true"
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${DB_NAME:-talentbridge}?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-talentbridge_user}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
@@ -118,6 +145,38 @@ services:
         condition: service_healthy
       config:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  notification-service:
+    build:
+      context: ./backend
+      args:
+        MODULE: services/notification-service
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8082
+      CONFIG_SERVER_ENABLED: "true"
+      CONFIG_SERVER_URL: http://config:8888
+      EUREKA_ENABLED: "true"
+      EUREKA_URL: http://discovery:8761/eureka
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      DB_URL: jdbc:mariadb://mariadb:3306/notification_db?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USER: ${DB_USER:-talentbridge_user}
+      DB_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
+      JWKS_URI: http://monolith:8081/.well-known/jwks.json
+      ALLOWED_ORIGINS: ${WEB_ORIGIN:-http://localhost:3000}
+      TZ: Asia/Ho_Chi_Minh
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
 
   frontend:
     build:
@@ -133,4 +192,5 @@ services:
 
 volumes:
   mariadb-data:
+  kafka-data:
   uploads:

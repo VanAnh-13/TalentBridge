@@ -18,8 +18,11 @@ TalentBridge là một nền tảng tuyển dụng IT chuyên nghiệp, kết n�
 
 ```bash
 cp .env.example .env            # điền JWT_PRIVATE_KEY:  openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 -w0
-docker compose up --build       # web http://localhost:3000, API http://localhost:8080
+docker compose up --build       # web http://localhost:3000, API (gateway) http://localhost:8080, Eureka :8761
 ```
+
+Compose chạy: MariaDB (mỗi service một database), Redis, Kafka, Eureka, config server, API gateway, monolith,
+notification-service và frontend. Trình duyệt chỉ gọi gateway.
 
 Đặt `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` trong `.env` để tạo quản trị viên đầu tiên.
 CI (`.github/workflows/ci.yml`) chạy test backend, test migration trên MariaDB, lint kiến trúc + build frontend và build image.

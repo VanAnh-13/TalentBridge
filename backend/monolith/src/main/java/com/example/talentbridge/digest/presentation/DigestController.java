@@ -1,6 +1,6 @@
-package com.example.talentbridge.notification.presentation;
+package com.example.talentbridge.digest.presentation;
 
-import com.example.talentbridge.notification.application.SendJobDigest;
+import com.example.talentbridge.digest.application.SendJobDigest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

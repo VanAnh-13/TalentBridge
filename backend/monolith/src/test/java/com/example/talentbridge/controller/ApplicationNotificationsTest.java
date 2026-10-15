@@ -1,7 +1,10 @@
 package com.example.talentbridge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.talentbridge.support.OutboxProbe;
 import org.junit.jupiter.api.DisplayName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +29,7 @@ class ApplicationNotificationsTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
+    @Autowired com.example.talentbridge.shared.infrastructure.messaging.OutboxEventJpaRepository outbox;
 
     private String user(String email, boolean recruiter) throws Exception {
         mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +49,7 @@ class ApplicationNotificationsTest {
     }
 
     @Test
-    @DisplayName("application submitted -> recruiter notified; status changed -> candidate notified; unchanged status -> silent")
+    @DisplayName("application submitted -> recruiter notified; status changed -> candidate notified; unchanged status -> silent (as events for the notification service)")
     void notifications() throws Exception {
         String sfx = String.valueOf(System.nanoTime());
         String admin = TestHelper.getAdminToken(mockMvc, objectMapper);
@@ -70,20 +74,22 @@ class ApplicationNotificationsTest {
                 .file(new MockMultipartFile("pdfFile", "cv.pdf", "application/pdf", "%PDF-1.4 cv".getBytes()))
                 .header("Authorization", "Bearer " + candidate)).andExpect(status().isCreated()));
 
-        call(get("/notifications"), recruiter, null).andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalElements").value(1))
-                .andExpect(jsonPath("$.data.content[0].type").value("APPLICATION_SUBMITTED"))
-                .andExpect(jsonPath("$.data.content[0].body", containsString(candEmail)))
-                .andExpect(jsonPath("$.data.content[0].body", containsString("Notif Dev " + sfx)));
-        call(get("/notifications/unread-count"), candidate, null).andExpect(jsonPath("$.data.count").value(0));
+        long recruiterId = id(call(get("/auth/me"), recruiter, null));
+        OutboxProbe probe = new OutboxProbe(outbox);
+        var submitted = probe.notificationsFor(recruiterId);
+        assertEquals(1, submitted.size());
+        assertEquals("APPLICATION_SUBMITTED", submitted.get(0).type());
+        assertThat(submitted.get(0).body()).contains(candEmail).contains("Notif Dev " + sfx);
+        assertEquals("/recruiter/resumes", submitted.get(0).link());
+        assertTrue(probe.notificationsFor(candId).isEmpty());
 
         call(put("/resumes/company/status"), recruiter, "{\"id\":" + resume + ",\"status\":\"APPROVED\"}").andExpect(status().isOk());
-        call(get("/notifications"), candidate, null)
-                .andExpect(jsonPath("$.data.totalElements").value(1))
-                .andExpect(jsonPath("$.data.content[0].type").value("APPLICATION_STATUS_CHANGED"))
-                .andExpect(jsonPath("$.data.content[0].body", containsString("APPROVED")));
+        var changed = probe.notificationsFor(candId);
+        assertEquals(1, changed.size());
+        assertEquals("APPLICATION_STATUS_CHANGED", changed.get(0).type());
+        assertThat(changed.get(0).body()).contains("APPROVED");
 
         call(put("/resumes/company/status"), recruiter, "{\"id\":" + resume + ",\"status\":\"APPROVED\"}").andExpect(status().isOk());
-        call(get("/notifications/unread-count"), candidate, null).andExpect(jsonPath("$.data.count").value(1));
+        assertEquals(1, probe.notificationsFor(candId).size());
     }
 }

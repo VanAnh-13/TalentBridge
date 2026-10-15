@@ -3,7 +3,6 @@ package com.example.talentbridge.chat.application;
 import com.example.talentbridge.chat.application.port.Accounts;
 import com.example.talentbridge.chat.application.port.ChatPublisher;
 import com.example.talentbridge.chat.application.port.Notifier;
-import com.example.talentbridge.chat.application.port.Presence;
 import com.example.talentbridge.chat.domain.ChatRepository;
 import com.example.talentbridge.chat.domain.Conversation;
 import com.example.talentbridge.chat.domain.Message;
@@ -24,13 +23,13 @@ public class SendMessage {
     private final ChatRepository chat;
     private final ChatAccess access;
     private final ChatPublisher publisher;
-    private final Presence presence;
     private final Notifier notifier;
     private final Clock clock;
 
     /**
      * Stores the message and delivers it live to the other people in the conversation. Those who are not connected
-     * get one notification for a run of unread messages (not one per message).
+     * get one notification for a run of unread messages (not one per message): it is asked for with the first unread
+     * one, and dropped by the notification service if the person is online.
      */
     public Message execute(Long conversationId, String text) {
         Accounts.Account me = access.caller();
@@ -44,12 +43,10 @@ public class SendMessage {
 
         for (Accounts.Account other : access.participants(conversation)) {
             if (other.id().equals(me.id())) continue;
-            if (presence.isOnline(other.id())) {
-                publisher.messageSent(other.id(), saved, me.name());
-            } else if (chat.unreadIn(conversationId, other.id()) == 1) {
-                notifier.notify(other.id(), "Tin nhắn mới từ " + me.name(), preview(saved.getText()),
+            publisher.messageSent(other.id(), saved, me.name());
+            if (chat.unreadIn(conversationId, other.id()) == 1)
+                notifier.notifyIfOffline(other.id(), "Tin nhắn mới từ " + me.name(), preview(saved.getText()),
                         "/chat?conversation=" + conversationId);
-            }
         }
         return saved;
     }

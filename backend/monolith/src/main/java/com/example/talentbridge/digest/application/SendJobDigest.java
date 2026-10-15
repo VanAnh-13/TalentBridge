@@ -1,11 +1,11 @@
-package com.example.talentbridge.notification.application;
+package com.example.talentbridge.digest.application;
 
 import com.example.talentbridge.shared.domain.exception.NotFoundException;
-import com.example.talentbridge.notification.application.port.DigestMailer;
-import com.example.talentbridge.notification.application.port.JobRecommendations;
-import com.example.talentbridge.notification.application.port.Subscribers;
-import com.example.talentbridge.notification.domain.DigestJob;
-import com.example.talentbridge.notification.domain.JobDigest;
+import com.example.talentbridge.digest.application.port.DigestMailer;
+import com.example.talentbridge.digest.application.port.JobRecommendations;
+import com.example.talentbridge.digest.application.port.Subscribers;
+import com.example.talentbridge.digest.domain.DigestJob;
+import com.example.talentbridge.digest.domain.JobDigest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

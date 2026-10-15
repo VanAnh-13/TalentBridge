@@ -29,7 +29,12 @@ class ChatApiTest {
 
     final String sfx = String.valueOf(System.nanoTime());
     String recruiterA, recruiterB, outsider, candidate, otherCandidate;
-    long resumeId, conversationId;
+    long resumeId, conversationId, recruiterAId, recruiterBId, candidateId;
+    @Autowired com.example.talentbridge.shared.infrastructure.messaging.OutboxEventJpaRepository outbox;
+
+    private com.example.talentbridge.support.OutboxProbe probe() {
+        return new com.example.talentbridge.support.OutboxProbe(outbox);
+    }
 
     private String register(String email, boolean recruiter) throws Exception {
         mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
@@ -74,6 +79,9 @@ class ChatApiTest {
         otherCandidate = token(register("chatother-" + sfx + "@test.com", false));
         outsider = token(register("chatout-" + sfx + "@test.com", true));
         long candId = id(call(get("/auth/me"), candidate, null));
+        candidateId = candId;
+        recruiterAId = id(call(get("/auth/me"), recruiterA, null));
+        recruiterBId = id(call(get("/auth/me"), recruiterB, null));
         resumeId = id(mockMvc.perform(multipart(HttpMethod.POST, "/resumes")
                 .file(new MockMultipartFile("resume", "r.json", MediaType.APPLICATION_JSON_VALUE,
                         ("{\"email\":\"" + candMail + "\",\"status\":\"PENDING\",\"user\":{\"id\":" + candId + "},\"job\":{\"id\":" + job + "}}").getBytes()))
@@ -112,8 +120,12 @@ class ChatApiTest {
         // both recruiters work for the company: both are told, once
         for (String recruiter : new String[]{recruiterA, recruiterB}) {
             call(get("/chats/unread-count"), recruiter, null).andExpect(jsonPath("$.data.count").value(2));
-            call(get("/notifications"), recruiter, null)
-                    .andExpect(jsonPath("$.data.content[?(@.type=='CHAT_MESSAGE')]", org.hamcrest.Matchers.hasSize(1)));
+        }
+        for (long recruiterId : new long[]{recruiterAId, recruiterBId}) {
+            var told = probe().notificationsFor(recruiterId, "CHAT_MESSAGE");
+            org.junit.jupiter.api.Assertions.assertEquals(1, told.size(), "one notification for a run of messages");
+            org.junit.jupiter.api.Assertions.assertTrue(told.get(0).onlyIfOffline(), "not shown to someone who is online");
+            org.junit.jupiter.api.Assertions.assertEquals("/chat?conversation=" + conversationId, told.get(0).link());
         }
         call(get("/chats/unread-count"), candidate, null).andExpect(jsonPath("$.data.count").value(0));
 
@@ -148,7 +160,6 @@ class ChatApiTest {
         call(get("/chats/unread-count"), candidate, null).andExpect(jsonPath("$.data.count").value(1));
         call(get("/chats/unread-count"), recruiterA, null).andExpect(jsonPath("$.data.count").value(0));
         call(get("/chats/unread-count"), recruiterB, null).andExpect(jsonPath("$.data.count").value(3));
-        call(get("/notifications"), candidate, null)
-                .andExpect(jsonPath("$.data.content[?(@.type=='CHAT_MESSAGE')]", org.hamcrest.Matchers.hasSize(1)));
+        org.junit.jupiter.api.Assertions.assertEquals(1, probe().notificationsFor(candidateId, "CHAT_MESSAGE").size());
     }
 }

@@ -85,20 +85,22 @@ Dependency rule (enforced by `no-restricted-imports` blocks generated per layer 
 * Adding a feature = a new folder with the four layers; the ESLint config discovers it automatically.
 
 ### Status
-Backend: every package follows the four layers (`shared`, `skill`, `subscriber`, `access`, `company`, `job`, `resume`,
-`user`, `auth`, `notification`), checked by `ArchitectureTest`.
+Backend: every monolith package follows the four layers (`shared`, `access`, `auth`, `chat`, `company`, `digest`,
+`interview`, `job`, `matching`, `resume`, `skill`, `subscriber`, `user`), and so do the notification service's
+(`notification`, `realtime`); each deployable has its own `ArchitectureTest`.
 Frontend: every feature follows the four layers and no legacy `pages/`, `services/`, `types/` remains.
 
 ## Platform (Spring Cloud)
 ```
-browser ──► api-gateway :8080 ──lb://monolith──► monolith :8081 ──► MariaDB, Redis
-                │   (REST and /ws WebSocket)        ▲
-                └─────── Eureka discovery-server :8761 ◄── every service registers
-                         config-server :8888 (native, backend/platform/config-server/.../config-repo)
+browser ──► api-gateway :8080 ─┬─ /notifications/**, /ws ──► notification-service :8082 ──► notification_db
+                                └─ everything else ──────────► monolith :8081 ──► talentbridge DB, Redis
+                                                                   │ outbox ──► Kafka ──► notification-service
+             Eureka discovery-server :8761 ◄── every service registers (routes use lb://<name>)
+             config-server :8888 (native, backend/platform/config-server/.../config-repo)
 ```
 * **api-gateway** (Spring Cloud Gateway, WebFlux) is the only public entry point. Routes live in its
-  `application.yml`: everything goes to `lb://monolith` until a more specific route sends a path to an extracted
-  service (strangler fig). It answers CORS (`ALLOWED_ORIGINS`) before routing, deduplicates the CORS headers services
+  `application.yml`: `/notifications/**` and the `/ws` WebSocket go to the notification service, everything else to
+  `lb://monolith` (strangler fig: each extraction adds a more specific route). It answers CORS (`ALLOWED_ORIGINS`) before routing, deduplicates the CORS headers services
   add, gives every request an `X-Request-Id` (kept if the caller sent a sane one, returned in the response, forwarded
   to the service) and hides the services' `/actuator/**`.
 * **discovery-server** (Eureka): services register under their `spring.application.name`.
@@ -124,12 +126,38 @@ browser ──► api-gateway :8080 ──lb://monolith──► monolith :8081 
 * A skill required by a job cannot be deleted; deleting a skill only stops subscribers from following it.
 * CVs are shown with the browser's own PDF viewer, never parsed by JavaScript in the page.
 
-## Real time
-STOMP over WebSocket at `/ws` (`shared/infrastructure/realtime`). The browser authenticates in the CONNECT frame
-(`Authorization: Bearer <access token>`); the principal name is the user id. Clients may only subscribe to their own
-`/user/queue/*` destinations and send to `/app/*`. Modules push with `convertAndSendToUser(userId, "/queue/x", payload)`
-after the transaction commits. Other modules notify people through `notification.application.NotifyUser` via their own
-output port (e.g. `resume.application.port.ApplicationNotifier`).
+## Services and events
+| Deployable | Owns | Database | Talks to others by |
+|---|---|---|---|
+| `backend/monolith` | auth, users, access control, companies, jobs, skills, subscribers, resumes, interviews, chat, AI matching, job-digest e-mail | `talentbridge` | REST via the gateway; publishes events through its outbox |
+| `backend/services/notification-service` | in-app notifications (inbox) and the browsers' live channel (STOMP over WebSocket at `/ws`), presence | `notification_db` | consumes events; REST `/notifications/**` |
+
+**Events** (`backend/libs/event-contracts`, JSON envelope `eventId, type, version, occurredAt, payload`, Kafka key =
+user id so one user's events stay in order):
+* `talentbridge.notifications.v1` / `NotificationRequested(userId, type, title, body, link, onlyIfOffline)`: put a
+  message in someone's inbox and push it live (`/user/queue/notifications`). `onlyIfOffline` (chat) is dropped while the
+  user is connected, because they already saw the message live.
+* `talentbridge.realtime.v1` / `RealtimePush(userId, channel, data)`: deliver `data` live on `/user/queue/<channel>`
+  (`chat` new messages, `chat-read` read receipts); nothing is stored.
+
+**Producing (monolith):** adapters behind the existing output ports (`ApplicationNotifier`, interview `Notifier`, chat
+`Notifier`/`ChatPublisher`) call `shared.infrastructure.messaging.Outbox`, which inserts into `outbox_events` in the
+business transaction. `OutboxRelay` ships rows to Kafka in insertion order (`EVENTS_RELAY_ENABLED`); a failed send
+stops the batch and is retried. Without the relay (plain local run, tests) events wait in the table.
+**Consuming (notification-service):** at-least-once delivery, so a notification is stored once per `eventId` (unique
+column) and live pushes are de-duplicated in memory; unreadable messages are logged and skipped, storage failures are
+retried 5 times.
+
+**Real time:** the browser opens one STOMP connection to `/ws` (through the gateway, which proxies the WebSocket to
+`lb:ws://notification-service`) and authenticates in the CONNECT frame (`Authorization: Bearer <access token>`, checked
+with the JWKS); the principal name is the user id; clients may only subscribe to their own `/user/queue/*`.
+The broker is in memory, so this service runs as a single instance: scaling out needs a broker relay (e.g. RabbitMQ
+STOMP) or a shared presence store.
+
+**Moving existing notifications** (an installation that ran the monolith before the split): the old `notifications`
+table stays in the monolith database untouched. Copy it once into the service's database, e.g. on MariaDB:
+`INSERT INTO notification_db.notifications (user_id, type, title, body, link, is_read, created_at)
+SELECT user_id, type, title, body, link, is_read, created_at FROM talentbridge.notifications;`
 
 ## AI CV-job matching
 The `matching` module scores how well an application's CV fits its job, with the Claude API

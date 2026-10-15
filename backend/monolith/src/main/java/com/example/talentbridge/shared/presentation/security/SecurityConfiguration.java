@@ -40,9 +40,6 @@ public class SecurityConfiguration {
             // PUBLIC KEYS THAT VERIFY ACCESS TOKENS (JWKS)
             "/.well-known/jwks.json",
 
-            // WEBSOCKET HANDSHAKE (the STOMP CONNECT frame carries and verifies the access token)
-            "/ws/**",
-
             // API DOCS
             "/swagger-ui/**",
             "/v3/api-docs/**",

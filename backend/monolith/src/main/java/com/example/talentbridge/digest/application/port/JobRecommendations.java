@@ -1,6 +1,6 @@
-package com.example.talentbridge.notification.application.port;
+package com.example.talentbridge.digest.application.port;
 
-import com.example.talentbridge.notification.domain.DigestJob;
+import com.example.talentbridge.digest.domain.DigestJob;
 
 import java.util.List;
 
