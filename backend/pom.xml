@@ -19,6 +19,7 @@
     <modules>
         <module>libs/common-lib</module>
         <module>libs/security-lib</module>
+        <module>libs/event-contracts</module>
         <module>monolith</module>
         <module>platform/discovery-server</module>
         <module>platform/config-server</module>
@@ -40,6 +41,11 @@
             <dependency>
                 <groupId>com.example</groupId>
                 <artifactId>security-lib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>event-contracts</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
