@@ -7,8 +7,8 @@ import com.example.talentbridge.dto.request.user.RecruiterRequestDto;
 import com.example.talentbridge.dto.response.company.DefaultCompanyExtendedResponseDto;
 import com.example.talentbridge.dto.response.company.DefaultCompanyResponseDto;
 import com.example.talentbridge.dto.response.user.RecruiterResponseDto;
-import com.example.talentbridge.advice.exception.BusinessRuleViolationException;
-import com.example.talentbridge.advice.exception.ResourceAlreadyExistsException;
+import com.example.talentbridge.shared.domain.exception.BusinessRuleViolationException;
+import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
 import com.example.talentbridge.model.Company;
 import com.example.talentbridge.model.CompanyLogo;
 import com.example.talentbridge.model.User;
@@ -50,7 +50,7 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
             boolean isRecruiter
     ) {
         if (companyRepository.existsByNameIgnoreCase(dto.getName()))
-            throw new ResourceAlreadyExistsException("Tên công ty đã tồn tại");
+            throw new AlreadyExistsException("Tên công ty đã tồn tại");
 
         Company company = new Company(dto.getName(), dto.getDescription(), dto.getAddress());
         Company savedCompany = companyRepository.saveAndFlush(company);
@@ -66,7 +66,7 @@ public class CompanyServiceImpl implements com.example.talentbridge.service.Comp
                     .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy người dùng"));
 
             if (user.getCompany() != null)
-                throw new ResourceAlreadyExistsException("Người dùng đã có công ty");
+                throw new AlreadyExistsException("Người dùng đã có công ty");
 
             user.setCompany(savedCompany);
             userRepository.saveAndFlush(user);

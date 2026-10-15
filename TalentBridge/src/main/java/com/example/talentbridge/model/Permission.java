@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.model.common.BaseEntity;
+import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 
 import java.util.Set;
 

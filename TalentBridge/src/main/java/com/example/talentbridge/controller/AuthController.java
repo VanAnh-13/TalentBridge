@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import com.example.talentbridge.annotation.ApiMessage;
+import com.example.talentbridge.shared.presentation.ApiMessage;
 import com.example.talentbridge.dto.request.auth.UserLoginRequestDto;
 import com.example.talentbridge.dto.request.auth.SessionMetaRequest;
 import com.example.talentbridge.dto.request.auth.UserRegisterRequestDto;

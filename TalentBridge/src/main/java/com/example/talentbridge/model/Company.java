@@ -3,7 +3,7 @@ package com.example.talentbridge.model;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.*;
-import com.example.talentbridge.model.common.BaseEntity;
+import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 
 import java.util.List;
 

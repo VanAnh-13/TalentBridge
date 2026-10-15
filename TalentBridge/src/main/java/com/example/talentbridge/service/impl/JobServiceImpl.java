@@ -1,5 +1,9 @@
 package com.example.talentbridge.service.impl;
 
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository;
+
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.request.job.JobRequestDto;
@@ -24,7 +28,7 @@ import java.util.stream.Collectors;
 public class JobServiceImpl implements com.example.talentbridge.service.JobService {
 
     private final JobRepository jobRepository;
-    private final SkillRepository skillRepository;
+    private final SkillJpaRepository skillRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
@@ -105,7 +109,7 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
         }
 
 
-        List<Skill> skills;
+        List<SkillJpaEntity> skills;
         if (jobRequestDto.getSkills() != null) {
             List<Long> skillIds = jobRequestDto
                     .getSkills()
@@ -172,19 +176,19 @@ public class JobServiceImpl implements com.example.talentbridge.service.JobServi
                     .map(JobRequestDto.SkillId::getId)
                     .collect(Collectors.toSet());
 
-            Set<Skill> currentSkills = new HashSet<>(job.getSkills());
+            Set<SkillJpaEntity> currentSkills = new HashSet<>(job.getSkills());
 
             currentSkills.removeIf(skill -> !requestedSkillIds.contains(skill.getId()));
 
             Set<Long> currentSkillIds = currentSkills.stream()
-                    .map(Skill::getId)
+                    .map(SkillJpaEntity::getId)
                     .collect(Collectors.toSet());
 
             Set<Long> newSkillIdsToAdd = new HashSet<>(requestedSkillIds);
             newSkillIdsToAdd.removeAll(currentSkillIds);
 
             if (!newSkillIdsToAdd.isEmpty()) {
-                List<Skill> skillsToAdd = skillRepository.findAllById(newSkillIdsToAdd);
+                List<SkillJpaEntity> skillsToAdd = skillRepository.findAllById(newSkillIdsToAdd);
                 currentSkills.addAll(skillsToAdd);
             }
 

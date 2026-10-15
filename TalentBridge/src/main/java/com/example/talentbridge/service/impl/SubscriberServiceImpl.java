@@ -4,10 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.example.talentbridge.dto.request.subscriber.DefaultSubscriberRequestDto;
 import com.example.talentbridge.dto.response.subscriber.DefaultSubscriberResponseDto;
-import com.example.talentbridge.advice.exception.ResourceAlreadyExistsException;
-import com.example.talentbridge.model.Skill;
+import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 import com.example.talentbridge.model.Subscriber;
-import com.example.talentbridge.repository.SkillRepository;
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository;
 import com.example.talentbridge.repository.SubscriberRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,14 +22,14 @@ import java.util.List;
 public class SubscriberServiceImpl implements com.example.talentbridge.service.SubscriberService {
 
     private final SubscriberRepository subscribeRepository;
-    private final SkillRepository skillRepository;
+    private final SkillJpaRepository skillRepository;
 
     @Override
     public DefaultSubscriberResponseDto saveSelfSubscriber(
             DefaultSubscriberRequestDto defaultSubscriberRequestDto
     ) {
         if (getSelfSubscriber() != null)
-            throw new ResourceAlreadyExistsException("Người dùng này đã đăng ký rồi");
+            throw new AlreadyExistsException("Người dùng này đã đăng ký rồi");
 
         String email = SecurityContextHolder
                 .getContext()
@@ -44,7 +44,7 @@ public class SubscriberServiceImpl implements com.example.talentbridge.service.S
                     .stream()
                     .map(DefaultSubscriberRequestDto.SkillId::getId)
                     .toList();
-            List<Skill> skills = skillRepository.findAllById(skillIds);
+            List<SkillJpaEntity> skills = skillRepository.findAllById(skillIds);
 
             subscriber.setSkills(skills);
         } else subscriber.setSkills(Collections.emptyList());
@@ -74,7 +74,7 @@ public class SubscriberServiceImpl implements com.example.talentbridge.service.S
                     .stream()
                     .map(DefaultSubscriberRequestDto.SkillId::getId)
                     .toList();
-            List<Skill> skills = skillRepository.findAllById(skillIds);
+            List<SkillJpaEntity> skills = skillRepository.findAllById(skillIds);
 
             subscriber.setSkills(skills);
         } else subscriber.setSkills(Collections.emptyList());

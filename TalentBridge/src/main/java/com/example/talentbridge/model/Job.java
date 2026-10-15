@@ -1,8 +1,10 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
-import com.example.talentbridge.model.common.BaseEntity;
+import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import com.example.talentbridge.model.constant.Level;
 
 import java.time.Instant;
@@ -53,7 +55,7 @@ public class Job extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     @ToString.Exclude
-    private List<Skill> skills;
+    private List<SkillJpaEntity> skills;
 
     @OneToMany(mappedBy = "job")
     @ToString.Exclude

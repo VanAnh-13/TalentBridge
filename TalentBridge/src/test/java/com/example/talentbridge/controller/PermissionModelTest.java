@@ -1,5 +1,9 @@
 package com.example.talentbridge.controller;
 
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository;
+
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
+
 import com.example.talentbridge.model.*;
 import com.example.talentbridge.model.constant.Gender;
 import com.example.talentbridge.model.constant.Level;
@@ -56,7 +60,7 @@ class PermissionModelTest {
     @Autowired ResumeRepository resumeRepository;
 
     String adminToken, recruiterAToken, recruiterBToken, candidateToken, otherCandidateToken;
-    @Autowired SkillRepository skillRepository;
+    @Autowired SkillJpaRepository skillRepository;
 
     Long jobOfA, jobOfB, resumeOfCandidate, companyAId, skillId;
 
@@ -67,7 +71,7 @@ class PermissionModelTest {
         Company companyA = companyRepository.save(new Company("PM Co A " + System.nanoTime(), "d", "a"));
         Company companyB = companyRepository.save(new Company("PM Co B " + System.nanoTime(), "d", "a"));
         companyAId = companyA.getId();
-        Skill skill = new Skill();
+        SkillJpaEntity skill = new SkillJpaEntity();
         skill.setName("pm-skill-" + System.nanoTime());
         skillId = skillRepository.save(skill).getId();
         User recruiterA = user("recruiter-a@pm.test", "RECRUITER", companyA);

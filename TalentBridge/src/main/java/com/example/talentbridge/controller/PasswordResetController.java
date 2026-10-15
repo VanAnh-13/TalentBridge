@@ -1,6 +1,6 @@
 package com.example.talentbridge.controller;
 
-import com.example.talentbridge.annotation.ApiMessage;
+import com.example.talentbridge.shared.presentation.ApiMessage;
 import com.example.talentbridge.dto.request.auth.ForgotPasswordRequest;
 import com.example.talentbridge.dto.request.auth.ResetPasswordRequest;
 import com.example.talentbridge.dto.response.auth.TokenValidationResponse;

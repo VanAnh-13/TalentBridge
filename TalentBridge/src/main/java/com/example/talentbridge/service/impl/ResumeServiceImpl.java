@@ -8,10 +8,10 @@ import com.example.talentbridge.dto.response.resume.CreateResumeResponseDto;
 import com.example.talentbridge.dto.response.resume.DefaultResumeResponseDto;
 import com.example.talentbridge.dto.response.resume.GetResumeFileResponseDto;
 import com.example.talentbridge.dto.response.resume.ResumeForDisplayResponseDto;
-import com.example.talentbridge.advice.exception.ResourceAlreadyExistsException;
+import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
 import com.example.talentbridge.model.Job;
 import com.example.talentbridge.model.Resume;
-import com.example.talentbridge.model.Skill;
+import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 import com.example.talentbridge.model.User;
 import com.example.talentbridge.repository.JobRepository;
 import com.example.talentbridge.repository.ResumeRepository;
@@ -63,7 +63,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy công việc"));
 
         if (resumeRepository.existsByUserIdAndJobId(user.getId(), job.getId()))
-            throw new ResourceAlreadyExistsException("Người dùng đã nộp resume cho công việc này");
+            throw new AlreadyExistsException("Người dùng đã nộp resume cho công việc này");
 
 
         resume.setJob(job);
@@ -322,7 +322,7 @@ public class ResumeServiceImpl implements com.example.talentbridge.service.Resum
                 resume.getJob().getId(),
                 resume.getJob().getName(),
                 resume.getJob().getLocation(),
-                resume.getJob().getSkills().stream().map(Skill::getName).toList(),
+                resume.getJob().getSkills().stream().map(SkillJpaEntity::getName).toList(),
                 resume.getJob().getLevel(),
                 resume.getJob().getDescription()
         );

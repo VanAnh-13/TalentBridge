@@ -30,7 +30,7 @@ public class CompanyControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private com.example.talentbridge.repository.SkillRepository skillRepository;
+    private com.example.talentbridge.skill.infrastructure.persistence.SkillJpaRepository skillRepository;
 
     @Autowired
     private com.example.talentbridge.repository.JobRepository jobRepository;
@@ -171,7 +171,7 @@ public class CompanyControllerTest {
     @Order(7)
     @DisplayName("COMPANY_09: Xóa công ty còn job đang tuyển -> bị từ chối (expect fail)")
     void testDeleteCompanyWithActiveJobs() throws Exception {
-        com.example.talentbridge.model.Skill skill = new com.example.talentbridge.model.Skill();
+        com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity skill = new com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity();
         skill.setName("skill-" + System.nanoTime());
         Long skillId = skillRepository.save(skill).getId();
         Long jobId = TestHelper.createJobForCompany(mockMvc, objectMapper, adminToken, companyId, skillId); // active = true
