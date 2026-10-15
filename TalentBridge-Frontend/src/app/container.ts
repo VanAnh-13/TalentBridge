@@ -22,3 +22,10 @@ import { createSubscriberUseCases } from "@/features/subscriber/application/subs
 import { HttpSubscriberRepository } from "@/features/subscriber/infrastructure/HttpSubscriberRepository";
 
 export const subscribers = createSubscriberUseCases(new HttpSubscriberRepository());
+
+import { createPermissionUseCases, createRoleUseCases } from "@/features/access/application/accessUseCases";
+import { HttpPermissionRepository } from "@/features/access/infrastructure/HttpPermissionRepository";
+import { HttpRoleRepository } from "@/features/access/infrastructure/HttpRoleRepository";
+
+export const roles = createRoleUseCases(new HttpRoleRepository());
+export const permissions = createPermissionUseCases(new HttpPermissionRepository());

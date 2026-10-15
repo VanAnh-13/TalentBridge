@@ -1,27 +1,19 @@
 import { errorMessage } from "@/shared/domain/errors";
-import {
-  deletePermissionById,
-  findAllPermissions,
-  savePermission,
-  updatePermissionById,
-} from "@/services/permissionApi";
-import type {
-  DefaultPermissionRequestDto,
-  DefaultPermissionResponseDto,
-} from "@/types/permission.d.ts";
+import { permissions as permissionUseCases } from "@/app/container";
+import type { Permission, PermissionData } from "../../domain/permission";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { PermissionSearchSection } from "./PermissionSearchSection";
+import { PermissionSearchSection } from "../components/PermissionSearchSection";
 import { Button } from "@/shared/presentation/ui/button";
 import { Plus } from "lucide-react";
 import Pagination from "@/shared/presentation/components/Pagination";
-import { PermissionTable } from "./PermissionTable";
-import { PermissionForm } from "./PermissionForm";
+import { PermissionTable } from "../components/PermissionTable";
+import { PermissionForm } from "../components/PermissionForm";
 
 const PermissionManagerPage = () => {
   // Data
   const [permissions, setPermissions] = useState<
-    DefaultPermissionResponseDto[]
+    Permission[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,14 +32,14 @@ const PermissionManagerPage = () => {
   // ============================
   const [isDialogOpen, setisDialogOpen] = useState(false);
   const [selectedPermission, setSelectedPermission] =
-    useState<DefaultPermissionResponseDto | null>(null);
+    useState<Permission | null>(null);
 
   const handleOpenCreateForm = () => {
     setSelectedPermission(null);
     setisDialogOpen(true);
   };
 
-  const handleOpenEditForm = (permission: DefaultPermissionResponseDto) => {
+  const handleOpenEditForm = (permission: Permission) => {
     setSelectedPermission(permission);
     setisDialogOpen(true);
   };
@@ -64,14 +56,11 @@ const PermissionManagerPage = () => {
     setIsLoading(true);
 
     try {
-      const filters: string[] = [];
-
-      if (searchName) filters.push(`name ~ '*${searchName}*'`);
-      if (searchApiPath) filters.push(`apiPath ~ '*${searchApiPath}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await findAllPermissions({ page, size, filter })).data.data;
+      const res = await permissionUseCases.search(
+        { name: searchName, apiPath: searchApiPath },
+        page,
+        size,
+      );
       setPermissions(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -104,18 +93,18 @@ const PermissionManagerPage = () => {
   // HANDLE CREATE OR UPDATE
   // ============================
   const handleSubmitUpsert = async (
-    data: DefaultPermissionRequestDto,
+    data: PermissionData,
     id?: number,
   ) => {
     try {
       setIsLoading(true);
 
       if (id) {
-        await updatePermissionById(id, data);
+        await permissionUseCases.update(id, data);
         await fetchPermissions(1, itemsPerPage, searchName, searchApiPath);
         toast.success("Cập nhật quyền hạn mới thành công");
       } else {
-        await savePermission(data);
+        await permissionUseCases.create(data);
         await fetchPermissions(1, itemsPerPage, searchName, searchApiPath);
         toast.success("Tạo quyền hạn mới thành công");
       }
@@ -133,7 +122,7 @@ const PermissionManagerPage = () => {
     try {
       setIsLoading(true);
 
-      await deletePermissionById(id);
+      await permissionUseCases.remove(id);
       await fetchPermissions(1, itemsPerPage, searchName, searchApiPath);
 
       toast.success("Xóa quyền hạn thành công");

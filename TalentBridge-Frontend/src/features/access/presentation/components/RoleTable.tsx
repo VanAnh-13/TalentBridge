@@ -12,14 +12,14 @@ import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConf
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { formatISO } from "@/shared/presentation/format.ts";
-import type { DefaultRoleResponseDto } from "@/types/role.d.ts";
+import type { Role } from "../../domain/role";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { HasPermission } from "@/features/auth";
 
 interface RoleTableProps {
-  roles: DefaultRoleResponseDto[];
+  roles: Role[];
   isLoading: boolean;
-  onEdit: (role: DefaultRoleResponseDto) => void;
+  onEdit: (role: Role) => void;
   onDelete: (id: number) => void;
 }
 

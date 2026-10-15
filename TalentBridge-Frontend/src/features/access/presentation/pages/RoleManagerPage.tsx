@@ -1,31 +1,22 @@
-import type {
-  DefaultRoleRequestDto,
-  DefaultRoleResponseDto,
-} from "@/types/role.d.ts";
+import { permissions as permissionUseCases, roles as roleUseCases } from "@/app/container";
+import type { Permission } from "../../domain/permission";
+import type { Role, RoleData } from "../../domain/role";
 import { useEffect, useState } from "react";
-import { RoleSearchSection } from "@/pages/admin/access-control-page/role-page/RoleSearchSection.tsx";
+import { RoleSearchSection } from "../components/RoleSearchSection.tsx";
 import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Plus } from "lucide-react";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
-import {
-  deleteRoleById,
-  findAllRoles,
-  saveRole,
-  updateRoleById,
-} from "@/services/roleApi.ts";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
-import { RoleTable } from "@/pages/admin/access-control-page/role-page/RoleTable.tsx";
-import { RoleForm } from "@/pages/admin/access-control-page/role-page/RoleForm.tsx";
-import { findAllPermissionsNoPaging } from "@/services/permissionApi";
-import type { DefaultPermissionResponseDto } from "@/types/permission";
+import { RoleTable } from "../components/RoleTable.tsx";
+import { RoleForm } from "../components/RoleForm.tsx";
 import { HasPermission } from "@/features/auth";
 
 const RoleManagerPage = () => {
   // Data
-  const [roles, setRoles] = useState<DefaultRoleResponseDto[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<
-    DefaultPermissionResponseDto[]
+    Permission[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,14 +34,14 @@ const RoleManagerPage = () => {
   // ============================
   const [isDialogOpen, setisDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] =
-    useState<DefaultRoleResponseDto | null>(null);
+    useState<Role | null>(null);
 
   const handleOpenCreateForm = () => {
     setSelectedRole(null);
     setisDialogOpen(true);
   };
 
-  const handleOpenEditForm = (role: DefaultRoleResponseDto) => {
+  const handleOpenEditForm = (role: Role) => {
     setSelectedRole(role);
     setisDialogOpen(true);
   };
@@ -66,13 +57,7 @@ const RoleManagerPage = () => {
     setIsLoading(true);
 
     try {
-      const filters: string[] = [];
-
-      if (searchRoleName) filters.push(`name ~ '*${searchRoleName}*'`);
-
-      const filter = filters.length > 0 ? filters.join(" and ") : null;
-
-      const res = (await findAllRoles({ page, size, filter })).data.data;
+      const res = await roleUseCases.search(searchRoleName, page, size);
       setRoles(res.content);
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
@@ -97,8 +82,7 @@ const RoleManagerPage = () => {
       setIsLoading(true);
 
       try {
-        const res = (await findAllPermissionsNoPaging()).data;
-        setPermissions(res.data);
+        setPermissions(await permissionUseCases.catalog());
       } catch (err) {
         toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
       } finally {
@@ -121,18 +105,18 @@ const RoleManagerPage = () => {
   // HANDLE CREATE OR UPDATE
   // ============================
   const handleSubmitUpsert = async (
-    data: DefaultRoleRequestDto,
+    data: RoleData,
     id?: number,
   ) => {
     try {
       setIsLoading(true);
 
       if (id) {
-        await updateRoleById(id, data);
+        await roleUseCases.update(id, data);
         await fetchRoles(1, itemsPerPage, searchRoleName);
         toast.success("Cập nhật chức vụ mới thành công");
       } else {
-        await saveRole(data);
+        await roleUseCases.create(data);
         await fetchRoles(1, itemsPerPage, searchRoleName);
         toast.success("Tạo chức vụ mới thành công");
       }
@@ -150,7 +134,7 @@ const RoleManagerPage = () => {
     try {
       setIsLoading(true);
 
-      await deleteRoleById(id);
+      await roleUseCases.remove(id);
       await fetchRoles(1, itemsPerPage, searchRoleName);
 
       toast.success("Xóa chức vụ thành công");

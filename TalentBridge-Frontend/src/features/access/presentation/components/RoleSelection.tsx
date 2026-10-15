@@ -13,17 +13,17 @@ import { Label } from "@/shared/presentation/ui/label.tsx";
 import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Search, Shield, X } from "lucide-react";
 import { toast } from "sonner";
-import { findAllRoles } from "@/services/roleApi.ts";
+import { roles as roleUseCases } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import type { RoleSummary } from "@/types/role";
+import type { RoleRef } from "../../domain/role";
 
 interface RoleSelectionProps {
-  selectedRole: RoleSummary | undefined;
-  addRole: (role: RoleSummary) => void;
+  selectedRole: RoleRef | undefined;
+  addRole: (role: RoleRef) => void;
   removeRole: () => void;
 }
 
@@ -50,7 +50,7 @@ const RoleSelection = ({
   // Fetching State
   // ============================
   const [searchRoleName, setSearchRoleName] = useState("");
-  const [roles, setRoles] = useState<RoleSummary[]>([]);
+  const [roles, setRoles] = useState<RoleRef[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchRoles = async (
@@ -60,10 +60,7 @@ const RoleSelection = ({
   ) => {
     setIsLoading(true);
     try {
-      const filter = searchRoleName ? `name ~ '*${searchRoleName}*'` : null;
-
-      const res = await findAllRoles({ page, size, filter });
-      const data = res.data.data;
+      const data = await roleUseCases.search(searchRoleName, page, size);
 
       setRoles(data.content);
       setTotalElements(data.totalElements);
@@ -82,7 +79,7 @@ const RoleSelection = ({
   // ============================
   // Handle Add Role
   // ============================
-  const onAddRole = (role: RoleSummary) => {
+  const onAddRole = (role: RoleRef) => {
     addRole(role);
     closeModal();
   };

@@ -12,14 +12,14 @@ import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConf
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { formatISO } from "@/shared/presentation/format.ts";
-import type { DefaultPermissionResponseDto } from "@/types/permission.d.ts";
+import type { Permission } from "../../domain/permission";
 import { Badge } from "@/shared/presentation/ui/badge";
 import { getMethodColor } from "@/shared/presentation/tagColors.ts";
 
 interface PermissionTableProps {
-  permissions: DefaultPermissionResponseDto[];
+  permissions: Permission[];
   isLoading: boolean;
-  onEdit: (skill: DefaultPermissionResponseDto) => void;
+  onEdit: (skill: Permission) => void;
   onDelete: (id: number) => void;
 }
 

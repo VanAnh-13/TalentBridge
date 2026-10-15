@@ -18,20 +18,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/shared/presentation/ui/collapsible";
-import type {
-  DefaultRoleRequestDto,
-  DefaultRoleResponseDto,
-} from "@/types/role";
-import type { DefaultPermissionResponseDto } from "@/types/permission";
+import type { Permission } from "../../domain/permission";
+import type { Role, RoleData } from "../../domain/role";
 import { getMethodColor } from "@/shared/presentation/tagColors";
 
 interface RoleFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: DefaultRoleRequestDto, id?: number) => void;
-  initialData: DefaultRoleResponseDto | null;
+  onSubmit: (data: RoleData, id?: number) => void;
+  initialData: Role | null;
   onCloseForm: () => void;
-  permissions: DefaultPermissionResponseDto[];
+  permissions: Permission[];
 }
 
 export function RoleForm({
@@ -42,7 +39,7 @@ export function RoleForm({
   onCloseForm,
   permissions,
 }: RoleFormProps) {
-  const [formData, setFormData] = useState<DefaultRoleRequestDto>({
+  const [formData, setFormData] = useState<RoleData>({
     name: "",
     description: "",
     active: true,
@@ -83,7 +80,7 @@ export function RoleForm({
       acc[permission.module].push(permission);
       return acc;
     },
-    {} as Record<string, DefaultPermissionResponseDto[]>,
+    {} as Record<string, Permission[]>,
   );
 
   const toggleModule = (module: string) => {

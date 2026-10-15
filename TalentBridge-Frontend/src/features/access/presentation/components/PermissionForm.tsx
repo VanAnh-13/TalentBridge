@@ -10,10 +10,7 @@ import { Input } from "@/shared/presentation/ui/input";
 import { Label } from "@/shared/presentation/ui/label";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { Badge } from "@/shared/presentation/ui/badge";
-import type {
-  DefaultPermissionRequestDto,
-  DefaultPermissionResponseDto,
-} from "@/types/permission.d.ts";
+import type { Permission, PermissionData } from "../../domain/permission";
 import {
   Select,
   SelectContent,
@@ -44,8 +41,8 @@ const METHODS = ["GET", "POST", "PUT", "DELETE"];
 interface PermissionFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: DefaultPermissionRequestDto, id?: number) => void;
-  initialData?: DefaultPermissionResponseDto | null;
+  onSubmit: (data: PermissionData, id?: number) => void;
+  initialData?: Permission | null;
   onCloseForm?: () => void;
 }
 
@@ -56,7 +53,7 @@ export function PermissionForm({
   initialData,
   onCloseForm,
 }: PermissionFormProps) {
-  const [formData, setFormData] = useState<DefaultPermissionRequestDto>({
+  const [formData, setFormData] = useState<PermissionData>({
     name: "",
     apiPath: "",
     method: "",

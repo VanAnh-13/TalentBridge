@@ -1,10 +1,11 @@
+import { contains } from "@/shared/domain/filter";
 import type { PageQuery } from "@/shared/domain/page";
 
 import type { NewSkill, SkillChange } from "../domain/skill";
 import type { SkillRepository } from "./ports";
 
 /** The server-side filter for "name contains text"; null when there is nothing to search for. */
-export const skillNameFilter = (text: string): string | null => (text ? `name ~ '*${text}*'` : null);
+export const skillNameFilter = (text: string): string | null => contains("name", text);
 
 export const createSkillUseCases = (repository: SkillRepository) => ({
   list: (query: PageQuery) => repository.list(query),

@@ -29,8 +29,8 @@ import { toast } from "sonner";
 import { getUserById, saveUser, updateUser } from "@/services/userApi";
 import type { CompanySummary } from "@/types/job";
 import CompanySelection from "@/pages/commons/CompanySelection.tsx";
-import type { RoleSummary } from "@/types/role.js";
-import RoleSelection from "@/pages/commons/RoleSelection.tsx";
+import { RoleSelection } from "@/features/access";
+import type { RoleRef } from "@/features/access";
 
 export default function UserUpsertPage() {
   const { permissions } = useAccount();
@@ -64,7 +64,7 @@ export default function UserUpsertPage() {
   const [selectedCompany, setSelectedCompany] = useState<
     CompanySummary | undefined
   >();
-  const [selectedRole, setSelectedRole] = useState<RoleSummary | undefined>();
+  const [selectedRole, setSelectedRole] = useState<RoleRef | undefined>();
 
   useEffect(() => {
     if (id) {
@@ -121,7 +121,7 @@ export default function UserUpsertPage() {
   // ============================
   // Company selection handler
   // ============================
-  const addRole = (role: RoleSummary) => {
+  const addRole = (role: RoleRef) => {
     const newRole = selectedRole?.id === role.id ? undefined : role;
     setSelectedRole(newRole);
 
