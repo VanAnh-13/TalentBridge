@@ -34,6 +34,7 @@ import {
   RecruiterResumeManagerPage,
 } from "@/features/resume";
 import { SkillManagerPage } from "@/features/skill";
+import { MyInterviewsPage, RecruiterInterviewsPage } from "@/features/interview";
 import { AccessControlPage, PermissionManagerPage, RoleManagerPage } from "@/features/access";
 import { SubscriberPage } from "@/features/subscriber";
 
@@ -79,6 +80,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute to="/user" requiredPermission="POST /resumes">
                 <MyResumesPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "interviews",
+            element: (
+              <ProtectedRoute to="/user" requiredPermission="GET /interviews/me">
+                <MyInterviewsPage />
               </ProtectedRoute>
             ),
           },
@@ -225,6 +234,16 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute to="/recruiter" requiredPermission="GET /skills">
             <SkillManagerPage theme="purple" />
+          </ProtectedRoute>
+        ),
+      },
+
+      // INTERVIEWS
+      {
+        path: "interviews",
+        element: (
+          <ProtectedRoute to="/recruiter" requiredPermission="GET /interviews/company">
+            <RecruiterInterviewsPage />
           </ProtectedRoute>
         ),
       },

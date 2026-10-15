@@ -46,10 +46,10 @@ class FlywayMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, "sa", "")) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"));
-            assertEquals(61, count(c, "SELECT COUNT(*) FROM permissions"));
-            assertEquals(60, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
-            assertEquals(26, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
-            assertEquals(21, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'USER'"));
+            assertEquals(69, count(c, "SELECT COUNT(*) FROM permissions"));
+            assertEquals(68, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(31, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
+            assertEquals(25, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'USER'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM users"), "no default users may be seeded");
 
             String holders = "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id "
@@ -88,9 +88,9 @@ class FlywayMigrationTest {
 
         try (Connection c = DriverManager.getConnection(url, "sa", "")) {
             assertEquals(3, count(c, "SELECT COUNT(*) FROM roles"), "roles must not be duplicated");
-            assertEquals(61, count(c, "SELECT COUNT(*) FROM permissions"), "duplicates removed, catalog completed");
+            assertEquals(69, count(c, "SELECT COUNT(*) FROM permissions"), "duplicates removed, catalog completed");
             assertEquals(0, count(c, "SELECT COUNT(*) FROM (SELECT api_path, method FROM permissions GROUP BY api_path, method HAVING COUNT(*) > 1) d"));
-            assertEquals(60, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
+            assertEquals(68, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp WHERE rp.permission_id NOT IN (SELECT id FROM permissions)"));
             // V4: the old seed let recruiters modify any company's data; that grant must be gone
             assertEquals(0, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id JOIN permissions p ON p.id = rp.permission_id "

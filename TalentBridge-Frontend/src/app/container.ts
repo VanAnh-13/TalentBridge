@@ -14,6 +14,8 @@ import { HttpAuthRepository } from "@/features/auth/infrastructure/HttpAuthRepos
 import { LocalStorageTokenStore } from "@/features/auth/infrastructure/LocalStorageTokenStore";
 import { createCompanyUseCases } from "@/features/company/application/companyUseCases";
 import { HttpCompanyRepository } from "@/features/company/infrastructure/HttpCompanyRepository";
+import { createInterviewUseCases } from "@/features/interview/application/interviewUseCases";
+import { HttpInterviewRepository } from "@/features/interview/infrastructure/HttpInterviewRepository";
 import { createJobUseCases } from "@/features/job/application/jobUseCases";
 import { HttpJobRepository } from "@/features/job/infrastructure/HttpJobRepository";
 import { createResumeUseCases } from "@/features/resume/application/resumeUseCases";
@@ -39,6 +41,7 @@ export const subscribers = createSubscriberUseCases(new HttpSubscriberRepository
 export const roles = createRoleUseCases(new HttpRoleRepository());
 export const permissions = createPermissionUseCases(new HttpPermissionRepository());
 export const companies = createCompanyUseCases(new HttpCompanyRepository());
+export const interviews = createInterviewUseCases(new HttpInterviewRepository());
 export const jobs = createJobUseCases(new HttpJobRepository());
 export const resumes = createResumeUseCases(new HttpResumeRepository());
 export const users = createUserUseCases(new HttpUserRepository());

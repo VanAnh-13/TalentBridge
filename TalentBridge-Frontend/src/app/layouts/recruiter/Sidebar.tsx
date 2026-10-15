@@ -4,6 +4,7 @@ import {
   Briefcase,
   Settings,
   FileText,
+  CalendarDays,
   MonitorIcon as MonitorCog,
   type LucideIcon,
   Home,
@@ -59,6 +60,12 @@ const menuItems: MenuItem[] = [
     url: "/recruiter/resumes",
     icon: FileText,
     permission: "GET /resumes/company",
+  },
+  {
+    title: "Lịch phỏng vấn",
+    url: "/recruiter/interviews",
+    icon: CalendarDays,
+    permission: "GET /interviews/company",
   },
 ];
 

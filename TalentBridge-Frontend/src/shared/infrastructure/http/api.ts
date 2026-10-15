@@ -48,6 +48,14 @@ const verbs = (client: Client) => ({
 /** Authenticated calls (access token attached, refreshed on expiry). */
 export const api = {
   ...verbs(httpClient),
+  /** Downloads a file (the response is not wrapped in the usual envelope). */
+  getBlob: async (url: string): Promise<Blob> => {
+    try {
+      return (await httpClient.get<Blob>(url, { responseType: "blob" })).data;
+    } catch (err) {
+      return toApiError(err);
+    }
+  },
   postForm: <T = void>(url: string, form: FormData) => api.post<T>(url, form, multipart),
   putForm: <T = void>(url: string, form: FormData) => api.put<T>(url, form, multipart),
 };

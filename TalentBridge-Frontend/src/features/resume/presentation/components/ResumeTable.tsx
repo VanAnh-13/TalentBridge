@@ -1,4 +1,4 @@
-import { Edit, Wrench } from "lucide-react";
+import { CalendarPlus, Edit, Wrench } from "lucide-react";
 import { Button } from "@/shared/presentation/ui/button.tsx";
 import {
   Table,
@@ -25,6 +25,8 @@ interface ResumeTableProps {
   resumes: Resume[];
   isLoading: boolean;
   onViewResumePDF: (resume: Resume) => void;
+  /** Recruiters only: invite the candidate to an interview. */
+  onScheduleInterview?: (resume: Resume) => void;
   theme?: "blue" | "purple";
 }
 
@@ -32,6 +34,7 @@ export function ResumeTable({
   resumes,
   isLoading,
   onViewResumePDF,
+  onScheduleInterview,
   theme = "blue",
 }: ResumeTableProps) {
   return (
@@ -142,6 +145,24 @@ export function ResumeTable({
                           <p>Xem hồ sơ ứng viên</p>
                         </TooltipContent>
                       </Tooltip>
+                      {onScheduleInterview && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              aria-label="Mời phỏng vấn"
+                              className="text-purple-600 hover:text-purple-700"
+                              onClick={() => onScheduleInterview(resume)}
+                            >
+                              <CalendarPlus className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Mời phỏng vấn</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
                     </TooltipProvider>
                   </div>
                 </TableCell>
