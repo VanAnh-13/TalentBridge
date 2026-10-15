@@ -8,18 +8,14 @@ import {
 } from "@/shared/presentation/ui/dialog.tsx";
 import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Label } from "@/shared/presentation/ui/label.tsx";
-import type {
-  DefaultSkillResponseDto,
-  createSkillRequestDto,
-  updateSkillRequestDto,
-} from "@/types/skill.d.ts";
+import type { NewSkill, Skill, SkillChange } from "../../domain/skill";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface SkillFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: createSkillRequestDto, id?: number) => void;
-  initialData: DefaultSkillResponseDto | null;
+  onSubmit: (data: NewSkill, id?: number) => void;
+  initialData: Skill | null;
   onCloseForm: () => void;
   theme?: "blue" | "purple";
 }
@@ -33,7 +29,7 @@ export function SkillForm({
   theme = "blue",
 }: SkillFormProps) {
   const [formData, setFormData] = useState<
-    createSkillRequestDto | updateSkillRequestDto
+    NewSkill | SkillChange
   >({ name: "" });
 
   useEffect(() => {

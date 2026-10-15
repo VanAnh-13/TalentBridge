@@ -13,19 +13,18 @@ import { Label } from "@/shared/presentation/ui/label.tsx";
 import { Checkbox } from "@/shared/presentation/ui/checkbox.tsx";
 import { Search, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
-import { findAllSkills } from "@/services/skillApi.ts";
+import { skills as skillUseCases } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
-import type { SkillSummary } from "@/types/job";
-import type { DefaultSkillResponseDto } from "@/types/skill.d.ts";
+import type { SkillRef } from "../../domain/skill";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface SkillSelectionProps {
-  selectedSkills: SkillSummary[];
-  onAddSkill: (skill: SkillSummary) => void;
-  onRemoveSkill: (skill: SkillSummary) => void;
+  selectedSkills: SkillRef[];
+  onAddSkill: (skill: SkillRef) => void;
+  onRemoveSkill: (skill: SkillRef) => void;
 }
 
 const SkillSelection = ({
@@ -50,7 +49,7 @@ const SkillSelection = ({
   // ============================
   // Fetching State
   // ============================
-  const [allSkills, setAllSkills] = useState<SkillSummary[]>([]);
+  const [allSkills, setAllSkills] = useState<SkillRef[]>([]);
   const [searchName, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,15 +60,9 @@ const SkillSelection = ({
   ) => {
     try {
       setIsLoading(true);
-      const filter = searchName ? `name ~ '*${searchName}*'` : null;
-      const res = await findAllSkills({
-        page: currentPage,
-        size: itemsPerPage,
-        filter,
-      });
-      const data = res.data.data;
+      const data = await skillUseCases.search(searchName, currentPage, itemsPerPage);
 
-      const mapped: SkillSummary[] = data.content.map((item: DefaultSkillResponseDto) => ({
+      const mapped: SkillRef[] = data.content.map((item) => ({
         id: item.id,
         name: item.name,
       }));
@@ -90,7 +83,7 @@ const SkillSelection = ({
   // ============================
   // Handle Add/Remove Skill
   // ============================
-  const handleToggleSkill = (skill: SkillSummary) => {
+  const handleToggleSkill = (skill: SkillRef) => {
     const exists = selectedSkills.some((s) => s.id === skill.id);
     if (exists) {
       onRemoveSkill(skill);

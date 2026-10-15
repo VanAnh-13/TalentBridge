@@ -35,7 +35,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/shared/presentation/ui/alert";
-import SkillSelection from "@/pages/commons/SkillSelection";
+import { SkillSelection } from "@/features/skill";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 
 const UserSubscriberPage = () => {

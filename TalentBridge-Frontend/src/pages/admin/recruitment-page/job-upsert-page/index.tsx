@@ -24,7 +24,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor.tsx";
-import SkillSelection from "@/pages/commons/SkillSelection.tsx";
+import { SkillSelection } from "@/features/skill";
 import type { CompanySummary, JobUpsertDto, SkillSummary } from "@/types/job";
 import CompanySelection from "@/pages/commons/CompanySelection.tsx";
 import { errorMessage } from "@/shared/domain/errors";

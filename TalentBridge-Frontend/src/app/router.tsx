@@ -19,7 +19,7 @@ import AdminPage from "@/pages/admin";
 import CompanyManagerPage from "@/pages/admin/company-page";
 import DashboardPage from "@/pages/admin/dashboard-page";
 import RecruitmentManagerPage from "@/pages/admin/recruitment-page";
-import SkillManagerAdminPage from "@/pages/admin/recruitment-page/skill-page";
+import { SkillManagerPage } from "@/features/skill";
 import JobManagerPage from "@/pages/admin/recruitment-page/job-page";
 import JobUpsertPage from "@/pages/admin/recruitment-page/job-upsert-page";
 import ResumeManagerPage from "@/pages/admin/recruitment-page/resume-page";
@@ -32,7 +32,6 @@ import UserSubscriberPage from "@/pages/user/user-subscriber-page";
 
 // RECRUITER PAGE
 import RecruiterPage from "@/pages/recruiter";
-import SkillManagerRecruiterPage from "@/pages/recruiter/skill-page";
 import ResumeManagerRecruiterPage from "@/pages/recruiter/resume-page";
 import JobManagerRecruiterPage from "@/pages/recruiter/job-page";
 import JobUpsertRecruiterPage from "@/pages/recruiter/job-upsert-page";
@@ -133,7 +132,7 @@ const router = createBrowserRouter([
             path: "skill-manager",
             element: (
               <ProtectedRoute to="/admin" requiredPermission="GET /skills">
-                <SkillManagerAdminPage />
+                <SkillManagerPage />
               </ProtectedRoute>
             ),
           },
@@ -228,7 +227,7 @@ const router = createBrowserRouter([
         path: "skills",
         element: (
           <ProtectedRoute to="/recruiter" requiredPermission="GET /skills">
-            <SkillManagerRecruiterPage />
+            <SkillManagerPage theme="purple" />
           </ProtectedRoute>
         ),
       },

@@ -12,3 +12,8 @@ export const auth = createAuthUseCases(
   new LocalStorageTokenStore(),
   new BrowserDeviceInfoProvider(),
 );
+
+import { createSkillUseCases } from "@/features/skill/application/skillUseCases";
+import { HttpSkillRepository } from "@/features/skill/infrastructure/HttpSkillRepository";
+
+export const skills = createSkillUseCases(new HttpSkillRepository());

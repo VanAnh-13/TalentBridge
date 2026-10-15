@@ -29,7 +29,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor.tsx";
-import SkillSelection from "@/pages/commons/SkillSelection.tsx";
+import { SkillSelection } from "@/features/skill";
 import type { JobUpsertDto, SkillSummary } from "@/types/job";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";

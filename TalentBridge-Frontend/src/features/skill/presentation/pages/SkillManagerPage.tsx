@@ -6,22 +6,13 @@ import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  deleteSkillById,
-  findAllSkills,
-  saveSkill,
-  updateSkill,
-} from "@/services/skillApi.ts";
-import type {
-  createSkillRequestDto,
-  DefaultSkillResponseDto,
-  updateSkillRequestDto,
-} from "@/types/skill.d.ts";
+import { skills as skillUseCases } from "@/app/container";
+import type { NewSkill, Skill, SkillChange } from "../../domain/skill";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { errorMessage } from "@/shared/domain/errors";
-import { SkillForm } from "./SkillForm.tsx";
-import { SkillSearchSection } from "./SkillSearchSection.tsx";
-import { SkillTable } from "./SkillTable.tsx";
+import { SkillForm } from "../components/SkillForm.tsx";
+import { SkillSearchSection } from "../components/SkillSearchSection.tsx";
+import { SkillTable } from "../components/SkillTable.tsx";
 import { HasPermission } from "@/features/auth";
 
 interface SkillManagerProps {
@@ -30,7 +21,7 @@ interface SkillManagerProps {
 
 const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
   // Data
-  const [skills, setSkills] = useState<DefaultSkillResponseDto[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Search
@@ -45,12 +36,12 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
   // Form State
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingSkill, setEditingSkill] =
-    useState<DefaultSkillResponseDto | null>(null);
+    useState<Skill | null>(null);
 
   // ============================
   // HANDLE OPEN FORM
   // ============================
-  const openEditForm = (skill: DefaultSkillResponseDto) => {
+  const openEditForm = (skill: Skill) => {
     setEditingSkill(skill);
     setIsFormOpen(true);
   };
@@ -70,8 +61,7 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
   ) => {
     setIsLoading(true);
     try {
-      const filter = searchName ? `name ~ '*${searchName}*'` : null;
-      const res = (await findAllSkills({ page, size, filter })).data.data;
+      const res = await skillUseCases.search(searchName, page, size);
 
       setSkills(res.content);
       setTotalElements(res.totalElements);
@@ -103,16 +93,16 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
   // HANDLE CREATE, UPDATE, DELETE
   // ============================
   const handleAddOrUpdateSkill = async (
-    data: createSkillRequestDto | updateSkillRequestDto,
+    data: NewSkill | SkillChange,
   ) => {
     try {
       if (!data) return;
 
       if ("id" in data) {
-        await updateSkill(data);
+        await skillUseCases.update(data);
         toast.success("Cập nhật kỹ năng thành công.");
       } else {
-        await saveSkill(data);
+        await skillUseCases.create(data);
         toast.success("Tạo kỹ năng thông.");
       }
 
@@ -124,7 +114,7 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
 
   const handleDeleteSkill = async (id: number) => {
     try {
-      await deleteSkillById(id);
+      await skillUseCases.remove(id);
       toast.success("Xóa kỹ năng thành công.");
       handleReset();
     } catch (err) {

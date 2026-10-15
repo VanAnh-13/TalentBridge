@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/presentation/ui/table.tsx";
-import type { DefaultSkillResponseDto } from "@/types/skill.d.ts";
+import type { Skill } from "../../domain/skill";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
@@ -16,9 +16,9 @@ import { formatISO } from "@/shared/presentation/format.ts";
 import { HasPermission } from "@/features/auth";
 
 interface SkillTableProps {
-  skills: DefaultSkillResponseDto[];
+  skills: Skill[];
   isLoading: boolean;
-  onEdit: (skill: DefaultSkillResponseDto) => void;
+  onEdit: (skill: Skill) => void;
   onDelete: (id: number) => void;
   theme?: "blue" | "purple";
 }
