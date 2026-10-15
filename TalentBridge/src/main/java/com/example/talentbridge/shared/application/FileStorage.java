@@ -13,6 +13,9 @@ public interface FileStorage {
 
     String generatePresignedUrl(String key, Duration expireDuration);
 
+    /** The content stored under {@code key}. */
+    byte[] read(String key);
+
     void deleteFileByUrl(String fileUrl);
 
     void deleteFileByKey(String key);

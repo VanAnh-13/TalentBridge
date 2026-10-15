@@ -20,6 +20,8 @@ import { HttpChatRepository } from "@/features/chat/infrastructure/HttpChatRepos
 import { StompChatStream } from "@/features/chat/infrastructure/StompChatStream";
 import { createInterviewUseCases } from "@/features/interview/application/interviewUseCases";
 import { HttpInterviewRepository } from "@/features/interview/infrastructure/HttpInterviewRepository";
+import { createMatchingUseCases } from "@/features/matching/application/matchingUseCases";
+import { HttpMatchingRepository } from "@/features/matching/infrastructure/HttpMatchingRepository";
 import { createJobUseCases } from "@/features/job/application/jobUseCases";
 import { HttpJobRepository } from "@/features/job/infrastructure/HttpJobRepository";
 import { createResumeUseCases } from "@/features/resume/application/resumeUseCases";
@@ -49,6 +51,7 @@ export const permissions = createPermissionUseCases(new HttpPermissionRepository
 export const companies = createCompanyUseCases(new HttpCompanyRepository());
 export const chat = createChatUseCases(new HttpChatRepository(), new StompChatStream(realtime));
 export const interviews = createInterviewUseCases(new HttpInterviewRepository());
+export const matching = createMatchingUseCases(new HttpMatchingRepository());
 export const jobs = createJobUseCases(new HttpJobRepository());
 export const resumes = createResumeUseCases(new HttpResumeRepository());
 export const users = createUserUseCases(new HttpUserRepository());

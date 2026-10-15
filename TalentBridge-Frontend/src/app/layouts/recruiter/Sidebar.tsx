@@ -6,6 +6,7 @@ import {
   FileText,
   CalendarDays,
   MessageCircle,
+  Sparkles,
   MonitorIcon as MonitorCog,
   type LucideIcon,
   Home,
@@ -61,6 +62,12 @@ const menuItems: MenuItem[] = [
     url: "/recruiter/resumes",
     icon: FileText,
     permission: "GET /resumes/company",
+  },
+  {
+    title: "Xếp hạng ứng viên",
+    url: "/recruiter/matching",
+    icon: Sparkles,
+    permission: "GET /matching/jobs/{jobId}/candidates",
   },
   {
     title: "Lịch phỏng vấn",

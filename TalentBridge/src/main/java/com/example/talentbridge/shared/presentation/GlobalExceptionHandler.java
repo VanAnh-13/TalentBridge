@@ -61,6 +61,14 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(ex.getMessage(), "VALIDATION_ERROR"));
     }
 
+    @ExceptionHandler(com.example.talentbridge.shared.domain.exception.ServiceUnavailableException.class)
+    public ResponseEntity<ApiResponse<?>> handleServiceUnavailableException(
+            com.example.talentbridge.shared.domain.exception.ServiceUnavailableException ex) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ApiResponse<>(ex.getMessage(), "SERVICE_UNAVAILABLE"));
+    }
+
     @ExceptionHandler(com.example.talentbridge.shared.domain.exception.InvalidTokenException.class)
     public ResponseEntity<ApiResponse<?>> handleInvalidTokenException(
             com.example.talentbridge.shared.domain.exception.InvalidTokenException ex) {

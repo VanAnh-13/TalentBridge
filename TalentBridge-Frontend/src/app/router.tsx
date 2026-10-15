@@ -35,6 +35,7 @@ import {
 } from "@/features/resume";
 import { SkillManagerPage } from "@/features/skill";
 import { MyInterviewsPage, RecruiterInterviewsPage } from "@/features/interview";
+import { CandidateRankingPage } from "@/features/matching";
 import { ChatPage } from "@/features/chat";
 import ChatRedirect from "@/app/pages/ChatRedirect";
 import { AccessControlPage, PermissionManagerPage, RoleManagerPage } from "@/features/access";
@@ -255,6 +256,16 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute to="/recruiter" requiredPermission="GET /chats">
             <ChatPage />
+          </ProtectedRoute>
+        ),
+      },
+
+      // AI MATCHING
+      {
+        path: "matching",
+        element: (
+          <ProtectedRoute to="/recruiter" requiredPermission="GET /matching/jobs/{jobId}/candidates">
+            <CandidateRankingPage />
           </ProtectedRoute>
         ),
       },

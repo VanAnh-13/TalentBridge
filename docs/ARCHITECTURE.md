@@ -103,3 +103,19 @@ STOMP over WebSocket at `/ws` (`shared/infrastructure/realtime`). The browser au
 `/user/queue/*` destinations and send to `/app/*`. Modules push with `convertAndSendToUser(userId, "/queue/x", payload)`
 after the transaction commits. Other modules notify people through `notification.application.NotifyUser` via their own
 output port (e.g. `resume.application.port.ApplicationNotifier`).
+
+## AI CV-job matching
+The `matching` module scores how well an application's CV fits its job, with the Claude API
+(`matching.infrastructure.claude.ClaudeCvMatcher`, behind the `CvMatcher` port).
+* The CV is sent to the model as a PDF document next to the job's title, level, location, skills and description; the
+  answer is requested as JSON (`score`, `matchedSkills`, `missingSkills`, `summary`) and the score is clamped to 0-100.
+  The system prompt tells the model the CV is untrusted data and must not be obeyed.
+* It is **off until `ANTHROPIC_API_KEY` is set**: no network traffic, `GET /matching/status` says `enabled: false`, and
+  submitting a CV is unaffected. `MATCHING_MODEL` picks the model (default `claude-opus-5-5`); `ANTHROPIC_BASE_URL`
+  points at a gateway or a stand-in server. Every call costs money, so scoring runs once per CV submission/replacement
+  (recruiters may ask again with `POST /matching/resumes/{id}/recompute`).
+* Scoring runs on a small background pool after the submitting transaction commits and holds no database transaction
+  while the model works. A failure is logged and leaves the application unscored.
+* Results live in `match_results` (one current row per application). Recruiters of the job's company, and admins,
+  read them; candidates never see their own score. `GET /matching/me/recommendations` is a plain skill overlap with the
+  skills the candidate follows (no model involved).

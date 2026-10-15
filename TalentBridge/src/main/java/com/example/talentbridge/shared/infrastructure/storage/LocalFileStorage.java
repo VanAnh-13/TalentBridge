@@ -124,6 +124,15 @@ public class LocalFileStorage implements FileStorage {
     }
 
     @Override
+    public byte[] read(String key) {
+        try {
+            return Files.readAllBytes(Paths.get(UPLOAD_DIR, key));
+        } catch (IOException e) {
+            throw new StorageException("Không đọc được tệp: " + key);
+        }
+    }
+
+    @Override
     public void deleteFileByUrl(String fileUrl) {
         try {
             if (fileUrl == null || fileUrl.isBlank()) {

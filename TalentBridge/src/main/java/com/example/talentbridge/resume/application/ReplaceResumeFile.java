@@ -4,6 +4,7 @@ import com.example.talentbridge.shared.application.FileStorage;
 import com.example.talentbridge.shared.application.FileUpload;
 import com.example.talentbridge.shared.application.CurrentUser;
 import com.example.talentbridge.shared.domain.exception.NotFoundException;
+import com.example.talentbridge.resume.application.port.ApplicationScoring;
 import com.example.talentbridge.resume.domain.Resume;
 import com.example.talentbridge.resume.domain.ResumeDetails;
 import com.example.talentbridge.resume.domain.ResumeRepository;
@@ -20,6 +21,7 @@ public class ReplaceResumeFile {
     private final ResumeRepository resumes;
     private final FileStorage storage;
     private final CurrentUser currentUser;
+    private final ApplicationScoring scoring;
 
     /** The caller uploads a new CV file for one of their applications. */
     public ResumeDetails execute(Long id, FileUpload pdf) {
@@ -36,6 +38,8 @@ public class ReplaceResumeFile {
         storage.uploadFile(pdf, newKey, false);
         resume.replaceFile(newKey);
 
-        return resumes.save(resume);
+        ResumeDetails saved = resumes.save(resume);
+        scoring.cvChanged(saved.resume().getId());
+        return saved;
     }
 }

@@ -162,7 +162,8 @@ class ResumeApiTest {
                 .andExpect(jsonPath("$.data.totalElements").value(1));
         call(get("/resumes/company"), recB, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isEmpty());
-        call(get("/resumes"), adminToken, null).andExpect(status().isOk())
+        // the suite shares one database, so ask for a page big enough to hold every resume created so far
+        call(get("/resumes?size=1000"), adminToken, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content[*].id", hasItem((int) resume1)));
     }
 

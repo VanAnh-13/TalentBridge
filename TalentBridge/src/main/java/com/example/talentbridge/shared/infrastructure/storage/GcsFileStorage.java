@@ -92,6 +92,19 @@ public class GcsFileStorage implements FileStorage {
     }
 
     @Override
+    public byte[] read(String key) {
+        try {
+            byte[] content = storage.readAllBytes(BlobId.of(gcsBucketName, key));
+            if (content == null) throw new StorageException("Không đọc được tệp: " + key);
+            return content;
+        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new StorageException("Lỗi khi đọc file từ GCS: " + e.getMessage());
+        }
+    }
+
+    @Override
     public void deleteFileByUrl(String fileUrl) {
         try {
             if (fileUrl == null || fileUrl.isBlank()) {

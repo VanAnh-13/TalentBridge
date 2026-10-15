@@ -8,6 +8,7 @@ import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
 import com.example.talentbridge.shared.domain.exception.NotFoundException;
 import com.example.talentbridge.resume.application.port.JobCatalog;
 import com.example.talentbridge.resume.application.port.ApplicationNotifier;
+import com.example.talentbridge.resume.application.port.ApplicationScoring;
 import com.example.talentbridge.resume.application.port.UserDirectory;
 import com.example.talentbridge.resume.domain.Resume;
 import com.example.talentbridge.resume.domain.ResumeDetails;
@@ -29,6 +30,7 @@ public class SubmitResume {
     private final CurrentUser currentUser;
     private final ResumeFiles files;
     private final ApplicationNotifier notifier;
+    private final ApplicationScoring scoring;
 
     /**
      * The candidate named in the request must be the caller: nobody applies in somebody else's name.
@@ -57,6 +59,7 @@ public class SubmitResume {
                 ResumeFiles.fileNameOf(resume.getId(), resume.getVersion()), false));
         ResumeDetails result = resumes.save(resume);
         notifier.submitted(result);
+        scoring.cvChanged(resume.getId());
         return result;
     }
 }
