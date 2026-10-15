@@ -14,6 +14,17 @@ TalentBridge là một nền tảng tuyển dụng IT chuyên nghiệp, kết n�
 - 🌐 Frontend: https://talentbridge-frontend-273039906673.asia-southeast1.run.app
 - 🔧 Backend API: https://talentbridge-273039906673.asia-southeast1.run.app
 
+## ▶️ Chạy toàn bộ hệ thống (Docker)
+
+```bash
+cp .env.example .env            # điền JWT_SECRET:  openssl rand -base64 64
+docker compose up --build       # web http://localhost:3000, API http://localhost:8080
+```
+
+Đặt `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` trong `.env` để tạo quản trị viên đầu tiên.
+CI (`.github/workflows/ci.yml`) chạy test backend, test migration trên MariaDB, lint kiến trúc + build frontend và build image.
+Kiến trúc: xem [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## ✨ Tính năng chính
 
 ### Dành cho Ứng viên

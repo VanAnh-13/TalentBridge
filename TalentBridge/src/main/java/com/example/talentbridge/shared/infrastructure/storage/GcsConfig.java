@@ -12,10 +12,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Configuration
-@ConditionalOnProperty(
-        name = {"gcs.project-id", "gcs.bucket-name"},
-        matchIfMissing = false
-)
+/**
+ * Google Cloud Storage, only when {@code storage.type=gcs} (env STORAGE_TYPE) — the same switch that selects
+ * {@link GcsFileStorage}. Merely having empty gcs.* properties (the production defaults) must not try to log in
+ * to Google.
+ */
+@ConditionalOnProperty(prefix = "storage", name = "type", havingValue = "gcs")
 public class GcsConfig {
 
     @Value("${gcs.project-id}")
