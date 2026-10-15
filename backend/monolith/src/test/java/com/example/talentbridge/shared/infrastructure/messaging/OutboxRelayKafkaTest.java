@@ -51,8 +51,9 @@ class OutboxRelayKafkaTest {
     @Test @DisplayName("a committed event reaches Kafka once, keyed and enveloped, and is marked sent")
     void committedEventIsShipped() {
         relay.relay();   // anything left by start-up
-        EventEnvelope written = tx.execute(s -> outbox.add(Topics.NOTIFICATIONS, "42", NotificationRequested.TYPE,
-                NotificationRequested.VERSION, new NotificationRequested(42, "TEST", "Xin chào", "body", "/x", false)));
+        // a user id no real account can have: the test database is shared with other test classes
+        EventEnvelope written = tx.execute(s -> outbox.add(Topics.NOTIFICATIONS, "-42", NotificationRequested.TYPE,
+                NotificationRequested.VERSION, new NotificationRequested(-42, "TEST", "Xin chào", "body", "/x", false)));
 
         assertEquals(1, relay.relay());
         assertEquals(0, relay.relay(), "nothing is sent twice by the same relay");
@@ -60,7 +61,7 @@ class OutboxRelayKafkaTest {
         try (Consumer<String, String> consumer = consumer()) {
             ConsumerRecord<String, String> record = KafkaTestUtils.getRecords(consumer, Duration.ofSeconds(20)).records(Topics.NOTIFICATIONS)
                     .iterator().next();
-            assertEquals("42", record.key());
+            assertEquals("-42", record.key());
             EventEnvelope received = EventCodec.read(record.value());
             assertEquals(written.eventId(), received.eventId());
             NotificationRequested payload = EventCodec.payload(received, NotificationRequested.TYPE, 1, NotificationRequested.class);
@@ -75,8 +76,8 @@ class OutboxRelayKafkaTest {
     void rolledBackEventIsNotWritten() {
         long before = rows.count();
         tx.executeWithoutResult(s -> {
-            outbox.add(Topics.NOTIFICATIONS, "1", NotificationRequested.TYPE, 1,
-                    new NotificationRequested(1, "TEST", "t", "b", "/", false));
+            outbox.add(Topics.NOTIFICATIONS, "-1", NotificationRequested.TYPE, 1,
+                    new NotificationRequested(-1, "TEST", "t", "b", "/", false));
             s.setRollbackOnly();
         });
         assertEquals(before, rows.count());
