@@ -1,4 +1,5 @@
 import { UserMenu, useAuthState } from "@/features/auth";
+import { NotificationBell } from "@/features/notification";
 // src/components/layout/Header.tsx
 
 import { Home, Code, Building2, Menu } from "lucide-react";
@@ -61,7 +62,10 @@ const Header: React.FC = () => {
         {/* Auth + Mobile Nav */}
         <div className="flex items-center gap-4">
           {isLogin ? (
-            <UserMenu />
+            <>
+              <NotificationBell />
+              <UserMenu />
+            </>
           ) : (
             <Link
               to="/auth?mode=login"

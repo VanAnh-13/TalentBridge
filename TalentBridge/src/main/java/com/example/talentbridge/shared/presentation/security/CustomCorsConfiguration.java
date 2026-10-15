@@ -26,7 +26,7 @@ public class CustomCorsConfiguration {
             "http://localhost:5173"
         );
         configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

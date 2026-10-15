@@ -96,3 +96,10 @@ Frontend: every feature follows the four layers and no legacy `pages/`, `service
   expire on their own). Deleting a user revokes all of their sessions.
 * A skill required by a job cannot be deleted; deleting a skill only stops subscribers from following it.
 * CVs are shown with the browser's own PDF viewer, never parsed by JavaScript in the page.
+
+## Real time
+STOMP over WebSocket at `/ws` (`shared/infrastructure/realtime`). The browser authenticates in the CONNECT frame
+(`Authorization: Bearer <access token>`); the principal name is the user id. Clients may only subscribe to their own
+`/user/queue/*` destinations and send to `/app/*`. Modules push with `convertAndSendToUser(userId, "/queue/x", payload)`
+after the transaction commits. Other modules notify people through `notification.application.NotifyUser` via their own
+output port (e.g. `resume.application.port.ApplicationNotifier`).

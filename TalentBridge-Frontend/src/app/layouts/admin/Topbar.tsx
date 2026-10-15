@@ -1,4 +1,5 @@
 import { UserMenu, useAuthState } from "@/features/auth";
+import { NotificationBell } from "@/features/notification";
 import { useLocation } from "react-router-dom";
 import { Clock } from "lucide-react";
 import { SidebarTrigger } from "@/shared/presentation/ui/sidebar";
@@ -105,6 +106,7 @@ export function AdminTopBar() {
       {/* Right side */}
       {isLogin && (
         <div className="flex items-center gap-3">
+          <NotificationBell />
           <UserMenu blackTheme />
         </div>
       )}

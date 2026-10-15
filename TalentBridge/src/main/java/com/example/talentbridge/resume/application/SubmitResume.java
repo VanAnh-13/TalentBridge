@@ -7,6 +7,7 @@ import com.example.talentbridge.shared.domain.exception.ForbiddenException;
 import com.example.talentbridge.shared.domain.exception.AlreadyExistsException;
 import com.example.talentbridge.shared.domain.exception.NotFoundException;
 import com.example.talentbridge.resume.application.port.JobCatalog;
+import com.example.talentbridge.resume.application.port.ApplicationNotifier;
 import com.example.talentbridge.resume.application.port.UserDirectory;
 import com.example.talentbridge.resume.domain.Resume;
 import com.example.talentbridge.resume.domain.ResumeDetails;
@@ -27,6 +28,7 @@ public class SubmitResume {
     private final FileStorage storage;
     private final CurrentUser currentUser;
     private final ResumeFiles files;
+    private final ApplicationNotifier notifier;
 
     /**
      * The candidate named in the request must be the caller: nobody applies in somebody else's name.
@@ -53,6 +55,8 @@ public class SubmitResume {
 
         resume.attachFile(storage.uploadFile(pdf, ResumeFiles.folderOf(resume.getEmail()),
                 ResumeFiles.fileNameOf(resume.getId(), resume.getVersion()), false));
-        return resumes.save(resume);
+        ResumeDetails result = resumes.save(resume);
+        notifier.submitted(result);
+        return result;
     }
 }

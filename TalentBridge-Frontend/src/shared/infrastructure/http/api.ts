@@ -39,6 +39,8 @@ const verbs = (client: Client) => ({
     send<T>(client.post<ApiResponse<T>>(url, body, config)),
   put: <T = void>(url: string, body?: unknown, config?: AxiosRequestConfig) =>
     send<T>(client.put<ApiResponse<T>>(url, body, config)),
+  patch: <T = void>(url: string, body?: unknown, config?: AxiosRequestConfig) =>
+    send<T>(client.patch<ApiResponse<T>>(url, body, config)),
   delete: <T = void>(url: string, config?: AxiosRequestConfig) =>
     send<T>(client.delete<ApiResponse<T>>(url, config)),
 });

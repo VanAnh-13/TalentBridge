@@ -3,6 +3,7 @@ package com.example.talentbridge.resume.application;
 import com.example.talentbridge.shared.application.CurrentUser;
 import com.example.talentbridge.shared.domain.exception.ForbiddenException;
 import com.example.talentbridge.shared.domain.exception.NotFoundException;
+import com.example.talentbridge.resume.application.port.ApplicationNotifier;
 import com.example.talentbridge.resume.application.port.UserDirectory;
 import com.example.talentbridge.resume.domain.ResumeStatus;
 import com.example.talentbridge.resume.domain.Resume;
@@ -21,6 +22,7 @@ public class ChangeResumeStatus {
     private final ResumeRepository resumes;
     private final UserDirectory users;
     private final CurrentUser currentUser;
+    private final ApplicationNotifier notifier;
 
     /** An administrator moves any application forward. */
     public ResumeDetails execute(Long id, ResumeStatus status) {
@@ -46,7 +48,11 @@ public class ChangeResumeStatus {
 
     private ResumeDetails change(ResumeDetails details, ResumeStatus status) {
         Resume resume = details.resume();
+        ResumeStatus before = resume.getStatus();
         resume.changeStatus(status);
-        return resumes.save(resume);
+        ResumeDetails saved = resumes.save(resume);
+        if (before != status)
+            notifier.statusChanged(saved);
+        return saved;
     }
 }

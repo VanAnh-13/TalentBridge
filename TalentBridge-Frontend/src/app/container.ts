@@ -2,6 +2,9 @@
  * Composition root: the only place that knows which implementation backs each port.
  * Presentation asks for use cases here; it never imports infrastructure.
  */
+import { createNotificationUseCases } from "@/features/notification/application/notificationUseCases";
+import { HttpNotificationRepository } from "@/features/notification/infrastructure/HttpNotificationRepository";
+import { StompNotificationStream } from "@/features/notification/infrastructure/StompNotificationStream";
 import { createPermissionUseCases, createRoleUseCases } from "@/features/access/application/accessUseCases";
 import { HttpPermissionRepository } from "@/features/access/infrastructure/HttpPermissionRepository";
 import { HttpRoleRepository } from "@/features/access/infrastructure/HttpRoleRepository";
@@ -26,6 +29,10 @@ export const auth = createAuthUseCases(
   new HttpAuthRepository(),
   new LocalStorageTokenStore(),
   new BrowserDeviceInfoProvider(),
+);
+export const notifications = createNotificationUseCases(
+  new HttpNotificationRepository(),
+  new StompNotificationStream(() => auth.accessToken()),
 );
 export const skills = createSkillUseCases(new HttpSkillRepository());
 export const subscribers = createSubscriberUseCases(new HttpSubscriberRepository());

@@ -36,6 +36,9 @@ public class SecurityConfiguration {
             "/auth/reset-password",
             "/auth/reset-password/verify",
 
+            // WEBSOCKET HANDSHAKE (the STOMP CONNECT frame carries and verifies the access token)
+            "/ws/**",
+
             // API DOCS
             "/swagger-ui/**",
             "/v3/api-docs/**",
