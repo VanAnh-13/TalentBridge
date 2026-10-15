@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { findJobById } from "@/services/jobApi.ts";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import type { Job } from "@/types/job";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/shared/presentation/ui/breadcrumb.tsx";
 import JobSection from "./JobSection.tsx";
 import { ApplySection } from "./ApplySection.tsx";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 type JobDetailsProp = {
   initialJob?: Job;
@@ -39,7 +39,7 @@ const JobDetailsClientPage = ({ initialJob }: JobDetailsProp) => {
         const res = (await findJobById(Number.parseInt(id))).data.data;
         setJob(res);
       } catch (err) {
-        toast.error(getErrorMessage(err, "Không thể lấy thông tin công việc"));
+        toast.error(errorMessage(err, "Không thể lấy thông tin công việc"));
       } finally {
         setIsLoading(false);
       }

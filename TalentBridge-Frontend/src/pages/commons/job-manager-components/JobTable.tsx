@@ -14,7 +14,7 @@ import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
 import type { Job } from "@/types/job";
 import { levelColors } from "@/shared/presentation/tagColors.ts";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 interface JobTableProps {
   jobs: Job[];

@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // CLIENT PAGE
 import RootPage from "@/pages/client";
-import AuthPage from "@/pages/client/auth-page";
+import AuthPage from "@/features/auth/presentation/pages/AuthPage";
 import HomePage from "@/pages/client/home-page";
 import CompanyClientPage from "@/pages/client/company-page";
 import CompanyDetailsClientPage from "@/pages/client/company-details-page";
@@ -12,7 +12,7 @@ import JobDetailsClientPage from "@/pages/client/job-details-page";
 import UserPage from "@/pages/user";
 import UserInfoPage from "@/pages/user/user-info-page";
 import UserResumePage from "@/pages/user/user-resume-page";
-import UserSessionPage from "@/pages/user/user-session-page";
+import UserSessionPage from "@/features/auth/presentation/pages/SessionsPage";
 
 // ADMIN PAGE
 import AdminPage from "@/pages/admin";
@@ -41,7 +41,7 @@ import MemberManagePage from "@/pages/recruiter/member-page";
 
 // Components
 import ErrorPage from "@/shared/presentation/components/ErrorPage";
-import { ProtectedRoute } from "@/pages/commons/ProtectedRoute.tsx";
+import { ProtectedRoute } from "@/features/auth";
 
 const router = createBrowserRouter([
   // =========================

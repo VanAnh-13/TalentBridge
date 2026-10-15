@@ -20,8 +20,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/shared/presentation/ui/avatar.tsx";
-import { useAppDispatch, useAppSelector } from "@/features/hooks.ts";
-import { logout } from "@/features/slices/auth/authThunk.ts";
+import { logout } from "../state/authThunks";
+import { useAccount, useAuthDispatch } from "../state/hooks";
 import { Link } from "react-router-dom";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import HasPermission from "./HasPermission.tsx";
@@ -32,8 +32,8 @@ interface UserMenuProps {
 }
 
 const UserMenu = ({ blackTheme }: UserMenuProps) => {
-  const { user } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const user = useAccount();
+  const dispatch = useAuthDispatch();
 
   const [avatarVersion, setAvatarVersion] = useState(Date.now());
 

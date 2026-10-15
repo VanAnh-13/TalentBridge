@@ -14,7 +14,7 @@ import { Checkbox } from "@/shared/presentation/ui/checkbox.tsx";
 import { Search, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 import { findAllSkills } from "@/services/skillApi.ts";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import type { SkillSummary } from "@/types/job";
 import type { DefaultSkillResponseDto } from "@/types/skill.d.ts";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
@@ -79,7 +79,7 @@ const SkillSelection = ({
       setTotalElements(data.totalElements);
       setIsLoading(false);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách kỹ năng."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách kỹ năng."));
     }
   };
 

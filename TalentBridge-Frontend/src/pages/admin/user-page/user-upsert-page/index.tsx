@@ -1,3 +1,4 @@
+import { useAccount } from "@/features/auth";
 import type React from "react";
 
 import { useEffect, useState } from "react";
@@ -23,17 +24,16 @@ import {
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { UserCreateRequestDto, UserUpdateRequestDto } from "@/types/user";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import { getUserById, saveUser, updateUser } from "@/services/userApi";
 import type { CompanySummary } from "@/types/job";
 import CompanySelection from "@/pages/commons/CompanySelection.tsx";
 import type { RoleSummary } from "@/types/role.js";
 import RoleSelection from "@/pages/commons/RoleSelection.tsx";
-import { useAppSelector } from "@/features/hooks.ts";
 
 export default function UserUpsertPage() {
-  const { permissions } = useAppSelector((state) => state.auth.user);
+  const { permissions } = useAccount();
 
   // ============================
   // Checking is edit or create
@@ -87,7 +87,7 @@ export default function UserUpsertPage() {
           setSelectedCompany(user.company);
           setSelectedRole(user.role);
         } catch (err) {
-          toast.error(getErrorMessage(err, "Không tìm thấy người dùng này"));
+          toast.error(errorMessage(err, "Không tìm thấy người dùng này"));
           setSearchParams({});
         } finally {
           setIsLoading(false);
@@ -179,7 +179,7 @@ export default function UserUpsertPage() {
       handleBack();
     } catch (err) {
       toast.error(
-        getErrorMessage(
+        errorMessage(
           err,
           isEdit ? "Cập nhật người dùng thất bại" : "Tạo người dùng thất bại",
         ),

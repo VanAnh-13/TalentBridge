@@ -1,4 +1,4 @@
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import {
   deleteSelfSubscriber,
   findSelfSubscriber,
@@ -111,7 +111,7 @@ const UserSubscriberPage = () => {
       setSubscriber(res.data.data);
       setIsEditing(false);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }
@@ -130,7 +130,7 @@ const UserSubscriberPage = () => {
       setIsEditing(false);
       toast.success("Hủy đăng ký thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }

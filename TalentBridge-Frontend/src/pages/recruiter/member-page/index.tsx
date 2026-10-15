@@ -1,4 +1,5 @@
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { useAuthState } from "@/features/auth";
+import { errorMessage } from "@/shared/domain/errors";
 import type { RecruiterInfoResponseDto } from "@/types/user";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -9,10 +10,9 @@ import {
   removeMemberFromCompany,
 } from "@/services/companyApi";
 import MemberInviteFrom from "./MemberInviteFrom";
-import { useAppSelector } from "@/features/hooks";
 
 const MemberManagePage = () => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user } = useAuthState();
 
   // Data State
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ const MemberManagePage = () => {
       const owner = res.find((m) => m.owner);
       setIsOwner(owner?.email === user?.email);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +51,7 @@ const MemberManagePage = () => {
       await fetchMembers();
       toast.success("Thêm thành viên mới thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +67,7 @@ const MemberManagePage = () => {
       await fetchMembers();
       toast.success("Thêm thành viên mới thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }

@@ -1,13 +1,13 @@
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
-import { registerApi } from "@/services/authApi";
-import type { UserRegisterRequestDto } from "@/types/user";
+import { auth } from "@/app/container";
+import { errorMessage } from "@/shared/domain/errors";
+import type { Registration } from "../../domain/account";
 import type React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function RegisterForm() {
-  const [form, setForm] = useState<UserRegisterRequestDto>({
+  const [form, setForm] = useState<Registration>({
     name: "",
     email: "",
     password: "",
@@ -72,11 +72,11 @@ export default function RegisterForm() {
         return;
       }
 
-      await registerApi(form);
+      await auth.register(form);
       toast.info("Đăng ký thành công, vui lòng đăng nhập lại");
       navigate("/auth?mode=login");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
       setError("");

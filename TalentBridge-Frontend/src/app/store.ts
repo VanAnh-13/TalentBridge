@@ -10,7 +10,7 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import authReducer from "../features/slices/auth/authSlice";
+import authReducer from "@/features/auth/presentation/state/authSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,

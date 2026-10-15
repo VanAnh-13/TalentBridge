@@ -1,21 +1,18 @@
 import type React from "react";
 
-import { useAppDispatch } from "@/features/hooks";
-import { getErrorMessage, login } from "@/features/slices/auth/authThunk";
-import type { UserLoginRequestDto } from "@/types/user.d.ts";
+import { errorMessage } from "@/shared/domain/errors";
+import type { Credentials } from "../../domain/account";
+import { login } from "../state/authThunks";
+import { useAuthDispatch } from "../state/hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [form, setForm] = useState<UserLoginRequestDto>({
-    email: "",
-    password: "",
-    sessionMetaRequest: null,
-  });
+  const [form, setForm] = useState<Credentials>({ email: "", password: "" });
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useAppDispatch();
+  const dispatch = useAuthDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,7 +41,7 @@ export default function LoginPage() {
       setIsLoading(true);
       await dispatch(login(form)).unwrap();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }

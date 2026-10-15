@@ -18,11 +18,11 @@ import type {
   updateSkillRequestDto,
 } from "@/types/skill.d.ts";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import { SkillForm } from "./SkillForm.tsx";
 import { SkillSearchSection } from "./SkillSearchSection.tsx";
 import { SkillTable } from "./SkillTable.tsx";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 interface SkillManagerProps {
   theme?: "blue" | "purple";
@@ -77,7 +77,7 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách kỹ năng."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách kỹ năng."));
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +118,7 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
 
       handleReset();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, "Thao tác thất bại."));
     }
   };
 
@@ -128,7 +128,7 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
       toast.success("Xóa kỹ năng thành công.");
       handleReset();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Xóa kỹ năng thất bại."));
+      toast.error(errorMessage(err, "Xóa kỹ năng thất bại."));
     }
   };
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { Job } from "@/types/job";
 import JobGrid from "./JobGrid";
 import { JobSearchSection } from "./JobSearchSection";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { findAllJobs } from "@/services/jobApi";
 import { toast } from "sonner";
 import Pagination from "@/shared/presentation/components/Pagination";
@@ -61,7 +61,7 @@ export default function JobClientPage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty"));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
     } finally {
       setIsLoading(false);
     }

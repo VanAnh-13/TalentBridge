@@ -1,3 +1,4 @@
+import { useAuthState } from "@/features/auth";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 
 import { Button } from "@/shared/presentation/ui/button.tsx";
@@ -12,9 +13,8 @@ import {
 import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Label } from "@/shared/presentation/ui/label.tsx";
 import { toast } from "sonner";
-import { useAppSelector } from "@/features/hooks.ts";
 import PDFViewer from "@/shared/presentation/components/PDFViewer.tsx";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import type { CreateResumeRequestDto } from "@/types/resume";
 import { saveResume } from "@/services/resumeApi.ts";
 import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
@@ -30,7 +30,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { isLogin, user } = useAppSelector((state) => state.auth);
+  const { isLogin, user } = useAuthState();
 
   // =============================
   // INPUT REF
@@ -113,7 +113,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
       setIsModalOpen(false);
       setSelectedFile(null);
     } catch (error) {
-      toast.error(getErrorMessage(error, "Không thể Ứng tuyển"));
+      toast.error(errorMessage(error, "Không thể Ứng tuyển"));
     } finally {
       setIsLoading(false);
     }

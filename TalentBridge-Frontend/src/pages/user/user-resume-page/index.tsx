@@ -1,3 +1,4 @@
+import { useAuthState } from "@/features/auth";
 import { FileText } from "lucide-react";
 import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { useEffect, useState, useCallback } from "react";
@@ -6,9 +7,8 @@ import {
   removeSelfResumeByJobId,
   updateSelfResumeFile,
 } from "@/services/resumeApi";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
-import { useAppSelector } from "@/features/hooks";
 import Pagination from "@/shared/presentation/components/Pagination";
 import ResumeCard from "./ResumeCard";
 import type { ResumeForDisplayResponseDto } from "@/types/resume";
@@ -16,7 +16,7 @@ import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 
 export default function UserResumePage() {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user } = useAuthState();
 
   // ===================
   // Data
@@ -51,7 +51,7 @@ export default function UserResumePage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách hồ sơ."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách hồ sơ."));
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +71,7 @@ export default function UserResumePage() {
       toast.success("Rút đơn thành công");
       await fetchResumes();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Rút đơn thất bại"));
+      toast.error(errorMessage(err, "Rút đơn thất bại"));
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +88,7 @@ export default function UserResumePage() {
       await updateSelfResumeFile(resumeId, formData);
       await fetchResumes();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Cập nhật hồ sơ thất bại"));
+      toast.error(errorMessage(err, "Cập nhật hồ sơ thất bại"));
     } finally {
       setIsLoading(false);
     }

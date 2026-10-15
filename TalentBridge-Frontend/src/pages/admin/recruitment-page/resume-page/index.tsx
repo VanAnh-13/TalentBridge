@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ResumeSearchSection } from "../../../commons/resume-manager-components/ResumeSearchSection.tsx";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { findAllResumes, updateResumeStatus } from "@/services/resumeApi.ts";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import { ResumeTable } from "../../../commons/resume-manager-components/ResumeTable.tsx";
 import { ViewResumeDialog } from "../../../commons/resume-manager-components/ViewResumeDialog.tsx";
@@ -68,7 +68,7 @@ const ResumeManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty"));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +100,7 @@ const ResumeManagerPage = () => {
       );
       toast.success("Cập nhật trạng thái hồ sơ thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Cập nhật trạng thái hồ sơ thất bại"));
+      toast.error(errorMessage(err, "Cập nhật trạng thái hồ sơ thất bại"));
     } finally {
       setIsLoading(false);
     }

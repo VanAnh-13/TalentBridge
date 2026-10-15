@@ -1,6 +1,6 @@
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { findAllCompanies } from "@/services/companyApi";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { Building2 } from "lucide-react";
@@ -19,7 +19,7 @@ const TopCompaniesSection = () => {
         .data.data;
       setCompanies(res.content);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
     } finally {
       setIsLoading(false);
     }

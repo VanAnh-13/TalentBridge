@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/shared/presentation/ui/breadcrumb.tsx";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import { findCompanyById } from "@/services/companyApi.ts";
 import { findJobByCompanyId } from "@/services/jobApi.ts";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
@@ -45,7 +45,7 @@ const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
         setCompany(res);
         setJobs(jobRes || []);
       } catch (err) {
-        toast.error(getErrorMessage(err, "Không thể lấy thông tin công ty"));
+        toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
       } finally {
         setIsLoading(false);
       }

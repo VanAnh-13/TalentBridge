@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { findAllCompaniesWithJobsCount } from "@/services/companyApi";
 import Pagination from "@/shared/presentation/components/Pagination";
 import CompanyGrid from "./CompanyGrid";
@@ -47,7 +47,7 @@ export default function CompanyClientPage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
     } finally {
       setIsLoading(false);
     }

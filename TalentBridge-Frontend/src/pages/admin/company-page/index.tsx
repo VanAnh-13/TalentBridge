@@ -14,9 +14,9 @@ import Pagination from "@/shared/presentation/components/Pagination";
 import { CompanyDetailsSidebar } from "./CompanyDetailsSidebar";
 import { CompanySearchSection } from "./CompanySearchSection";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { CompanyTable } from "./CompanyTable";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 export default function CompanyManagerPage() {
   // Data
@@ -94,7 +94,7 @@ export default function CompanyManagerPage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
     } finally {
       setIsLoading(false);
     }
@@ -138,7 +138,7 @@ export default function CompanyManagerPage() {
       setIsLoading(false);
       handleReset();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, "Thao tác thất bại."));
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +153,7 @@ export default function CompanyManagerPage() {
 
       await handleReset();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Xóa công ty thất bại."));
+      toast.error(errorMessage(err, "Xóa công ty thất bại."));
     } finally {
       setIsLoading(false);
     }

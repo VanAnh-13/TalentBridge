@@ -1,3 +1,4 @@
+import { useAccount } from "@/features/auth";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/shared/presentation/ui/button.tsx";
@@ -30,7 +31,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor.tsx";
 import SkillSelection from "@/pages/commons/SkillSelection.tsx";
 import type { JobUpsertDto, SkillSummary } from "@/types/job";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import {
   findJobById,
@@ -38,7 +39,6 @@ import {
   updateJobByIdForRecruiterCompany,
 } from "@/services/jobApi.ts";
 import { formatISOToYMD } from "@/shared/presentation/format.ts";
-import { useAppSelector } from "@/features/hooks.ts";
 
 const levels = [
   { value: "INTERN", label: "Intern" },
@@ -48,7 +48,7 @@ const levels = [
 ];
 
 export default function JobUpsertRecruiterPage() {
-  const { permissions, companyId } = useAppSelector((state) => state.auth.user);
+  const { permissions, companyId } = useAccount();
   // ============================
   // Checking is edit or create
   // ============================
@@ -90,7 +90,7 @@ export default function JobUpsertRecruiterPage() {
           setFormData(job);
           setSelectedSkills(job.skills);
         } catch (err) {
-          toast.error(getErrorMessage(err, "Không tìm thấy công việc này"));
+          toast.error(errorMessage(err, "Không tìm thấy công việc này"));
           setSearchParams({});
         } finally {
           setIsLoading(false);
@@ -163,7 +163,7 @@ export default function JobUpsertRecruiterPage() {
       );
       handleBack();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thêm công việc mới thất bại"));
+      toast.error(errorMessage(err, "Thêm công việc mới thất bại"));
     } finally {
       setIsLoading(false);
     }

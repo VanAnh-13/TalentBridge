@@ -1,4 +1,4 @@
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import {
   deletePermissionById,
   findAllPermissions,
@@ -76,7 +76,7 @@ const PermissionManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +120,7 @@ const PermissionManagerPage = () => {
         toast.success("Tạo quyền hạn mới thành công");
       }
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }
@@ -138,7 +138,7 @@ const PermissionManagerPage = () => {
 
       toast.success("Xóa quyền hạn thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }

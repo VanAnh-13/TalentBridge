@@ -1,3 +1,4 @@
+import { UserMenu, useAuthState } from "@/features/auth";
 // src/components/layout/Header.tsx
 
 import { Home, Code, Building2, Menu } from "lucide-react";
@@ -5,12 +6,10 @@ import { Button } from "@/shared/presentation/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/shared/presentation/ui/sheet";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useAppSelector } from "@/features/hooks";
-import UserMenu from "@/pages/commons/UserMenu.tsx";
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLogin } = useAppSelector((state) => state.auth);
+  const { isLogin } = useAuthState();
 
   const navItems = [
     { href: "/home", label: "Trang chủ", Icon: Home },

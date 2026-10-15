@@ -1,3 +1,4 @@
+import { useAccount } from "@/features/auth";
 import { useCallback, useEffect, useState } from "react";
 import {
   Building2,
@@ -27,7 +28,6 @@ import {
 } from "@/shared/presentation/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/shared/presentation/lib/utils";
-import { useAppSelector } from "@/features/hooks.ts";
 
 interface MenuItem {
   title: string;
@@ -107,7 +107,7 @@ const menuItems: MenuItem[] = [
 export function AdminSidebar() {
   const { pathname } = useLocation();
   const permissions =
-    useAppSelector((state) => state.auth.user?.permissions) ?? [];
+    useAccount()?.permissions ?? [];
 
   // ======================================================================================================
   // Quản lý trạng thái mở rộng (expand/collapse) của các menu cha trong sidebar

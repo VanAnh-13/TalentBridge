@@ -9,7 +9,7 @@ import {
   findAllResumesForRecruiterCompany,
   updateResumeStatusForRecruiterCompany
 } from "@/services/resumeApi";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import { ResumeTable } from "../../commons/resume-manager-components/ResumeTable.tsx";
 import { ViewResumeDialog } from "../../commons/resume-manager-components/ViewResumeDialog.tsx";
@@ -69,7 +69,7 @@ const ResumeManagerRecruiterPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty"));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +96,7 @@ const ResumeManagerRecruiterPage = () => {
       await fetchResumes(currentPage, itemsPerPage, searchJobName);
       toast.success("Cập nhật trạng thái hồ sơ thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Cập nhật trạng thái hồ sơ thất bại"));
+      toast.error(errorMessage(err, "Cập nhật trạng thái hồ sơ thất bại"));
     } finally {
       setIsLoading(false);
     }

@@ -2,16 +2,16 @@ import { RouterProvider } from "react-router-dom";
 import router from "./router";
 import { Provider } from "react-redux";
 import { persistor, store } from "@/app/store";
-import { setupAxiosInterceptors } from "../lib/axiosClient";
+import { wireApplication } from "./wiring";
 import { Toaster } from "sonner";
 import { Worker } from "@react-pdf-viewer/core";
 import * as pdfjs from "pdfjs-dist";
 import { ScrollArea } from "@/shared/presentation/ui/scroll-area";
 import { PersistGate } from "redux-persist/integration/react";
 
-const App = () => {
-  setupAxiosInterceptors(store.dispatch);
+wireApplication();
 
+const App = () => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>

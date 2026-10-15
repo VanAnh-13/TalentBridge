@@ -1,119 +1,23 @@
-import type { ApiResponse } from "@/types/apiResponse.d.ts";
+// TRANSITIONAL: the pages that still call services/*.ts get server errors as ApiError, like the migrated features do.
+// Deleted together with the last legacy service.
 import axios from "axios";
-import type { InternalAxiosRequestConfig, AxiosError } from "axios";
-import { updateTokenManually } from "@/features/slices/auth/authSlice";
-import type { AppDispatch } from "@/app/store";
-import { logout } from "@/features/slices/auth/authThunk";
-import { refreshTokenApi } from "@/services/authApi";
 
-// ============================================================
-// Setup dispatch từ store để sử dụng
-// trong đây
-// ============================================================
-let dispatchRef: AppDispatch;
+import { ApiError } from "@/shared/domain/errors";
+import { httpClient } from "@/shared/infrastructure/http/httpClient";
 
-export const setupAxiosInterceptors = (dispatch: AppDispatch) => {
-  dispatchRef = dispatch;
-};
-
-// ============================================================
-// Cấu hình mặc định cho các request
-// ============================================================
-const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
-  withCredentials: true,
-});
-
-// ============================================================
-// Interceptor: Tự động gắn Access Token vào mỗi request
-// CHO TRƯỜNG HỢP ACCESS TOKEN ĐƯỢC LƯU Ở LOCAL STORAGE
-// ============================================================
-axiosClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const accessToken = localStorage.getItem("access_token");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
-// ============================================================
-// Cơ chế hàng đợi xử lý request bị lỗi 401 trong khi refresh token:
-// - failedQueue lưu các request bị 401
-// - Khi refresh thành công → resolve queue
-// - Khi refresh fail → reject toàn bộ queue
-// ============================================================
-type FailedRequest = {
-  resolve: () => void;
-  reject: (reason?: unknown) => void;
-};
-
-let failedQueue: FailedRequest[] = [];
-
-const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach(({ resolve, reject }) => {
-    if (token) resolve();
-    else reject(error);
-  });
-  failedQueue = [];
-};
-
-// ============================================================
-// Interceptor: Xử lý lỗi 401 (UNAUTHORIZED) bằng refresh token; 403 (ACCESS_DENIED) được trả về nguyên trạng
-// ============================================================
-
-let isRefreshing = false;
-
-axiosClient.interceptors.response.use(
+httpClient.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
-
-    // Check lỗi có phải thuộc lại lỗi JWT Token
-    const { response } = error;
-    const errorCode = (response?.data as ApiResponse<null>)?.errorCode;
-    // 401 = missing/expired/invalid token -> try to refresh and retry.
-    // 403 (errorCode ACCESS_DENIED) = authenticated but not allowed -> a new token will not help, just reject.
-    const isUnauthorized =
-      response?.status === 401 && errorCode === "UNAUTHORIZED";
-
-    if (isUnauthorized && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      if (isRefreshing) {
-        return new Promise<void>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then(() => axiosClient(originalRequest)) // trigger khi resolve()
-          .catch((err) => Promise.reject(err)); // trigger khi reject()
-      }
-
-      isRefreshing = true;
-
-      try {
-        const res = (await refreshTokenApi()).data.data;
-
-        const accessToken = res.accessToken;
-        dispatchRef(updateTokenManually(res));
-        processQueue(null, accessToken);
-
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return axiosClient(originalRequest);
-      } catch (refreshError) {
-        dispatchRef(logout());
-        processQueue(refreshError, null);
-
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
-    }
-
-    return Promise.reject(error);
+  (err) => {
+    if (!axios.isAxiosError(err)) return Promise.reject(err);
+    const body = err.response?.data as { message?: string; errorCode?: string } | undefined;
+    return Promise.reject(
+      new ApiError(body?.message || err.message, {
+        status: err.response?.status,
+        errorCode: body?.errorCode,
+        serverMessage: body?.message || undefined,
+      }),
+    );
   },
 );
 
-// ============================================================
-
-export default axiosClient;
+export default httpClient;

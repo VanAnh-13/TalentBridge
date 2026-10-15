@@ -1,5 +1,5 @@
+import { useAuthState } from "@/features/auth";
 import { User, BarChart3, Settings, Mail } from "lucide-react";
-import { useAppSelector } from "@/features/hooks";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
 
 const navigationItems = [
@@ -10,7 +10,7 @@ const navigationItems = [
 ];
 
 export default function UserPage() {
-  const { isLogin, user } = useAppSelector((state) => state.auth);
+  const { isLogin, user } = useAuthState();
 
   if (!isLogin || !user) return <Navigate to="/auth?mode=login" replace />;
 

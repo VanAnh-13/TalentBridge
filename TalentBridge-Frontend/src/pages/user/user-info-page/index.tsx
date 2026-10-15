@@ -1,14 +1,11 @@
+import { getAccount, useAuthDispatch } from "@/features/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/presentation/ui/avatar";
 import { Badge } from "@/shared/presentation/ui/badge";
 import { Button } from "@/shared/presentation/ui/button";
 import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { Skeleton } from "@/shared/presentation/ui/skeleton";
-import { useAppDispatch } from "@/features/hooks";
-import {
-  getAccount,
-  getErrorMessage,
-} from "@/features/slices/auth/authThunk.ts";
-import { getUserDetails } from "@/services/authApi.ts";
+import { auth } from "@/app/container";
+import { errorMessage } from "@/shared/domain/errors";
 import {
   selfUserAvatarUpdateApi,
   selfUserPasswordUpdateApi,
@@ -39,7 +36,7 @@ import PasswordChangeForm from "./PasswordChangeForm";
 import ProfileEditForm from "./ProfileEditForm";
 
 const UserInfoPage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAuthDispatch();
 
   // Data
   const [userDetails, setUserDetails] = useState<UserDetailsResponseDto>();
@@ -65,13 +62,12 @@ const UserInfoPage = () => {
   const fetchUserDetails = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await getUserDetails();
-      setUserDetails(res.data.data);
+      setUserDetails(await auth.accountDetails());
 
       setAvatarVersion(Date.now());
     } catch (err) {
       toast.error(
-        getErrorMessage(
+        errorMessage(
           err,
           "Không thể lấy thông tin chi tiết người dùng thất bại",
         ),
@@ -118,7 +114,7 @@ const UserInfoPage = () => {
       toast.success("Cập nhật thông tin thành công");
       setIsOpenProfileEditForm(false);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsUpdating(false);
     }
@@ -134,7 +130,7 @@ const UserInfoPage = () => {
       toast.success("Cập nhật mật khẩu thành công");
       setIsOpenPasswordChangeForm(false);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsUpdating(false);
     }
@@ -155,7 +151,7 @@ const UserInfoPage = () => {
       toast.success("Cập nhật ảnh đại diện thành công");
       setIsOpenAvatarUploadForm(false);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsUpdating(false);
     }

@@ -4,7 +4,7 @@ import { RecruiterSidebar } from "./Sidebar";
 import { RecruiterTopBar } from "./Topbar";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { findSelfCompany, saveSelfCompany } from "@/services/companyApi";
 import { CompanyForm } from "../admin/company-page/CompanyForm";
 import { Button } from "@/shared/presentation/ui/button";
@@ -25,7 +25,7 @@ const RecruiterPage = () => {
       const res = (await findSelfCompany()).data.data;
       if (res) setHasCompany(true);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy thông tin công ty"));
+      toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
     } finally {
       setIsChecking(false);
     }
@@ -42,7 +42,7 @@ const RecruiterPage = () => {
       fetchCompany();
       toast.success("Tạo công ty thành công.");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, "Thao tác thất bại."));
     } finally {
       setIsLoading(false);
     }

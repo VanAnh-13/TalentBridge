@@ -1,13 +1,12 @@
-import { useAppDispatch, useAppSelector } from "@/features/hooks";
+import { useAuthDispatch, useAuthState, getAccount } from "@/features/auth";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { getAccount } from "@/features/slices/auth/authThunk";
 import Header from "./Header";
 import Footer from "./Footer";
 
 const RootPage = () => {
-  const dispatch = useAppDispatch();
-  const { isLogin } = useAppSelector((state) => state.auth);
+  const dispatch = useAuthDispatch();
+  const { isLogin } = useAuthState();
 
   useEffect(() => {
     if (!isLogin) dispatch(getAccount());

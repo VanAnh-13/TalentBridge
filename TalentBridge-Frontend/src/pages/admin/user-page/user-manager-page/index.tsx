@@ -1,4 +1,4 @@
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import { deleteUserById, getUserList } from "@/services/userApi.ts";
 import type { DefaultUserResponseDto } from "@/types/user";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { UserTable } from "./UserTable.tsx";
 import { useNavigate } from "react-router-dom";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 const UserManagerPage = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const UserManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách người dùng"));
+      toast.error(errorMessage(err, "Không thể lấy danh sách người dùng"));
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +104,7 @@ const UserManagerPage = () => {
 
       toast.success("Xóa người dùng thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }

@@ -13,7 +13,7 @@ export default defineConfig({
     env: {
       apiUrl: 'http://localhost:8080'
     },
-    setupNodeEvents(on, config) {
+    setupNodeEvents() {
       // implement node event listeners here
     },
   },

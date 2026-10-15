@@ -1,8 +1,7 @@
+import { UserMenu, useAuthState } from "@/features/auth";
 import { useLocation } from "react-router-dom";
 import { Clock } from "lucide-react";
 import { SidebarTrigger } from "@/shared/presentation/ui/sidebar";
-import { useAppSelector } from "@/features/hooks";
-import UserMenu from "@/pages/commons/UserMenu.tsx";
 
 const routeTitles: Record<
   string,
@@ -51,7 +50,7 @@ const routeTitles: Record<
 };
 
 export function RecruiterTopBar() {
-  const { isLogin } = useAppSelector((state) => state.auth);
+  const { isLogin } = useAuthState();
   const location = useLocation();
 
   const currentRoute = routeTitles[location.pathname] || {

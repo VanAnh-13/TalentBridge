@@ -1,6 +1,6 @@
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
-import { getSessions, removeSessionId } from "@/services/authApi";
-import type { SessionMetaResponse } from "@/types/user";
+import { auth } from "@/app/container";
+import { errorMessage } from "@/shared/domain/errors";
+import type { DeviceSession } from "../../domain/account";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
@@ -11,13 +11,13 @@ import {
   getBrowserInfo,
   getDeviceIcon,
   getLocationInfo,
-} from "@/utils/sessionHelper";
+} from "../components/deviceDisplay";
 import { formatLoginTime } from "@/shared/presentation/format";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 
 const UserSessionPage = () => {
   // Data
-  const [sessions, setSessions] = useState<SessionMetaResponse[]>([]);
+  const [sessions, setSessions] = useState<DeviceSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState<string | null>(null);
 
@@ -26,19 +26,12 @@ const UserSessionPage = () => {
     try {
       setIsLoading(true);
 
-      const res = (await getSessions()).data;
-      const sortedSessions = res.data.sort(
-        (a: SessionMetaResponse, b: SessionMetaResponse) => {
-          if (a.current && !b.current) return -1;
-          if (!a.current && b.current) return 1;
-          return new Date(b.loginAt).getTime() - new Date(a.loginAt).getTime();
-        },
-      );
+      const sortedSessions = await auth.sessions();
 
       setSessions(sortedSessions);
     } catch (err) {
       toast.error(
-        getErrorMessage(err, "Không thể lấy danh sách phiên đăng nhập."),
+        errorMessage(err, "Không thể lấy danh sách phiên đăng nhập."),
       );
     } finally {
       setIsLoading(false);
@@ -52,11 +45,11 @@ const UserSessionPage = () => {
   const handleLogoutSession = async (sessionId: string) => {
     try {
       setIsLoggingOut(sessionId);
-      await removeSessionId(sessionId);
+      await auth.endSession(sessionId);
       toast.success("Đăng xuất phiên thành công");
       fetchSessions();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể đăng xuất phiên này"));
+      toast.error(errorMessage(err, "Không thể đăng xuất phiên này"));
     } finally {
       setIsLoggingOut(null);
     }

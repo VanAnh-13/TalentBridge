@@ -13,7 +13,7 @@ import { Search, Building2, X } from "lucide-react";
 import { toast } from "sonner";
 import type { CompanySummary } from "@/types/job";
 import { findAllCompanies } from "@/services/companyApi.ts";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import type { DefaultCompanyResponseDto } from "@/types/company.d.ts";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
@@ -78,7 +78,7 @@ const CompanySelection = ({
       setTotalPages(data.totalPages);
       setIsLoading(false);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,6 @@
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { Button } from "@/shared/presentation/ui/button";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { CompanyForm } from "@/pages/admin/company-page/CompanyForm";
 import CompanySection from "@/pages/commons/company-details-components/CompanySection";
 import { findSelfCompany, updateSelfCompany } from "@/services/companyApi";
@@ -26,7 +26,7 @@ const CompanyManagerRecruiterPage = () => {
       const res = (await findSelfCompany()).data.data;
       setCompany(res);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy thông tin công ty"));
+      toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ const CompanyManagerRecruiterPage = () => {
       fetchCompany();
       toast.success("Cập nhật công ty thành công.");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, "Thao tác thất bại."));
     } finally {
       setIsLoading(false);
     }

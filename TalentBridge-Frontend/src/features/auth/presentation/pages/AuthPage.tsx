@@ -1,8 +1,8 @@
-import { useAppSelector } from "@/features/hooks";
+import { useIsLoggedIn } from "../state/hooks";
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
+import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const AuthPage = () => {
     }
   }, [mode, navigate]);
 
-  const isLogin = useAppSelector((state) => state.auth.isLogin);
+  const isLogin = useIsLoggedIn();
   useEffect(() => {
     if (isLogin) {
       navigate("/home", { replace: true });

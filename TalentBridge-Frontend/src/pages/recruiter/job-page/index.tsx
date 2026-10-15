@@ -1,6 +1,6 @@
 import Pagination from "@/shared/presentation/components/Pagination";
 import { Button } from "@/shared/presentation/ui/button";
-import { getErrorMessage } from "@/features/slices/auth/authThunk";
+import { errorMessage } from "@/shared/domain/errors";
 import { JobDetailsSidebar } from "@/pages/commons/job-manager-components/JobDetailsSidebar.tsx";
 import { JobSearchSection } from "@/pages/commons/job-manager-components/JobSearchSection.tsx";
 import { JobTable } from "@/pages/commons/job-manager-components/JobTable.tsx";
@@ -83,7 +83,7 @@ const JobManagerRecruiterPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty"));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +129,7 @@ const JobManagerRecruiterPage = () => {
       if (hoveredJob?.id === id) handleCloseDetails();
       handleReset();
     } catch (err) {
-      toast.error(getErrorMessage(err, "Xóa công ty thất bại"));
+      toast.error(errorMessage(err, "Xóa công ty thất bại"));
     } finally {
       setIsLoading(false);
     }

@@ -14,7 +14,7 @@ import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Search, Shield, X } from "lucide-react";
 import { toast } from "sonner";
 import { findAllRoles } from "@/services/roleApi.ts";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
@@ -69,7 +69,7 @@ const RoleSelection = ({
       setTotalElements(data.totalElements);
       setTotalPages(data.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách vai trò."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách vai trò."));
     } finally {
       setIsLoading(false);
     }

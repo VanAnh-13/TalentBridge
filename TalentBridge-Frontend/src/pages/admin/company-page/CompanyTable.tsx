@@ -13,7 +13,7 @@ import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConf
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { formatISO } from "@/shared/presentation/format.ts";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 interface CompanyTableProps {
   companies: DefaultCompanyResponseDto[];

@@ -1,11 +1,11 @@
+import { useAuthState } from "@/features/auth";
 import { SidebarProvider } from "@/shared/presentation/ui/sidebar";
-import { useAppSelector } from "@/features/hooks";
 import { Navigate, Outlet } from "react-router-dom";
 import { AdminTopBar } from "./Topbar";
 import { AdminSidebar } from "./Sidebar";
 
 const AdminPage = () => {
-  const { isLogin } = useAppSelector((state) => state.auth);
+  const { isLogin } = useAuthState();
 
   if (!isLogin) return <Navigate to={"/home"} replace />;
 

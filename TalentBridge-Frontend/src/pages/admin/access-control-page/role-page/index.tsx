@@ -14,12 +14,12 @@ import {
   updateRoleById,
 } from "@/services/roleApi.ts";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/features/slices/auth/authThunk.ts";
+import { errorMessage } from "@/shared/domain/errors";
 import { RoleTable } from "@/pages/admin/access-control-page/role-page/RoleTable.tsx";
 import { RoleForm } from "@/pages/admin/access-control-page/role-page/RoleForm.tsx";
 import { findAllPermissionsNoPaging } from "@/services/permissionApi";
 import type { DefaultPermissionResponseDto } from "@/types/permission";
-import HasPermission from "@/pages/commons/HasPermission.tsx";
+import { HasPermission } from "@/features/auth";
 
 const RoleManagerPage = () => {
   // Data
@@ -77,7 +77,7 @@ const RoleManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +100,7 @@ const RoleManagerPage = () => {
         const res = (await findAllPermissionsNoPaging()).data;
         setPermissions(res.data);
       } catch (err) {
-        toast.error(getErrorMessage(err, "Không thể lấy danh sách công ty."));
+        toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
       } finally {
         setIsLoading(false);
       }
@@ -137,7 +137,7 @@ const RoleManagerPage = () => {
         toast.success("Tạo chức vụ mới thành công");
       }
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +155,7 @@ const RoleManagerPage = () => {
 
       toast.success("Xóa chức vụ thành công");
     } catch (err) {
-      toast.error(getErrorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, "Thao tác thất bại"));
     } finally {
       setIsLoading(false);
     }
