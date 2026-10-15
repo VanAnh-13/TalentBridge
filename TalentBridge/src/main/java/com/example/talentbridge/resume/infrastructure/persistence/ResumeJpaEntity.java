@@ -1,11 +1,15 @@
-package com.example.talentbridge.model;
+package com.example.talentbridge.resume.infrastructure.persistence;
 
 import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
-
-import jakarta.persistence.*;
-import lombok.*;
+import com.example.talentbridge.model.User;
+import com.example.talentbridge.resume.domain.ResumeStatus;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
-import com.example.talentbridge.model.constant.ResumeStatus;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "resumes")
@@ -13,7 +17,7 @@ import com.example.talentbridge.model.constant.ResumeStatus;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Resume extends BaseEntity {
+public class ResumeJpaEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +43,7 @@ public class Resume extends BaseEntity {
 
     private Long version;
 
-    public Resume(String email, ResumeStatus status, Long version) {
+    public ResumeJpaEntity(String email, ResumeStatus status, Long version) {
         this.email = email;
         this.status = status;
         this.version = version;

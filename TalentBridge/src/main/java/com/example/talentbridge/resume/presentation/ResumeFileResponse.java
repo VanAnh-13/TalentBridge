@@ -1,14 +1,13 @@
-package com.example.talentbridge.dto.response.resume;
+package com.example.talentbridge.resume.presentation;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetResumeFileResponseDto {
+public class ResumeFileResponse {
 
     private String url;
 }

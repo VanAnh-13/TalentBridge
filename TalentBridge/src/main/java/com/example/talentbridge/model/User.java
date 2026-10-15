@@ -1,5 +1,7 @@
 package com.example.talentbridge.model;
 
+import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaEntity;
+
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
 
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
@@ -52,7 +54,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Resume> resumes;
+    private List<ResumeJpaEntity> resumes;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

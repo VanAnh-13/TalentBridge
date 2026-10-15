@@ -45,5 +45,5 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 * Adding a module = add it to `MIGRATED` in `ArchitectureTest` in the same commit.
 
 ### Status
-Migrated: `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`. Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still
-present for: resume, user, auth, email.
+Migrated: `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`, `resume`. Legacy layout (`controller/ service/ repository/ model/ dto/ config/`) still
+present for: user, auth, email.

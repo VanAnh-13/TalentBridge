@@ -1,17 +1,17 @@
-package com.example.talentbridge.dto.request.resume;
+package com.example.talentbridge.resume.presentation;
 
+import com.example.talentbridge.resume.domain.ResumeStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.talentbridge.model.constant.ResumeStatus;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ResumeRequestDto {
+public class ResumeRequest {
 
     @NotBlank(message = "Email người dùng không được để trống")
     @Email(
@@ -20,6 +20,7 @@ public class ResumeRequestDto {
     )
     private String email;
 
+    /** Accepted for compatibility; the server decides the initial status (always PENDING). */
     @NotNull(message = "Trạng thái hồ sơ không được để trống")
     private ResumeStatus status;
 
@@ -42,5 +43,4 @@ public class ResumeRequestDto {
     public static class Job {
         private Long id;
     }
-
 }

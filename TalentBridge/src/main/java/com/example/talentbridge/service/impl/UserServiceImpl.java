@@ -10,7 +10,7 @@ import com.example.talentbridge.dto.request.user.UserCreateRequestDto;
 import com.example.talentbridge.dto.request.user.UserUpdateRequestDto;
 import com.example.talentbridge.dto.response.user.DefaultUserResponseDto;
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
-import com.example.talentbridge.model.Resume;
+import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaEntity;
 import com.example.talentbridge.access.infrastructure.persistence.RoleJpaEntity;
 import com.example.talentbridge.model.User;
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaRepository;
@@ -129,7 +129,7 @@ public class UserServiceImpl implements com.example.talentbridge.service.UserSer
         CompanyJpaEntity company = companyRepository.findByOwnerEmail(user.getEmail());
         if (company != null) company.setOwner(null);
 
-        List<Resume> resumes = user.getResumes();
+        List<ResumeJpaEntity> resumes = user.getResumes();
         resumes.forEach(x -> s3Service.deleteFileByKey(x.getFileKey()));
 
         userRepository.delete(user);

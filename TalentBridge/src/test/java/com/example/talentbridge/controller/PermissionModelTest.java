@@ -1,5 +1,9 @@
 package com.example.talentbridge.controller;
 
+import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaRepository;
+
+import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaEntity;
+
 import com.example.talentbridge.job.infrastructure.persistence.JobJpaRepository;
 
 import com.example.talentbridge.job.infrastructure.persistence.JobJpaEntity;
@@ -17,7 +21,7 @@ import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 import com.example.talentbridge.model.*;
 import com.example.talentbridge.model.constant.Gender;
 import com.example.talentbridge.job.domain.Level;
-import com.example.talentbridge.model.constant.ResumeStatus;
+import com.example.talentbridge.resume.domain.ResumeStatus;
 import com.example.talentbridge.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -67,7 +71,7 @@ class PermissionModelTest {
     @Autowired RoleJpaRepository roleRepository;
     @Autowired CompanyJpaRepository companyRepository;
     @Autowired JobJpaRepository jobRepository;
-    @Autowired ResumeRepository resumeRepository;
+    @Autowired ResumeJpaRepository resumeRepository;
 
     String adminToken, recruiterAToken, recruiterBToken, candidateToken, otherCandidateToken;
     @Autowired SkillJpaRepository skillRepository;
@@ -93,7 +97,7 @@ class PermissionModelTest {
         JobJpaEntity b = job(companyB);
         jobOfB = b.getId();
 
-        Resume resume = new Resume(candidate.getEmail(), ResumeStatus.PENDING, 1L);
+        ResumeJpaEntity resume = new ResumeJpaEntity(candidate.getEmail(), ResumeStatus.PENDING, 1L);
         resume.setUser(candidate);
         resume.setJob(b);                       // submitted to company B
         resume.setFileKey("resumes/some-key.pdf");

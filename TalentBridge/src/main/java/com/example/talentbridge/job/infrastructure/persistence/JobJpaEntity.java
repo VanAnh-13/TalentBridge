@@ -2,7 +2,7 @@ package com.example.talentbridge.job.infrastructure.persistence;
 
 import com.example.talentbridge.company.infrastructure.persistence.CompanyJpaEntity;
 import com.example.talentbridge.job.domain.Level;
-import com.example.talentbridge.model.Resume;
+import com.example.talentbridge.resume.infrastructure.persistence.ResumeJpaEntity;
 import com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity;
 import com.example.talentbridge.shared.infrastructure.persistence.BaseEntity;
 import jakarta.persistence.*;
@@ -64,7 +64,7 @@ public class JobJpaEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "job")
     @ToString.Exclude
-    private List<Resume> resumes;
+    private List<ResumeJpaEntity> resumes;
 
     public JobJpaEntity(String name, String location, Double salary, Integer quantity, Level level,
                         String description, Instant startDate, Instant endDate, Boolean active) {

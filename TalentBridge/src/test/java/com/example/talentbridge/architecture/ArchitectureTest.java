@@ -33,7 +33,7 @@ class ArchitectureTest {
     private static final String BASE = "com.example.talentbridge";
 
     /** Modules that follow the four-layer structure. Keep sorted. */
-    private static final List<String> MIGRATED = List.of("access", "company", "job", "shared", "skill", "subscriber");
+    private static final List<String> MIGRATED = List.of("access", "company", "job", "resume", "shared", "skill", "subscriber");
 
     private static JavaClasses classes;
 
