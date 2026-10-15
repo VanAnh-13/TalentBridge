@@ -45,7 +45,46 @@ Dependency rule (checked by ArchUnit): `presentation → application → domain 
 * **Who is calling** is an application concern behind a port (not `SecurityContextHolder` in use cases).
 * Adding a module = add it to `MIGRATED` in `ArchitectureTest` in the same commit.
 
+## Frontend (`TalentBridge-Frontend/`, React + Vite)
+
+```
+src
+├── app/                        composition root and app shell
+│   ├── container.ts            the ONLY place that wires ports to adapters (use cases are exported from here)
+│   ├── wiring.ts               HTTP client <-> auth use cases <-> redux store
+│   ├── store.ts, router.tsx, App.tsx, main.tsx
+│   ├── layouts/                admin / recruiter / client / user shells
+│   └── pages/                  pages that compose several features (home, dashboard)
+├── shared/
+│   ├── domain/                 Page, PageQuery, ApiError/errorMessage, filter builders (contains, allOf)
+│   ├── infrastructure/http/    axios client (token refresh), `api` helper that unwraps the response envelope
+│   └── presentation/           ui/ (shadcn), components/, hooks/, format helpers
+└── features/<name>/            access, auth, company, job, resume, skill, subscriber, user
+    ├── domain/                 entities and value types (plain TypeScript)
+    ├── application/            ports.ts (repository interfaces) + <name>UseCases.ts (createXUseCases(repository))
+    ├── infrastructure/         Http<Name>Repository: the only code that knows URLs, multipart and wire quirks
+    ├── presentation/           pages/, components/, state/ (redux, auth only)
+    └── index.ts                public API: what other features and the app may import
+```
+
+Dependency rule (enforced by `no-restricted-imports` blocks generated per layer and feature in `eslint.config.js`;
+`npm run lint` fails on a violation): `presentation -> application -> domain <- infrastructure`.
+
+| Layer | May use | Must not use |
+|---|---|---|
+| domain | `shared/domain`, same-feature domain | React, axios, redux, any other layer |
+| application | domain | React, axios, adapters, UI, the composition root |
+| infrastructure | domain, application, `shared/infrastructure` | React/UI, presentation |
+| presentation | application, domain, `shared/*`, `@/app/container` | infrastructure, other `@/app/*` files |
+
+* Screens never build URLs, FormData or filter expressions: they call a use case (`users.search(...)`) obtained from
+  `@/app/container`, and get domain objects back.
+* Errors reach the UI as `ApiError`; `errorMessage(err, fallback)` picks the server's message.
+* Features are isolated: another feature is reached through `@/features/<name>` (UI, presentation only) or its
+  `domain` types, never through its application/infrastructure/presentation files.
+* Adding a feature = a new folder with the four layers; the ESLint config discovers it automatically.
+
 ### Status
-Migrated (backend): `shared`, `skill`, `subscriber`, `access` (roles + permissions), `company`, `job`, `resume`, `user`,
-`auth` (login, tokens, sessions, password reset), `notification` (job-digest email + daily schedule). Every backend
-package now follows the four layers. The frontend is not migrated yet.
+Backend: every package follows the four layers (`shared`, `skill`, `subscriber`, `access`, `company`, `job`, `resume`,
+`user`, `auth`, `notification`), checked by `ArchitectureTest`.
+Frontend: every feature follows the four layers and no legacy `pages/`, `services/`, `types/` remains.

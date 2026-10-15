@@ -1,31 +1,43 @@
 // React router
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-// CLIENT PAGE
-import RootPage from "@/pages/client";
-import AuthPage from "@/features/auth/presentation/pages/AuthPage";
-import HomePage from "@/pages/client/home-page";
-import { CompanyBrowsePage as CompanyClientPage, CompanyDetailsPage as CompanyDetailsClientPage, CompanyManagerPage, MyCompanyPage as CompanyManagerRecruiterPage, MembersPage as MemberManagePage } from "@/features/company";
-import { JobBrowsePage as JobClientPage, JobDetailsPage as JobDetailsClientPage, AdminJobManagerPage as JobManagerPage, AdminJobUpsertPage as JobUpsertPage, RecruiterJobManagerPage as JobManagerRecruiterPage, RecruiterJobUpsertPage as JobUpsertRecruiterPage } from "@/features/job";
-import UserPage from "@/pages/user";
-import { ProfilePage as UserInfoPage, UserManagerPage as UserManagerPage, UserUpsertPage as UserUpsertPage } from "@/features/user";
-import { MyResumesPage as UserResumePage, AdminResumeManagerPage as ResumeManagerPage, RecruiterResumeManagerPage as ResumeManagerRecruiterPage } from "@/features/resume";
-import UserSessionPage from "@/features/auth/presentation/pages/SessionsPage";
+// App shells and pages that compose several features
+import ClientLayout from "@/app/layouts/client/ClientLayout";
+import UserLayout from "@/app/layouts/UserLayout";
+import AdminLayout from "@/app/layouts/admin/AdminLayout";
+import RecruitmentLayout from "@/app/layouts/admin/RecruitmentLayout";
+import RecruiterLayout from "@/app/layouts/recruiter/RecruiterLayout";
+import HomePage from "@/app/pages/home/HomePage";
+import DashboardPage from "@/app/pages/DashboardPage";
 
-// ADMIN PAGE
-import AdminPage from "@/pages/admin";
-import DashboardPage from "@/pages/admin/dashboard-page";
-import RecruitmentManagerPage from "@/pages/admin/recruitment-page";
+// Features
+import { AuthPage, ProtectedRoute, SessionsPage } from "@/features/auth";
+import {
+  CompanyBrowsePage,
+  CompanyDetailsPage,
+  CompanyManagerPage,
+  MembersPage,
+  MyCompanyPage,
+} from "@/features/company";
+import {
+  AdminJobManagerPage,
+  AdminJobUpsertPage,
+  JobBrowsePage,
+  JobDetailsPage,
+  RecruiterJobManagerPage,
+  RecruiterJobUpsertPage,
+} from "@/features/job";
+import { ProfilePage, UserManagerPage, UserUpsertPage } from "@/features/user";
+import {
+  AdminResumeManagerPage,
+  MyResumesPage,
+  RecruiterResumeManagerPage,
+} from "@/features/resume";
 import { SkillManagerPage } from "@/features/skill";
 import { AccessControlPage, PermissionManagerPage, RoleManagerPage } from "@/features/access";
 import { SubscriberPage } from "@/features/subscriber";
 
-// RECRUITER PAGE
-import RecruiterPage from "@/pages/recruiter";
-
-// Components
 import ErrorPage from "@/shared/presentation/components/ErrorPage";
-import { ProtectedRoute } from "@/features/auth";
 
 const router = createBrowserRouter([
   // =========================
@@ -33,24 +45,24 @@ const router = createBrowserRouter([
   // =========================
   {
     path: "",
-    element: <RootPage />,
+    element: <ClientLayout />,
     children: [
       { index: true, element: <Navigate to={"/home"} /> },
       { path: "home", element: <HomePage /> },
       { path: "auth", element: <AuthPage /> },
-      { path: "companies", element: <CompanyClientPage /> },
-      { path: "companies/:id", element: <CompanyDetailsClientPage /> },
-      { path: "jobs", element: <JobClientPage /> },
-      { path: "jobs/:id", element: <JobDetailsClientPage /> },
+      { path: "companies", element: <CompanyBrowsePage /> },
+      { path: "companies/:id", element: <CompanyDetailsPage /> },
+      { path: "jobs", element: <JobBrowsePage /> },
+      { path: "jobs/:id", element: <JobDetailsPage /> },
       {
         path: "user",
-        element: <UserPage />,
+        element: <UserLayout />,
         children: [
           {
             index: true,
             element: <Navigate to={"info"} />,
           },
-          { path: "info", element: <UserInfoPage /> },
+          { path: "info", element: <ProfilePage /> },
           {
             path: "subscriber",
             element: (
@@ -66,11 +78,11 @@ const router = createBrowserRouter([
             path: "resumes",
             element: (
               <ProtectedRoute to="/user" requiredPermission="POST /resumes">
-                <UserResumePage />
+                <MyResumesPage />
               </ProtectedRoute>
             ),
           },
-          { path: "sessions", element: <UserSessionPage /> },
+          { path: "sessions", element: <SessionsPage /> },
         ],
       },
     ],
@@ -83,7 +95,7 @@ const router = createBrowserRouter([
     path: "admin",
     element: (
       <ProtectedRoute to="/" requiredPermission={"GET /admin"}>
-        <AdminPage />
+        <AdminLayout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
@@ -107,7 +119,7 @@ const router = createBrowserRouter([
       // RECRUITMENT MANAGER
       {
         path: "recruitment",
-        element: <RecruitmentManagerPage />,
+        element: <RecruitmentLayout />,
         children: [
           {
             index: true,
@@ -125,13 +137,13 @@ const router = createBrowserRouter([
             path: "job-manager",
             element: (
               <ProtectedRoute to="/admin" requiredPermission="GET /jobs">
-                <JobManagerPage />
+                <AdminJobManagerPage />
               </ProtectedRoute>
             ),
           },
           {
             path: "job-manager/upsert",
-            element: <JobUpsertPage />,
+            element: <AdminJobUpsertPage />,
           },
         ],
       },
@@ -141,7 +153,7 @@ const router = createBrowserRouter([
         path: "resume",
         element: (
           <ProtectedRoute to="/admin" requiredPermission="GET /resumes">
-            <ResumeManagerPage />
+            <AdminResumeManagerPage />
           </ProtectedRoute>
         ),
       },
@@ -200,7 +212,7 @@ const router = createBrowserRouter([
     path: "recruiter",
     element: (
       <ProtectedRoute to="/" requiredPermission="GET /recruiter">
-        <RecruiterPage />
+        <RecruiterLayout />
       </ProtectedRoute>
     ),
     children: [
@@ -225,7 +237,7 @@ const router = createBrowserRouter([
             to="/recruiter"
             requiredPermission="GET /resumes/company"
           >
-            <ResumeManagerRecruiterPage />
+            <RecruiterResumeManagerPage />
           </ProtectedRoute>
         ),
       },
@@ -238,13 +250,13 @@ const router = createBrowserRouter([
             to="/recruiter"
             requiredPermission="GET /jobs/company"
           >
-            <JobManagerRecruiterPage />
+            <RecruiterJobManagerPage />
           </ProtectedRoute>
         ),
       },
       {
         path: "jobs/upsert",
-        element: <JobUpsertRecruiterPage />,
+        element: <RecruiterJobUpsertPage />,
       },
 
       // COMPANY RECRUITER MANAGER
@@ -255,7 +267,7 @@ const router = createBrowserRouter([
             to="/recruiter"
             requiredPermission="GET /companies/me"
           >
-            <CompanyManagerRecruiterPage />
+            <MyCompanyPage />
           </ProtectedRoute>
         ),
       },
@@ -268,7 +280,7 @@ const router = createBrowserRouter([
             to="/recruiter"
             requiredPermission="GET /companies/me/users"
           >
-            <MemberManagePage />
+            <MembersPage />
           </ProtectedRoute>
         ),
       },

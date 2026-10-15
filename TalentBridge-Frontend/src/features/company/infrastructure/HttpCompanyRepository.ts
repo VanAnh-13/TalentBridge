@@ -1,3 +1,4 @@
+import { ApiError } from "@/shared/domain/errors";
 import { api, pageQueryString } from "@/shared/infrastructure/http/api";
 import type { Page, PageQuery } from "@/shared/domain/page";
 
@@ -25,8 +26,14 @@ export class HttpCompanyRepository implements CompanyRepository {
     return api.get<Company>(`/companies/${id}`);
   }
 
+  /** A recruiter who has not set up a company yet gets a 404, which is an expected state, not a failure. */
   async findMine() {
-    return (await api.get<Company | null>("/companies/me")) ?? null;
+    try {
+      return (await api.get<Company | null>("/companies/me")) ?? null;
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 404) return null;
+      throw err;
+    }
   }
 
   create(data: CompanyData, logo: File | null) {
