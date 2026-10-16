@@ -1,23 +1,24 @@
+// The interface starts in English in a fresh browser, so the assertions use the English texts.
 describe('Authentication Tests', () => {
   beforeEach(() => {
     cy.visit('/auth?mode=login')
   })
 
-  describe('FE_AUTH_01: Hiển thị form đăng nhập', () => {
+  describe('FE_AUTH_01: Login form is displayed', () => {
     it('should display login form correctly', () => {
       cy.get('form').should('be.visible')
       cy.get('input[type="email"]').should('be.visible')
       cy.get('input[type="password"]').should('be.visible')
-      cy.get('button[type="submit"]').should('contain', 'Đăng nhập')
+      cy.get('button[type="submit"]').should('contain', 'Log in')
     })
   })
 
-  describe('FE_AUTH_02: Validation form đăng nhập', () => {
+  describe('FE_AUTH_02: Login form validation', () => {
     it('should show error for invalid email format', () => {
       cy.get('input[type="email"]').type('invalid-email')
       cy.get('input[type="password"]').type('Password123')
       cy.get('button[type="submit"]').click()
-      cy.get('.error-message').should('contain', 'Email không hợp lệ')
+      cy.get('.error-message').should('contain', 'Invalid email address')
     })
 
     it('should show error for empty fields', () => {
@@ -26,7 +27,7 @@ describe('Authentication Tests', () => {
     })
   })
 
-  describe('FE_AUTH_03: Hiển thị form đăng ký', () => {
+  describe('FE_AUTH_03: Registration form is displayed', () => {
     it('should display register form when switching to register mode', () => {
       cy.visit('/auth?mode=register')
       cy.get('form').should('be.visible')
@@ -34,11 +35,11 @@ describe('Authentication Tests', () => {
       cy.get('input[type="email"]').should('be.visible')
       cy.get('input[type="password"]').should('be.visible')
       cy.get('input[name="confirmPassword"]').should('be.visible')
-      cy.get('button[type="submit"]').should('contain', 'Đăng ký')
+      cy.get('button[type="submit"]').should('contain', 'Sign up')
     })
   })
 
-  describe('FE_AUTH_04: Validation form đăng ký', () => {
+  describe('FE_AUTH_04: Registration form validation', () => {
     beforeEach(() => {
       cy.visit('/auth?mode=register')
     })
@@ -49,11 +50,11 @@ describe('Authentication Tests', () => {
       cy.get('input[type="password"]').first().type('Password123!')
       cy.get('input[name="confirmPassword"]').type('DifferentPassword123!')
       cy.get('button[type="submit"]').click()
-      cy.get('.error-message').should('contain', 'Mật khẩu không khớp')
+      cy.get('.error-message').should('contain', 'Passwords do not match')
     })
   })
 
-  describe('FE_AUTH_05: Chuyển hướng sau đăng nhập thành công', () => {
+  describe('FE_AUTH_05: Redirect after a successful login', () => {
     it('should redirect to home page after successful login', () => {
       // Mock successful login
       cy.intercept('POST', '/auth/login', {
@@ -77,12 +78,12 @@ describe('Authentication Tests', () => {
     })
   })
 
-  describe('FE_AUTH_06: Hiển thị error message khi đăng nhập thất bại', () => {
+  describe('FE_AUTH_06: Error message when the login fails', () => {
     it('should display error message on login failure', () => {
       cy.intercept('POST', '/auth/login', {
         statusCode: 401,
         body: {
-          message: 'Email hoặc mật khẩu không đúng'
+          message: 'Incorrect email or password'
         }
       })
 
@@ -90,7 +91,7 @@ describe('Authentication Tests', () => {
       cy.get('input[type="password"]').type('WrongPassword')
       cy.get('button[type="submit"]').click()
       
-      cy.get('.error-message').should('contain', 'Email hoặc mật khẩu không đúng')
+      cy.get('.error-message').should('contain', 'Incorrect email or password')
     })
   })
 
@@ -107,7 +108,7 @@ describe('Authentication Tests', () => {
     })
   })
 
-  describe('FE_AUTH_08: Logout và clear local storage', () => {
+  describe('FE_AUTH_08: Logout clears local storage', () => {
     it('should clear local storage and redirect on logout', () => {
       // First login
       localStorage.setItem('access_token', 'mock-token')

@@ -14,6 +14,7 @@ import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx"
 
 import type { Member } from "../../domain/company";
 import { Badge } from "@/shared/presentation/ui/badge";
+import { useTranslation } from "react-i18next";
 
 interface MemberTableProps {
   users: Member[];
@@ -28,22 +29,23 @@ export function MemberTable({
   onDelete,
   isOwner,
 }: MemberTableProps) {
+  const { t } = useTranslation(["company", "common"]);
   return (
     <div className="overflow-hidden rounded-lg border border-purple-600">
       <Table>
         <TableHeader className="bg-purple-600 text-white">
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Tên người dùng
+              {t("members.table.name")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Email
+              {t("common:fields.email")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -60,8 +62,8 @@ export function MemberTable({
             <TableRow>
               <TableCell colSpan={4}>
                 <EmptyState
-                  title="Không tìm thấy người dùng nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm người dùng mới"
+                  title={t("members.notFound.title")}
+                  description={t("members.notFound.description")}
                   icon={
                     <KeyRound className="text-muted-foreground mb-4 h-12 w-12" />
                   }

@@ -3,6 +3,7 @@ import { ScrollArea } from "@/shared/presentation/ui/scroll-area.tsx";
 import type { Job } from "@/features/job/domain/job";
 import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
 import { useNavigate } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
 
 type JobsSection = {
   jobs: Job[];
@@ -10,14 +11,19 @@ type JobsSection = {
 
 const JobsSection = ({ jobs }: JobsSection) => {
   const navigate = useNavigate();
+  const { t } = useTranslation(["company", "common"]);
 
   return (
     <>
       {jobs.length > 0 && (
         <div className="my-[200px] md:col-span-1">
           <h2 className="mb-4 text-xl font-bold text-gray-800">
-            Công ty đang tuyển{" "}
-            <span className="text-orange-500">{jobs.length} việc làm </span>
+            <Trans
+              t={t}
+              i18nKey="jobs.hiring"
+              count={jobs.length}
+              components={{ highlight: <span className="text-orange-500" /> }}
+            />
           </h2>
           <ScrollArea className="h-[800px]">
             <div className="space-y-6">
@@ -32,19 +38,19 @@ const JobsSection = ({ jobs }: JobsSection) => {
                   </h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <p>
-                      <strong>Địa điểm:</strong> {job.location}
+                      <strong>{t("jobs.location")}</strong> {job.location}
                     </p>
                     <p>
-                      <strong>Lương:</strong> {formatSalary(job.salary)}
+                      <strong>{t("jobs.salary")}</strong> {formatSalary(job.salary)}
                     </p>
                     <p>
-                      <strong>Số lượng:</strong> {job.quantity}
+                      <strong>{t("jobs.quantity")}</strong> {job.quantity}
                     </p>
                     <p>
-                      <strong>Cấp bậc:</strong> {job.level}
+                      <strong>{t("jobs.level")}</strong> {t(`common:levels.${job.level}`)}
                     </p>
                     <p>
-                      <strong>Thời gian:</strong> {formatISO(job.startDate)} →{" "}
+                      <strong>{t("jobs.period")}</strong> {formatISO(job.startDate)} →{" "}
                       {formatISO(job.endDate)}
                     </p>
                   </div>

@@ -24,11 +24,15 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+import { currentLocale } from "@/shared/presentation/i18n/locale";
 import AvatarUploadForm from "../components/AvatarUploadForm";
 import PasswordChangeForm from "../components/PasswordChangeForm";
 import ProfileEditForm from "../components/ProfileEditForm";
 
 const UserInfoPage = () => {
+  const { t } = useTranslation(["user", "common"]);
   const dispatch = useAuthDispatch();
 
   // Data
@@ -59,12 +63,8 @@ const UserInfoPage = () => {
 
       setAvatarVersion(Date.now());
     } catch (err) {
-      toast.error(
-        errorMessage(
-          err,
-          "Không thể lấy thông tin chi tiết người dùng thất bại",
-        ),
-      );
+      // i18n.t rather than t: the callback keeps no dependency, so switching language does not fetch again
+      toast.error(errorMessage(err, i18n.t("profile.loadFailed", { ns: "user" })));
     } finally {
       setIsLoading(false);
     }
@@ -104,10 +104,10 @@ const UserInfoPage = () => {
       await userUseCases.updateProfile(data);
       await fetchUserDetails();
       dispatch(getAccount());
-      toast.success("Cập nhật thông tin thành công");
+      toast.success(t("profile.updated"));
       setIsOpenProfileEditForm(false);
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsUpdating(false);
     }
@@ -120,10 +120,10 @@ const UserInfoPage = () => {
       setIsUpdating(true);
       await userUseCases.changePassword(data);
       await fetchUserDetails();
-      toast.success("Cập nhật mật khẩu thành công");
+      toast.success(t("profile.passwordUpdated"));
       setIsOpenPasswordChangeForm(false);
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsUpdating(false);
     }
@@ -133,16 +133,16 @@ const UserInfoPage = () => {
     try {
       setIsUpdating(true);
 
-      if (!avatarFile) toast.error("File ảnh không được trống");
+      if (!avatarFile) toast.error(t("profile.avatarMissing"));
 
       await userUseCases.changeAvatar(avatarFile);
       await fetchUserDetails();
       dispatch(getAccount());
       setAvatarVersion(Date.now());
-      toast.success("Cập nhật ảnh đại diện thành công");
+      toast.success(t("profile.avatarUpdated"));
       setIsOpenAvatarUploadForm(false);
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsUpdating(false);
     }
@@ -152,7 +152,7 @@ const UserInfoPage = () => {
   // Helper Functions
   // ===================
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
+    return new Date(dateString).toLocaleDateString(currentLocale(), {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -162,7 +162,7 @@ const UserInfoPage = () => {
   };
 
   const formatDateOfBirth = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
+    return new Date(dateString).toLocaleDateString(currentLocale(), {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -172,11 +172,9 @@ const UserInfoPage = () => {
   const getGenderLabel = (gender: string) => {
     switch (gender) {
       case "MALE":
-        return "Nam";
       case "FEMALE":
-        return "Nữ";
       case "OTHER":
-        return "Khác";
+        return t(`gender.${gender}`);
       default:
         return gender;
     }
@@ -237,13 +235,13 @@ const UserInfoPage = () => {
         <Card className="w-full max-w-md">
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground mb-4">
-              Không thể tải thông tin người dùng
+              {t("profile.loadErrorText")}
             </p>
             <Button
               onClick={fetchUserDetails}
               className="bg-orange-500 text-white hover:bg-orange-600"
             >
-              Thử lại
+              {t("profile.retry")}
             </Button>
           </CardContent>
         </Card>
@@ -307,7 +305,7 @@ const UserInfoPage = () => {
                   size="lg"
                 >
                   <Edit className="mr-2 h-4 w-4" />
-                  Cập nhật thông tin
+                  {t("profile.edit")}
                 </Button>
 
                 <Button
@@ -317,7 +315,7 @@ const UserInfoPage = () => {
                   size="lg"
                 >
                   <Lock className="mr-2 h-4 w-4" />
-                  Đổi mật khẩu
+                  {t("profile.changePassword")}
                 </Button>
               </div>
             </div>
@@ -332,7 +330,7 @@ const UserInfoPage = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 font-semibold text-orange-700">
                   <User className="h-5 w-5" />
-                  <span>Thông tin cá nhân</span>
+                  <span>{t("profile.personalInfo")}</span>
                 </div>
 
                 <div className="space-y-4">
@@ -340,7 +338,7 @@ const UserInfoPage = () => {
                     <div className="mb-2 flex items-center gap-3">
                       <Mail className="h-4 w-4 text-orange-500" />
                       <span className="text-sm font-medium text-gray-600">
-                        Email
+                        {t("common:fields.email")}
                       </span>
                     </div>
                     <p className="pl-7 font-medium text-gray-900">
@@ -352,7 +350,7 @@ const UserInfoPage = () => {
                     <div className="mb-2 flex items-center gap-3">
                       <Cake className="h-4 w-4 text-orange-500" />
                       <span className="text-sm font-medium text-gray-600">
-                        Ngày sinh
+                        {t("fields.dob")}
                       </span>
                     </div>
                     <p className="pl-7 font-medium text-gray-900">
@@ -364,7 +362,7 @@ const UserInfoPage = () => {
                     <div className="mb-2 flex items-center gap-3">
                       <MapPin className="h-4 w-4 text-orange-500" />
                       <span className="text-sm font-medium text-gray-600">
-                        Địa chỉ
+                        {t("common:fields.address")}
                       </span>
                     </div>
                     <p className="pl-7 font-medium text-gray-900">
@@ -376,7 +374,7 @@ const UserInfoPage = () => {
                     <div className="mb-2 flex items-center gap-3">
                       <Users className="h-4 w-4 text-orange-500" />
                       <span className="text-sm font-medium text-gray-600">
-                        Giới tính
+                        {t("fields.gender")}
                       </span>
                     </div>
                     <p className="pl-7 font-medium text-gray-900">
@@ -390,7 +388,7 @@ const UserInfoPage = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3 font-semibold text-orange-700">
                   <Shield className="h-5 w-5" />
-                  <span>Thông tin hệ thống</span>
+                  <span>{t("profile.systemInfo")}</span>
                 </div>
 
                 <div className="space-y-4">
@@ -398,7 +396,7 @@ const UserInfoPage = () => {
                     <div className="mb-2 flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-orange-500" />
                       <span className="text-sm font-medium text-gray-600">
-                        Ngày tạo tài khoản
+                        {t("profile.accountCreated")}
                       </span>
                     </div>
                     <p className="pl-7 font-medium text-gray-900">
@@ -410,7 +408,7 @@ const UserInfoPage = () => {
                     <div className="mb-2 flex items-center gap-3">
                       <Clock className="h-4 w-4 text-orange-500" />
                       <span className="text-sm font-medium text-gray-600">
-                        Cập nhật lần cuối
+                        {t("profile.lastUpdated")}
                       </span>
                     </div>
                     <p className="pl-7 font-medium text-gray-900">
@@ -421,12 +419,12 @@ const UserInfoPage = () => {
                   {/* Additional Info Card */}
                   <div className="rounded-lg border border-orange-200 bg-orange-50 p-4">
                     <h4 className="mb-2 font-semibold text-orange-800">
-                      Trạng thái tài khoản
+                      {t("profile.accountStatus")}
                     </h4>
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-green-500"></div>
                       <span className="text-sm text-gray-700">
-                        Tài khoản đang hoạt động
+                        {t("profile.accountActive")}
                       </span>
                     </div>
                   </div>

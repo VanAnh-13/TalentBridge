@@ -20,6 +20,8 @@ import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx"
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 interface SkillSelectionProps {
   selectedSkills: SkillRef[];
@@ -32,6 +34,8 @@ const SkillSelection = ({
   onAddSkill,
   onRemoveSkill,
 }: SkillSelectionProps) => {
+  const { t } = useTranslation(["skill", "common"]);
+
   // ============================
   // Modal State
   // ============================
@@ -72,7 +76,8 @@ const SkillSelection = ({
       setTotalElements(data.totalElements);
       setIsLoading(false);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách kỹ năng."));
+      // i18n.t rather than t: fetchSkills stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadList", { ns: "skill" })));
     }
   };
 
@@ -95,7 +100,7 @@ const SkillSelection = ({
   return (
     <div className="space-y-2">
       <Label>
-        Kỹ năng yêu cầu <span className="text-red-500">*</span>
+        {t("selection.label")} <span className="text-red-500">*</span>
       </Label>
 
       <div className="rounded-md border bg-gray-50/50 p-3">
@@ -119,7 +124,7 @@ const SkillSelection = ({
           <div className="mb-3 flex min-h-[100px] w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
             <div>
               <Wrench className="mx-auto mb-2 h-8 w-8 text-gray-400" />
-              <p className="text-sm text-gray-500">Chưa chọn kỹ năng</p>
+              <p className="text-sm text-gray-500">{t("selection.none")}</p>
             </div>
           </div>
         )}
@@ -128,19 +133,19 @@ const SkillSelection = ({
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-full">
               <Wrench className="mr-2 h-4 w-4" />
-              {selectedSkills.length > 0 ? "Chỉnh sửa kỹ năng" : "Chọn kỹ năng"}
+              {selectedSkills.length > 0 ? t("selection.edit") : t("selection.choose")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Chọn kỹ năng yêu cầu</DialogTitle>
-              <DialogDescription>skill selection panel</DialogDescription>
+              <DialogTitle>{t("selection.title")}</DialogTitle>
+              <DialogDescription>{t("selection.description")}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="relative">
                 <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
-                  placeholder="Tìm kiếm kỹ năng..."
+                  placeholder={t("selection.searchPlaceholder")}
                   value={searchName}
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-10"
@@ -156,8 +161,8 @@ const SkillSelection = ({
 
                 {!isLoading && allSkills.length === 0 && (
                   <EmptyState
-                    title="Không tìm thấy kỹ năng nào"
-                    description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm kỹ năng mới"
+                    title={t("notFound.title")}
+                    description={t("notFound.description")}
                     icon={
                       <Wrench className="text-muted-foreground mb-4 h-12 w-12" />
                     }
@@ -196,7 +201,7 @@ const SkillSelection = ({
               )}
 
               <div className="flex justify-end gap-2">
-                <Button onClick={closeModal}>Xác nhận</Button>
+                <Button onClick={closeModal}>{t("common:actions.confirm")}</Button>
               </div>
             </div>
           </DialogContent>

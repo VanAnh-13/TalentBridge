@@ -7,15 +7,18 @@ import { Button } from "@/shared/presentation/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/shared/presentation/ui/sheet";
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/shared/presentation/components/LanguageSwitcher";
 
 const Header: React.FC = () => {
+  const { t } = useTranslation("app");
   const [isOpen, setIsOpen] = useState(false);
   const { isLogin } = useAuthState();
 
   const navItems = [
-    { href: "/home", label: "Trang chủ", Icon: Home },
-    { href: "/companies", label: "Công ty", Icon: Building2 },
-    { href: "/jobs", label: "Việc làm IT", Icon: Code },
+    { href: "/home", label: t("nav.home"), Icon: Home },
+    { href: "/companies", label: t("nav.companies"), Icon: Building2 },
+    { href: "/jobs", label: t("nav.jobs"), Icon: Code },
   ];
 
   const handleNavClick = () => setIsOpen(false);
@@ -39,7 +42,7 @@ const Header: React.FC = () => {
         <nav className="hidden lg:block">
           <ul className="flex items-center space-x-2">
             {navItems.map(({ href, label, Icon }) => (
-              <li key={label}>
+              <li key={href}>
                 <NavLink
                   to={href}
                   onClick={handleNavClick}
@@ -61,6 +64,7 @@ const Header: React.FC = () => {
 
         {/* Auth + Mobile Nav */}
         <div className="flex items-center gap-4">
+          <LanguageSwitcher className="hidden sm:inline-flex" />
           {isLogin ? (
             <>
               <NotificationBell />
@@ -71,7 +75,7 @@ const Header: React.FC = () => {
               to="/auth?mode=login"
               className="hidden rounded-full border border-white/50 bg-white px-5 py-2 font-bold text-orange-700 hover:border-white lg:flex"
             >
-              Đăng nhập
+              {t("nav.login")}
             </Link>
           )}
 
@@ -92,9 +96,10 @@ const Header: React.FC = () => {
               className="w-[300px] bg-white sm:w-[400px]"
             >
               <div className="mt-8 flex flex-col space-y-3">
+                <LanguageSwitcher className="self-start" />
                 {navItems.map(({ href, label, Icon }) => (
                   <Link
-                    key={label}
+                    key={href}
                     to={href}
                     onClick={handleNavClick}
                     className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 text-gray-700 hover:bg-orange-50"

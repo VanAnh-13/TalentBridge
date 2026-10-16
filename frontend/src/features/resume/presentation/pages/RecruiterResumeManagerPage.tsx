@@ -1,6 +1,8 @@
 import type { Resume, StatusChange } from "../../domain/resume";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { ScheduleInterviewDialog } from "@/features/interview";
 import { ResumeSearchSection } from "../components/ResumeSearchSection.tsx";
 import Pagination from "@/shared/presentation/components/Pagination";
@@ -11,6 +13,7 @@ import { ResumeTable } from "../components/ResumeTable.tsx";
 import { ViewResumeDialog } from "../components/ViewResumeDialog.tsx";
 
 const ResumeManagerRecruiterPage = () => {
+  const { t } = useTranslation("resume");
   const navigate = useNavigate();
   const [inviting, setInviting] = useState<Resume | null>(null);
   // ============================
@@ -64,7 +67,8 @@ const ResumeManagerRecruiterPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
+      // i18n.t rather than t: fetchResumes stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("list.loadFailed", { ns: "resume" })));
     } finally {
       setIsLoading(false);
     }
@@ -89,9 +93,9 @@ const ResumeManagerRecruiterPage = () => {
     try {
       await resumeUseCases.changeStatus("company", resume);
       await fetchResumes(currentPage, itemsPerPage, searchJobName);
-      toast.success("Cập nhật trạng thái hồ sơ thành công");
+      toast.success(t("list.statusUpdated"));
     } catch (err) {
-      toast.error(errorMessage(err, "Cập nhật trạng thái hồ sơ thất bại"));
+      toast.error(errorMessage(err, t("list.statusUpdateFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +119,7 @@ const ResumeManagerRecruiterPage = () => {
       />
 
       {/* Header Section */}
-      <h2 className="text-lg font-semibold">Danh sách hồ sơ xin việc</h2>
+      <h2 className="text-lg font-semibold">{t("list.title")}</h2>
 
       <ResumeTable
         resumes={resumes}
@@ -141,7 +145,7 @@ const ResumeManagerRecruiterPage = () => {
         open={inviting !== null}
         onOpenChange={(open) => !open && setInviting(null)}
         resumeId={inviting?.id}
-        title={inviting ? `Mời phỏng vấn ${inviting.user.email}` : undefined}
+        title={inviting ? t("table.inviteTitle", { email: inviting.user.email }) : undefined}
       />
 
       <ViewResumeDialog

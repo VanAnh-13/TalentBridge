@@ -13,3 +13,5 @@ export { getAccount } from "./presentation/state/authThunks";
 export type { Account, AccountDetails } from "./domain/account";
 export { default as AuthPage } from "./presentation/pages/AuthPage";
 export { default as SessionsPage } from "./presentation/pages/SessionsPage";
+
+export { messages as authMessages } from "./presentation/i18n";

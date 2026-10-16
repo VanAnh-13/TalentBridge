@@ -15,6 +15,7 @@ import { formatISO } from "@/shared/presentation/format.ts";
 import type { Role } from "../../domain/role";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 interface RoleTableProps {
   roles: Role[];
@@ -29,28 +30,29 @@ export function RoleTable({
   onEdit,
   onDelete,
 }: RoleTableProps) {
+  const { t } = useTranslation(["access", "common"]);
   return (
     <div className="overflow-hidden rounded-lg border border-blue-600">
       <Table>
         <TableHeader className="bg-blue-600 text-white">
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Tên chức vụ
+              {t("role.fields.name")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Trạng thái
+              {t("common:fields.status")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày tạo
+              {t("common:fields.createdAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Lần cập nhật gần nhất
+              {t("common:fields.updatedAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -67,8 +69,8 @@ export function RoleTable({
             <TableRow>
               <TableCell colSpan={6}>
                 <EmptyState
-                  title="Không tìm thấy kỹ năng nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm kỹ năng mới"
+                  title={t("role.list.emptyTitle")}
+                  description={t("role.list.emptyDescription")}
                   icon={
                     <Wrench className="text-muted-foreground mb-4 h-12 w-12" />
                   }
@@ -82,9 +84,13 @@ export function RoleTable({
                 <TableCell className="text-center">{role.name}</TableCell>
                 <TableCell className="text-center">
                   {role.active ? (
-                    <Badge className={"bg-green-500 text-white"}>ACTIVE</Badge>
+                    <Badge className={"bg-green-500 text-white"}>
+                      {t("common:states.active")}
+                    </Badge>
                   ) : (
-                    <Badge className={"bg-red-500 text-white"}>DE-ACTIVE</Badge>
+                    <Badge className={"bg-red-500 text-white"}>
+                      {t("common:states.inactive")}
+                    </Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-center">

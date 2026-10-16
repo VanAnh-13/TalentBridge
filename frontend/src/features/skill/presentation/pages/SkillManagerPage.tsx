@@ -14,12 +14,16 @@ import { SkillForm } from "../components/SkillForm.tsx";
 import { SkillSearchSection } from "../components/SkillSearchSection.tsx";
 import { SkillTable } from "../components/SkillTable.tsx";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 interface SkillManagerProps {
   theme?: "blue" | "purple";
 }
 
 const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
+  const { t } = useTranslation("skill");
+
   // Data
   const [skills, setSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +71,8 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách kỹ năng."));
+      // i18n.t rather than t: fetchSkills stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadList", { ns: "skill" })));
     } finally {
       setIsLoading(false);
     }
@@ -100,25 +105,25 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
 
       if ("id" in data) {
         await skillUseCases.update(data);
-        toast.success("Cập nhật kỹ năng thành công.");
+        toast.success(t("toasts.updated"));
       } else {
         await skillUseCases.create(data);
-        toast.success("Tạo kỹ năng thông.");
+        toast.success(t("toasts.created"));
       }
 
       handleReset();
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, t("errors.failed")));
     }
   };
 
   const handleDeleteSkill = async (id: number) => {
     try {
       await skillUseCases.remove(id);
-      toast.success("Xóa kỹ năng thành công.");
+      toast.success(t("toasts.deleted"));
       handleReset();
     } catch (err) {
-      toast.error(errorMessage(err, "Xóa kỹ năng thất bại."));
+      toast.error(errorMessage(err, t("errors.deleteFailed")));
     }
   };
 
@@ -131,14 +136,14 @@ const SkillManagerPage = ({ theme = "blue" }: SkillManagerProps) => {
       />
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Danh sách Kỹ năng</h2>
+        <h2 className="text-lg font-semibold">{t("manager.title")}</h2>
         <HasPermission perm={"POST /skills"}>
           <Button
             className={`${theme === "blue" ? "bg-blue-600 hover:bg-blue-700" : "bg-purple-600 hover:bg-purple-700"}`}
             onClick={openCreateForm}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Thêm kỹ năng
+            {t("manager.add")}
           </Button>
         </HasPermission>
       </div>

@@ -20,6 +20,8 @@ import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import type { RoleRef } from "../../domain/role";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 interface RoleSelectionProps {
   selectedRole: RoleRef | undefined;
@@ -32,6 +34,8 @@ const RoleSelection = ({
   addRole,
   removeRole,
 }: RoleSelectionProps) => {
+  const { t } = useTranslation("access");
+
   // ============================
   // Modal State
   // ============================
@@ -66,7 +70,8 @@ const RoleSelection = ({
       setTotalElements(data.totalElements);
       setTotalPages(data.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách vai trò."));
+      // i18n.t rather than t: the fetcher stays free of render values, so the effects need no extra dependency
+      toast.error(errorMessage(err, i18n.t("roleSelection.loadFailed", { ns: "access" })));
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +92,7 @@ const RoleSelection = ({
   return (
     <div className="space-y-2">
       <Label>
-        Vai trò <span className="text-red-500">*</span>
+        {t("roleSelection.label")} <span className="text-red-500">*</span>
       </Label>
 
       <div className="rounded-md border bg-gray-50/50 p-3">
@@ -121,7 +126,7 @@ const RoleSelection = ({
           <div className="mb-3 flex min-h-[100px] w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
             <div>
               <Shield className="mx-auto mb-2 h-8 w-8 text-gray-400" />
-              <p className="text-sm text-gray-500">Chưa chọn vai trò</p>
+              <p className="text-sm text-gray-500">{t("roleSelection.none")}</p>
             </div>
           </div>
         )}
@@ -134,22 +139,22 @@ const RoleSelection = ({
               className="w-full border-dashed bg-transparent"
             >
               <Shield className="mr-2 h-4 w-4" />
-              {selectedRole ? "Đổi vai trò" : "Chọn vai trò"}
+              {selectedRole ? t("roleSelection.change") : t("roleSelection.choose")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Chọn vai trò
+                {t("roleSelection.choose")}
               </DialogTitle>
-              <DialogDescription>role selection panel</DialogDescription>
+              <DialogDescription>{t("roleSelection.dialogDescription")}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="relative">
                 <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
-                  placeholder="Tìm kiếm vai trò..."
+                  placeholder={t("roleSelection.searchPlaceholder")}
                   value={searchRoleName}
                   onChange={(e) => setSearchRoleName(e.target.value)}
                   className="pl-10"
@@ -165,8 +170,8 @@ const RoleSelection = ({
                 {roles.length === 0 && !isLoading && (
                   <div className="py-8 text-center">
                     <EmptyState
-                      title="Không tìm thấy vai trò nào"
-                      description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm vai trò mới"
+                      title={t("roleSelection.emptyTitle")}
+                      description={t("roleSelection.emptyDescription")}
                       icon={
                         <Shield className="text-muted-foreground h-12 w-12" />
                       }

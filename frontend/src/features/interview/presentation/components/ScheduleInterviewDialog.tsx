@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { interviews as interviewUseCases } from "@/app/container";
@@ -14,7 +15,8 @@ import {
 } from "@/shared/presentation/ui/dialog";
 
 import { InvalidOfferError } from "../../application/interviewUseCases";
-import type { Interview } from "../../domain/interview";
+import { MAX_DURATION_MINUTES, MAX_SLOTS, MIN_DURATION_MINUTES } from "../../domain/interview";
+import type { Interview, OfferProblem } from "../../domain/interview";
 import InterviewOfferForm from "./InterviewOfferForm";
 import { emptyDraft, toInstant } from "./offerDraft";
 import type { OfferDraft } from "./offerDraft";
@@ -32,6 +34,7 @@ interface Props {
 
 /** A recruiter proposes time slots for an application, or proposes new ones for an existing interview. */
 const ScheduleInterviewDialog = ({ open, onOpenChange, resumeId, interview, title, onDone }: Props) => {
+  const { t } = useTranslation(["interview", "common"]);
   const [draft, setDraft] = useState<OfferDraft>(emptyDraft());
   const [saving, setSaving] = useState(false);
 
@@ -52,17 +55,26 @@ const ScheduleInterviewDialog = ({ open, onOpenChange, resumeId, interview, titl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  const problemText = (problem: OfferProblem) =>
+    problem === "badDuration"
+      ? t("problems.badDuration", { min: MIN_DURATION_MINUTES, max: MAX_DURATION_MINUTES })
+      : t(`problems.${problem}`, { max: MAX_SLOTS });
+
   const submit = async () => {
     const offer = { ...draft, slots: draft.slots.map(toInstant).filter(Boolean) };
     setSaving(true);
     try {
       if (interview) await interviewUseCases.reschedule(interview.id, offer);
       else if (resumeId !== undefined) await interviewUseCases.schedule(resumeId, offer);
-      toast.success(interview ? "Đã gửi khung giờ mới cho ứng viên" : "Đã gửi lời mời phỏng vấn");
+      toast.success(interview ? t("schedule.rescheduled") : t("schedule.invited"));
       onOpenChange(false);
       onDone?.();
     } catch (err) {
-      toast.error(err instanceof InvalidOfferError ? err.message : errorMessage(err, "Không thể gửi lời mời phỏng vấn"));
+      toast.error(
+        err instanceof InvalidOfferError
+          ? err.problems.map(problemText).join(". ")
+          : errorMessage(err, t("schedule.failed")),
+      );
     } finally {
       setSaving(false);
     }
@@ -72,16 +84,16 @@ const ScheduleInterviewDialog = ({ open, onOpenChange, resumeId, interview, titl
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{title ?? (interview ? "Dời lịch phỏng vấn" : "Mời phỏng vấn")}</DialogTitle>
-          <DialogDescription>Ứng viên sẽ nhận thông báo và chọn một trong các khung giờ bạn đề xuất.</DialogDescription>
+          <DialogTitle>{title ?? (interview ? t("schedule.reschedule") : t("schedule.invite"))}</DialogTitle>
+          <DialogDescription>{t("schedule.description")}</DialogDescription>
         </DialogHeader>
         <InterviewOfferForm draft={draft} onChange={setDraft} />
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
-            Hủy
+            {t("common:actions.cancel")}
           </Button>
           <Button onClick={submit} disabled={saving}>
-            {saving ? "Đang gửi..." : "Gửi lời mời"}
+            {saving ? t("schedule.sending") : t("schedule.send")}
           </Button>
         </DialogFooter>
       </DialogContent>

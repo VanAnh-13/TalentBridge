@@ -7,6 +7,7 @@ import {
 } from "@/shared/presentation/ui/select";
 import { Button } from "@/shared/presentation/ui/button";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface PaginationProps {
   currentPage: number;
@@ -29,6 +30,7 @@ const Pagination = ({
   showItemsPerPageSelect,
   theme = "blue",
 }: PaginationProps) => {
+  const { t } = useTranslation();
   const pagination = () => {
     if (totalPages <= 1) return [1];
 
@@ -61,9 +63,11 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-between">
       <div className="text-muted-foreground text-sm">
-        {(currentPage - 1) * itemsPerPage + 1} –{" "}
-        {Math.min(currentPage * itemsPerPage, totalElements)} trên{" "}
-        {totalElements} dòng
+        {t("pagination.range", {
+          from: (currentPage - 1) * itemsPerPage + 1,
+          to: Math.min(currentPage * itemsPerPage, totalElements),
+          total: totalElements,
+        })}
       </div>
       <div className="flex items-center gap-4">
         {showItemsPerPageSelect && (
@@ -91,7 +95,7 @@ const Pagination = ({
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            Trước
+            {t("pagination.previous")}
           </Button>
 
           {pages.map((page, index) =>
@@ -123,7 +127,7 @@ const Pagination = ({
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            Sau
+            {t("pagination.next")}
           </Button>
         </div>
       </div>

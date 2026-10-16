@@ -1,17 +1,21 @@
 import { useAuthState } from "@/features/auth";
 import { User, BarChart3, Settings, Mail, CalendarCheck, MessageCircle } from "lucide-react";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
+import type { ParseKeys } from "i18next";
 
-const navigationItems = [
-  { title: "Thông tin", icon: User, href: "info" },
-  { title: "Đăng ký thông báo", icon: Mail, href: "subscriber" },
-  { title: "Hồ sơ tuyển dụng", icon: BarChart3, href: "resumes" },
-  { title: "Tin nhắn", icon: MessageCircle, href: "chat" },
-  { title: "Lịch phỏng vấn", icon: CalendarCheck, href: "interviews" },
-  { title: "Bảo mật", icon: Settings, href: "sessions" },
+/** Entries of the candidate's own area; an entry with a permission shows only to people who hold it. */
+const navigationItems: { title: ParseKeys<"app">; icon: typeof User; href: string; permission?: string }[] = [
+  { title: "user.menu.info", icon: User, href: "info" },
+  { title: "user.menu.subscriber", icon: Mail, href: "subscriber", permission: "GET /subscribers/me" },
+  { title: "user.menu.resumes", icon: BarChart3, href: "resumes", permission: "POST /resumes" },
+  { title: "user.menu.chat", icon: MessageCircle, href: "chat", permission: "GET /chats" },
+  { title: "user.menu.interviews", icon: CalendarCheck, href: "interviews", permission: "GET /interviews/me" },
+  { title: "user.menu.sessions", icon: Settings, href: "sessions" },
 ];
 
 export default function UserPage() {
+  const { t } = useTranslation("app");
   const { isLogin, user } = useAuthState();
 
   if (!isLogin || !user) return <Navigate to="/auth?mode=login" replace />;
@@ -27,7 +31,12 @@ export default function UserPage() {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-200 p-6">
             <h1 className="text-xl font-semibold text-gray-800">
-              Xin chào <span className="text-yellow-500">{user.name}</span>!
+              <Trans
+                t={t}
+                i18nKey="user.greeting"
+                values={{ name: user.name }}
+                components={{ highlight: <span className="text-yellow-500" /> }}
+              />
             </h1>
           </div>
 
@@ -35,21 +44,7 @@ export default function UserPage() {
           <nav className="p-4">
             <ul className="space-y-2">
               {navigationItems
-                .filter((item) => {
-                  if (item.title === "Hồ sơ tuyển dụng")
-                    return user.permissions?.includes("POST /resumes");
-
-                  if (item.title === "Tin nhắn")
-                    return user.permissions?.includes("GET /chats");
-
-                  if (item.title === "Lịch phỏng vấn")
-                    return user.permissions?.includes("GET /interviews/me");
-
-                  if (item.title === "Đăng ký thông báo")
-                    return user.permissions?.includes("GET /subscribers/me");
-
-                  return true;
-                })
+                .filter((item) => !item.permission || user.permissions?.includes(item.permission))
                 .map((item) => (
                   <li key={item.title}>
                     <NavLink
@@ -63,7 +58,7 @@ export default function UserPage() {
                       }
                     >
                       <item.icon className="mr-3 h-5 w-5" />
-                      {item.title}
+                      {t(item.title)}
                     </NavLink>
                   </li>
                 ))}

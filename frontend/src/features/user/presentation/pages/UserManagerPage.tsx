@@ -10,8 +10,11 @@ import Pagination from "@/shared/presentation/components/Pagination.tsx";
 import { UserTable } from "../components/UserTable.tsx";
 import { useNavigate } from "react-router-dom";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const UserManagerPage = () => {
+  const { t } = useTranslation("user");
   const navigate = useNavigate();
 
   // ============================
@@ -54,7 +57,8 @@ const UserManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách người dùng"));
+      // i18n.t rather than t: fetchUsers stays free of render values, so the effects below need no extra dependency
+      toast.error(errorMessage(err, i18n.t("list.loadFailed", { ns: "user" })));
     } finally {
       setIsLoading(false);
     }
@@ -99,9 +103,9 @@ const UserManagerPage = () => {
       await userUseCases.remove(id);
       await fetchUsers(1, itemsPerPage, searchUserName, searchEmail);
 
-      toast.success("Xóa người dùng thành công");
+      toast.success(t("list.deleted"));
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -118,14 +122,14 @@ const UserManagerPage = () => {
       />
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Danh sách người dùng</h2>
+        <h2 className="text-lg font-semibold">{t("list.title")}</h2>
         <HasPermission perm={"POST /users"}>
           <Button
             onClick={handleOpenCreatePage}
             className="bg-blue-600 hover:bg-blue-700"
           >
             <Plus className="mr-2 h-4 w-4" />
-            Thêm người dùng
+            {t("list.add")}
           </Button>
         </HasPermission>
       </div>

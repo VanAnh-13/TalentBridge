@@ -6,8 +6,12 @@ import { companies as companyUseCases } from "@/app/container";
 import Pagination from "@/shared/presentation/components/Pagination";
 import CompanyGrid from "../components/CompanyGrid";
 import { CompanySearchSection } from "../components/CompanyBrowseSearch";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 export default function CompanyClientPage() {
+  const { t } = useTranslation("company");
+
   // Data
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +47,8 @@ export default function CompanyClientPage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+      // i18n.t rather than t: fetchCompanies stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadList", { ns: "company" })));
     } finally {
       setIsLoading(false);
     }
@@ -74,24 +79,24 @@ export default function CompanyClientPage() {
       <div className="relative w-full bg-gradient-to-r from-orange-500 via-orange-600 to-yellow-500 px-4 py-16">
         <div className="container mx-auto text-center">
           <div className="mb-6">
-            <h1 className="mb-4 text-5xl font-bold text-white">Công ty</h1>
+            <h1 className="mb-4 text-5xl font-bold text-white">{t("browse.title")}</h1>
             <p className="mx-auto max-w-2xl text-xl text-orange-100">
-              Khám phá các công ty hàng đầu và cơ hội nghề nghiệp
+              {t("browse.subtitle")}
             </p>
           </div>
 
           <div className="mt-8 flex justify-center gap-8">
             <div className="text-center">
               <div className="text-2xl font-bold text-white">500+</div>
-              <div className="text-sm text-orange-200">Công ty</div>
+              <div className="text-sm text-orange-200">{t("browse.stats.companies")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-white">2000+</div>
-              <div className="text-sm text-orange-200">Việc làm</div>
+              <div className="text-sm text-orange-200">{t("browse.stats.jobs")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-white">10k+</div>
-              <div className="text-sm text-orange-200">Ứng viên</div>
+              <div className="text-sm text-orange-200">{t("browse.stats.candidates")}</div>
             </div>
           </div>
         </div>
@@ -107,7 +112,7 @@ export default function CompanyClientPage() {
             onReset={handleReset}
           />
           <div className="mt-4 text-center text-sm text-gray-500">
-            Tìm thấy {companies.length} công ty
+            {t("browse.found", { count: companies.length })}
           </div>
         </div>
 

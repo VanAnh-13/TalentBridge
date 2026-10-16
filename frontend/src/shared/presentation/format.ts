@@ -1,8 +1,11 @@
+import i18n from "i18next";
 import { convert } from "html-to-text";
+
+import { currentLocale } from "./i18n/locale";
 
 export function formatISO(isoString: string): string {
   const date = new Date(isoString);
-  return date.toLocaleString("vi-VN", {
+  return date.toLocaleString(currentLocale(), {
     hour: "2-digit",
     minute: "2-digit",
     day: "2-digit",
@@ -34,46 +37,30 @@ export function getFirstLineFromHtml(html: string): string {
 }
 
 export const formatSalary = (salary: number) => {
-  if (salary === 0) return "Thương lượng";
-  return `${salary.toLocaleString()} VND`;
+  if (salary === 0) return i18n.t("salary.negotiable");
+  return `${salary.toLocaleString(currentLocale())} VND`;
 };
 
+/** How long ago something happened, in the interface language ("5 minutes ago"). */
 export const formatLoginTime = (dateStr: string) => {
   const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
+  const diffMs = Date.now() - date.getTime();
 
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffHours = Math.floor(diffMinutes / 60);
   const diffDays = Math.floor(diffHours / 24);
+  const relative = new Intl.RelativeTimeFormat(currentLocale(), { numeric: "auto" });
 
-  switch (true) {
-    case diffMinutes < 1:
-      return "Vừa đăng nhập";
-    case diffMinutes < 5:
-      return "Dưới 5 phút trước";
-    case diffMinutes < 15:
-      return "Dưới 15 phút trước";
-    case diffMinutes < 30:
-      return "Dưới 30 phút trước";
-    case diffMinutes < 60:
-      return `${diffMinutes} phút trước`;
-    case diffHours === 1:
-      return "1 giờ trước";
-    case diffHours < 24:
-      return `${diffHours} giờ trước`;
-    case diffDays === 1:
-      return "1 ngày trước";
-    case diffDays < 7:
-      return `${diffDays} ngày trước`;
-    default:
-      return date.toLocaleDateString("vi-VN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-  }
+  if (diffMinutes < 1) return i18n.t("time.justNow");
+  if (diffMinutes < 60) return relative.format(-diffMinutes, "minute");
+  if (diffHours < 24) return relative.format(-diffHours, "hour");
+  if (diffDays < 7) return relative.format(-diffDays, "day");
+  return date.toLocaleDateString(currentLocale(), {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 };

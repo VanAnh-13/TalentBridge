@@ -2,6 +2,7 @@ import { Input } from "@/shared/presentation/ui/input";
 import { Label } from "@/shared/presentation/ui/label";
 import { Button } from "@/shared/presentation/ui/button";
 import { RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   searchName: string;
@@ -18,23 +19,24 @@ export function CompanySearchSection({
   setSearchAddress,
   onReset,
 }: Props) {
+  const { t } = useTranslation(["company", "common"]);
   return (
     <div className="bg-card rounded-lg border p-4">
       <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-2">
-          <Label htmlFor="search-name">Tên công ty:</Label>
+          <Label htmlFor="search-name">{t("search.name")}</Label>
           <Input
             id="search-name"
-            placeholder="nhập tên tìm"
+            placeholder={t("search.namePlaceholder")}
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="search-address">Địa chỉ công ty:</Label>
+          <Label htmlFor="search-address">{t("search.address")}</Label>
           <Input
             id="search-address"
-            placeholder="nhập địa chỉ"
+            placeholder={t("search.addressPlaceholder")}
             value={searchAddress}
             onChange={(e) => setSearchAddress(e.target.value)}
           />
@@ -42,7 +44,7 @@ export function CompanySearchSection({
         <div className="flex gap-2">
           <Button variant="outline" onClick={onReset}>
             <RotateCcw className="mr-2 h-4 w-4" />
-            Làm lại
+            {t("common:actions.reset")}
           </Button>
         </div>
       </div>

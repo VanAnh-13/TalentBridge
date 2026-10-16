@@ -24,9 +24,11 @@ import {
 } from "@/shared/presentation/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/shared/presentation/lib/utils";
+import { useTranslation } from "react-i18next";
+import type { ParseKeys } from "i18next";
 
 interface MenuItem {
-  title: string;
+  title: ParseKeys<"app">;
   url: string;
   icon: LucideIcon;
   permission?: string;
@@ -34,49 +36,49 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   {
-    title: "Công ty tôi",
+    title: "recruiter.menu.company",
     url: "/recruiter/company",
     icon: Building2,
     permission: "GET /companies/me",
   },
   {
-    title: "Đội ngũ tuyển dụng",
+    title: "recruiter.menu.members",
     url: "/recruiter/members",
     icon: UserRound,
     permission: "GET /companies/me/users",
   },
   {
-    title: "Công việc",
+    title: "recruiter.menu.jobs",
     url: "/recruiter/jobs",
     icon: Briefcase,
     permission: "GET /jobs/company",
   },
   {
-    title: "Kỹ năng",
+    title: "recruiter.menu.skills",
     url: "/recruiter/skills",
     icon: Settings,
     permission: "GET /skills",
   },
   {
-    title: "Hồ sơ ứng tuyển",
+    title: "recruiter.menu.resumes",
     url: "/recruiter/resumes",
     icon: FileText,
     permission: "GET /resumes/company",
   },
   {
-    title: "Xếp hạng ứng viên",
+    title: "recruiter.menu.matching",
     url: "/recruiter/matching",
     icon: Sparkles,
     permission: "GET /matching/jobs/{jobId}/candidates",
   },
   {
-    title: "Lịch phỏng vấn",
+    title: "recruiter.menu.interviews",
     url: "/recruiter/interviews",
     icon: CalendarDays,
     permission: "GET /interviews/company",
   },
   {
-    title: "Tin nhắn",
+    title: "recruiter.menu.chat",
     url: "/recruiter/chat",
     icon: MessageCircle,
     permission: "GET /chats",
@@ -84,12 +86,13 @@ const menuItems: MenuItem[] = [
 ];
 
 export function RecruiterSidebar() {
+  const { t } = useTranslation("app");
   const { pathname } = useLocation();
   const permissions =
     useAccount()?.permissions ?? [];
 
   /**
-   * Kiểm tra xem menu item có đang được kích hoạt không.
+   * Whether a menu entry is active.
    */
   const isItemActive = (item: MenuItem): boolean => {
     return pathname === item.url || pathname.startsWith(item.url + "/");
@@ -104,8 +107,8 @@ export function RecruiterSidebar() {
             <MonitorCog className="h-4 w-4 text-white" />
           </div>
           <div>
-            <span className="text-lg font-semibold text-white">RECRUITER</span>
-            <p className="text-xs text-purple-100">Bảng tuyển dụng</p>
+            <span className="text-lg font-semibold text-white">{t("recruiter.brand")}</span>
+            <p className="text-xs text-purple-100">{t("recruiter.brandSubtitle")}</p>
           </div>
         </div>
       </div>
@@ -144,7 +147,7 @@ export function RecruiterSidebar() {
                           <span
                             className={`${isActive ? "font-bold text-white" : ""}`}
                           >
-                            {item.title}
+                            {t(item.title)}
                           </span>
                         </Link>
                       </SidebarMenuButton>
@@ -165,7 +168,7 @@ export function RecruiterSidebar() {
             >
               <Link to="/" className="flex w-full items-center gap-3">
                 <Home className="h-4 w-4" />
-                <span>Quay về trang chủ</span>
+                <span>{t("nav.backHome")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

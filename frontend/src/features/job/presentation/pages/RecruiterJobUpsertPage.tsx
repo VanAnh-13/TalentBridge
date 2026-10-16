@@ -28,21 +28,18 @@ import {
 } from "@/shared/presentation/ui/breadcrumb.tsx";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor.tsx";
 import { SkillSelection } from "@/features/skill";
 import type { SkillRef } from "@/features/skill/domain/skill";
-import type { JobData } from "../../domain/job";
+import type { JobData, Level } from "../../domain/job";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
 import { jobs as jobUseCases } from "@/app/container";
 import { formatISOToYMD } from "@/shared/presentation/format.ts";
 
-const levels = [
-  { value: "INTERN", label: "Intern" },
-  { value: "FRESHER", label: "Fresher" },
-  { value: "MIDDLE", label: "Middle" },
-  { value: "SENIOR", label: "Senior" },
-];
+const levels: Level[] = ["INTERN", "FRESHER", "MIDDLE", "SENIOR"];
 
 export default function JobUpsertRecruiterPage() {
   const { permissions, companyId } = useAccount();
@@ -50,6 +47,7 @@ export default function JobUpsertRecruiterPage() {
   // Checking is edit or create
   // ============================
   const navigate = useNavigate();
+  const { t } = useTranslation(["job", "common"]);
   const [searchParams, setSearchParams] = useSearchParams();
   const id = searchParams.get("id");
   const isEdit = !!id;
@@ -86,7 +84,8 @@ export default function JobUpsertRecruiterPage() {
           setFormData(job);
           setSelectedSkills(job.skills);
         } catch (err) {
-          toast.error(errorMessage(err, "Không tìm thấy công việc này"));
+          // i18n.t rather than t: the effect keeps its dependencies, so switching language does not fetch again
+          toast.error(errorMessage(err, i18n.t("upsert.notFound", { ns: "job" })));
           setSearchParams({});
         } finally {
           setIsLoading(false);
@@ -152,21 +151,17 @@ export default function JobUpsertRecruiterPage() {
       if (isEdit) await jobUseCases.update("company", parseInt(id), newCopy);
       else await jobUseCases.create("company", newCopy);
 
-      toast.success(
-        isEdit
-          ? "Cập nhật công việc mới thành công"
-          : "Tạo công việc mới thanh công",
-      );
+      toast.success(isEdit ? t("upsert.updated") : t("upsert.created"));
       handleBack();
     } catch (err) {
-      toast.error(errorMessage(err, "Thêm công việc mới thất bại"));
+      toast.error(errorMessage(err, t("upsert.failed")));
     } finally {
       setIsLoading(false);
     }
   };
 
   // ============================
-  // Ultils Handler
+  // Utils Handler
   // ============================
   const handleBack = () => {
     navigate("/recruiter/jobs");
@@ -186,13 +181,13 @@ export default function JobUpsertRecruiterPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink onClick={handleBack} className="cursor-pointer">
-              Quản lý việc làm
+              {t("upsert.breadcrumb")}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              {isEdit ? "Cập nhật" : "Tạo mới"} việc làm
+              {isEdit ? t("upsert.breadcrumbEdit") : t("upsert.breadcrumbCreate")}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -205,10 +200,10 @@ export default function JobUpsertRecruiterPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold">
-            {isEdit ? "Chỉnh sửa Job" : "Thêm Job mới"}
+            {isEdit ? t("upsert.titleEdit") : t("upsert.titleCreate")}
           </h1>
           <p className="text-muted-foreground">
-            {isEdit ? "Cập nhật thông tin job" : "Tạo job mới trong hệ thống"}
+            {isEdit ? t("upsert.subtitleEdit") : t("upsert.subtitleCreate")}
           </p>
         </div>
       </div>
@@ -216,7 +211,7 @@ export default function JobUpsertRecruiterPage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin Job</CardTitle>
+          <CardTitle>{t("upsert.cardTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="space-y-6">
@@ -224,11 +219,11 @@ export default function JobUpsertRecruiterPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">
-                  Tên Job <span className="text-red-500">*</span>
+                  {t("upsert.name")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="name"
-                  placeholder="Nhập tên công việc..."
+                  placeholder={t("search.namePlaceholder")}
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   required
@@ -236,11 +231,11 @@ export default function JobUpsertRecruiterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">
-                  Địa điểm <span className="text-red-500">*</span>
+                  {t("fields.location")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="location"
-                  placeholder="Nhập địa điểm làm việc..."
+                  placeholder={t("upsert.locationPlaceholder")}
                   value={formData.location}
                   onChange={(e) =>
                     handleInputChange("location", e.target.value)
@@ -254,12 +249,12 @@ export default function JobUpsertRecruiterPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="salary">
-                  Mức lương <span className="text-red-500">*</span>
+                  {t("fields.salary")} <span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
                   <Input
                     id="salary"
-                    placeholder="Nhập mức lương"
+                    placeholder={t("upsert.salaryPlaceholder")}
                     type="number"
                     value={formData.salary}
                     onChange={(e) =>
@@ -275,11 +270,11 @@ export default function JobUpsertRecruiterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="quantity">
-                  Số lượng <span className="text-red-500">*</span>
+                  {t("fields.quantity")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="quantity"
-                  placeholder="Nhập số lượng"
+                  placeholder={t("upsert.quantityPlaceholder")}
                   type="number"
                   value={formData.quantity}
                   onChange={(e) =>
@@ -290,7 +285,7 @@ export default function JobUpsertRecruiterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="level">
-                  Trình độ <span className="text-red-500">*</span>
+                  {t("fields.level")} <span className="text-red-500">*</span>
                 </Label>
                 <Select
                   value={formData.level}
@@ -299,12 +294,12 @@ export default function JobUpsertRecruiterPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn cấp độ" />
+                    <SelectValue placeholder={t("upsert.levelPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {levels.map((level) => (
-                      <SelectItem key={level.value} value={level.value}>
-                        {level.label}
+                      <SelectItem key={level} value={level}>
+                        {t(`common:levels.${level}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -316,7 +311,7 @@ export default function JobUpsertRecruiterPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="space-y-2">
                 <Label htmlFor="startDate">
-                  Ngày bắt đầu <span className="text-red-500">*</span>
+                  {t("fields.startDate")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="startDate"
@@ -331,7 +326,7 @@ export default function JobUpsertRecruiterPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="endDate">
-                  Ngày kết thúc <span className="text-red-500">*</span>
+                  {t("fields.endDate")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="endDate"
@@ -344,7 +339,7 @@ export default function JobUpsertRecruiterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="status">Trạng thái</Label>
+                <Label htmlFor="status">{t("common:fields.status")}</Label>
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="status"
@@ -354,7 +349,7 @@ export default function JobUpsertRecruiterPage() {
                     }
                   />
                   <Label htmlFor="status" className="text-sm font-medium">
-                    {formData.active ? "ACTIVE" : "INACTIVE"}
+                    {t(formData.active ? "common:states.active" : "common:states.inactive")}
                   </Label>
                 </div>
               </div>
@@ -363,12 +358,12 @@ export default function JobUpsertRecruiterPage() {
             {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="description">
-                Miêu tả job <span className="text-red-500">*</span>
+                {t("upsert.description")} <span className="text-red-500">*</span>
               </Label>
               <RichTextEditor
                 value={formData.description}
                 onChange={(value) => handleInputChange("description", value)}
-                placeholder="Nhập mô tả chi tiết về job..."
+                placeholder={t("upsert.descriptionPlaceholder")}
               />
             </div>
 
@@ -385,7 +380,7 @@ export default function JobUpsertRecruiterPage() {
             {/* Actions */}
             <div className="flex justify-end gap-4">
               <Button type="button" variant="outline" onClick={handleBack}>
-                Hủy
+                {t("common:actions.cancel")}
               </Button>
               <Button
                 type="button"
@@ -393,7 +388,11 @@ export default function JobUpsertRecruiterPage() {
                 disabled={isLoading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                {isLoading ? "Đang xử lý..." : isEdit ? "Cập nhật" : "Thêm mới"}
+                {isLoading
+                  ? t("upsert.processing")
+                  : isEdit
+                    ? t("common:actions.update")
+                    : t("manager.add")}
               </Button>
             </div>
           </form>

@@ -2,6 +2,7 @@ import { useAuthState } from "@/features/auth";
 import { FileText } from "lucide-react";
 import { Card, CardContent } from "@/shared/presentation/ui/card";
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { resumes as resumeUseCases } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 
 export default function UserResumePage() {
+  const { t } = useTranslation(["resume", "common"]);
   const { user } = useAuthState();
 
   // ===================
@@ -41,11 +43,11 @@ export default function UserResumePage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách hồ sơ."));
+      toast.error(errorMessage(err, t("list.loadFailed")));
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, itemsPerPage, user?.id]);
+  }, [currentPage, itemsPerPage, user?.id, t]);
 
   useEffect(() => {
     fetchResumes();
@@ -58,10 +60,10 @@ export default function UserResumePage() {
     try {
       setIsLoading(true);
       await resumeUseCases.withdraw(jobId);
-      toast.success("Rút đơn thành công");
+      toast.success(t("mine.withdrawn"));
       await fetchResumes();
     } catch (err) {
-      toast.error(errorMessage(err, "Rút đơn thất bại"));
+      toast.error(errorMessage(err, t("mine.withdrawFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +78,7 @@ export default function UserResumePage() {
       await resumeUseCases.replaceFile(resumeId, file);
       await fetchResumes();
     } catch (err) {
-      toast.error(errorMessage(err, "Cập nhật hồ sơ thất bại"));
+      toast.error(errorMessage(err, t("mine.updateFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -85,20 +87,20 @@ export default function UserResumePage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <h1 className="my-4 text-2xl font-bold text-gray-900">
-        Hồ sơ tuyển dụng {totalElements > 0 && `(${totalElements})`}
+        {t("mine.title")} {totalElements > 0 && `(${totalElements})`}
       </h1>
 
       {isLoading ? (
         <div className="mx-auto w-fit">
           <LoadingSpinner className="h-24 w-24" />
-          <p className="my-2">Đang tải....</p>
+          <p className="my-2">{t("common:states.loading")}</p>
         </div>
       ) : resumes.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-8">
             <EmptyState
-              title="Chưa có hồ sơ nào"
-              description="Bạn chưa nộp hồ sơ ứng tuyển nào"
+              title={t("mine.emptyTitle")}
+              description={t("mine.emptyText")}
               icon={<FileText className="mb-4 h-12 w-12 text-gray-400" />}
             />
           </CardContent>

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface PDFViewerProps {
   fileUrl: string;
   className?: string;
@@ -11,12 +13,13 @@ const PDFViewer: React.FC<PDFViewerProps> = ({
   fileUrl,
   className = "h-full w-full",
 }) => {
+  const { t } = useTranslation();
   if (!fileUrl) return null;
 
   return (
     <iframe
       src={fileUrl}
-      title="Xem hồ sơ (PDF)"
+      title={t("pdf.title")}
       referrerPolicy="no-referrer"
       className={`border border-gray-300 ${className}`}
     />

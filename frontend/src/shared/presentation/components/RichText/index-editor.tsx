@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import ImageInsertModal from "./ImageInsertModal";
+import { useTranslation } from "react-i18next";
 
 interface RichTextEditorProps {
   value: string;
@@ -12,8 +13,9 @@ interface RichTextEditorProps {
 export default function RichTextEditor({
   value,
   onChange,
-  placeholder = "Nhập mô tả...",
+  placeholder,
 }: RichTextEditorProps) {
+  const { t } = useTranslation();
   const quillRef = useRef<ReactQuill>(null);
   const [showImageModal, setShowImageModal] = useState(false);
 
@@ -63,7 +65,7 @@ export default function RichTextEditor({
           onChange={onChange}
           modules={modules}
           formats={formats}
-          placeholder={placeholder}
+          placeholder={placeholder ?? t("editor.placeholder")}
           theme="snow"
           className="w-full [&_.ql-container]:min-h-[120px] [&_.ql-editor]:min-h-[120px]"
           style={{

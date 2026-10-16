@@ -1,5 +1,7 @@
 import { CalendarDays, CalendarPlus, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { toast } from "sonner";
 
 import { interviews as interviewUseCases } from "@/app/container";
@@ -26,6 +28,7 @@ import { downloadCalendar } from "../components/downloadCalendar";
 
 /** The company's interviews: follow the answers, move or cancel. */
 const RecruiterInterviewsPage = () => {
+  const { t } = useTranslation(["interview", "common"]);
   const [items, setItems] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -42,7 +45,8 @@ const RecruiterInterviewsPage = () => {
       setTotalPages(result.totalPages);
       setTotalElements(result.totalElements);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể tải danh sách phỏng vấn"));
+      // i18n.t rather than t: the list reloads when the page changes, not when the language does
+      toast.error(errorMessage(err, i18n.t("company.loadFailed", { ns: "interview" })));
     } finally {
       setLoading(false);
     }
@@ -55,10 +59,10 @@ const RecruiterInterviewsPage = () => {
   const cancel = async (interview: Interview) => {
     try {
       await interviewUseCases.cancel(interview.id);
-      toast.success("Đã hủy buổi phỏng vấn");
+      toast.success(t("company.cancelled"));
       void load();
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể hủy buổi phỏng vấn"));
+      toast.error(errorMessage(err, t("company.cancelFailed")));
     }
   };
 
@@ -66,24 +70,24 @@ const RecruiterInterviewsPage = () => {
     try {
       await downloadCalendar(interview.id);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể tải lịch"));
+      toast.error(errorMessage(err, t("company.calendarFailed")));
     }
   };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold">Lịch phỏng vấn</h2>
+      <h2 className="text-lg font-semibold">{t("company.title")}</h2>
 
       <div className="overflow-hidden rounded-lg border border-purple-600">
         <Table>
           <TableHeader className="bg-purple-600 text-white">
             <TableRow>
-              <TableHead className="text-center font-bold text-white">Ứng viên</TableHead>
-              <TableHead className="text-center font-bold text-white">Vị trí</TableHead>
-              <TableHead className="text-center font-bold text-white">Thời gian</TableHead>
-              <TableHead className="text-center font-bold text-white">Hình thức</TableHead>
-              <TableHead className="text-center font-bold text-white">Trạng thái</TableHead>
-              <TableHead className="text-center font-bold text-white">Thao tác</TableHead>
+              <TableHead className="text-center font-bold text-white">{t("company.columns.candidate")}</TableHead>
+              <TableHead className="text-center font-bold text-white">{t("company.columns.position")}</TableHead>
+              <TableHead className="text-center font-bold text-white">{t("company.columns.time")}</TableHead>
+              <TableHead className="text-center font-bold text-white">{t("company.columns.mode")}</TableHead>
+              <TableHead className="text-center font-bold text-white">{t("common:fields.status")}</TableHead>
+              <TableHead className="text-center font-bold text-white">{t("common:fields.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -96,7 +100,7 @@ const RecruiterInterviewsPage = () => {
             ) : items.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6}>
-                  <EmptyState icon={<CalendarDays className="h-10 w-10" />} title="Chưa có buổi phỏng vấn nào" description="Mời phỏng vấn từ trang Hồ sơ ứng tuyển." />
+                  <EmptyState icon={<CalendarDays className="h-10 w-10" />} title={t("company.emptyTitle")} description={t("company.emptyText")} />
                 </TableCell>
               </TableRow>
             ) : (
@@ -108,29 +112,29 @@ const RecruiterInterviewsPage = () => {
                     {interview.confirmedSlot ? (
                       formatISO(interview.confirmedSlot)
                     ) : interview.status === "PROPOSED" ? (
-                      <span className="text-sm text-gray-600">{interview.proposedSlots.length} khung giờ đề xuất</span>
+                      <span className="text-sm text-gray-600">{t("company.proposedSlots", { count: interview.proposedSlots.length })}</span>
                     ) : (
                       "—"
                     )}
                   </TableCell>
-                  <TableCell className="text-center">{interview.mode === "ONLINE" ? "Trực tuyến" : "Trực tiếp"}</TableCell>
+                  <TableCell className="text-center">{t(`mode.${interview.mode}`)}</TableCell>
                   <TableCell className="text-center">
                     <StatusBadge status={interview.status} />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-center gap-1">
                       {interview.status === "CONFIRMED" && (
-                        <Button size="icon" variant="ghost" aria-label="Tải lịch" onClick={() => saveCalendar(interview)}>
+                        <Button size="icon" variant="ghost" aria-label={t("company.downloadCalendar")} onClick={() => saveCalendar(interview)}>
                           <CalendarPlus className="h-4 w-4" />
                         </Button>
                       )}
                       {interview.status !== "CANCELLED" && (
                         <Button size="sm" variant="outline" onClick={() => setMoving(interview)}>
-                          Dời lịch
+                          {t("company.reschedule")}
                         </Button>
                       )}
                       {isActive(interview) && (
-                        <Button size="icon" variant="ghost" aria-label="Hủy" className="text-red-500" onClick={() => cancel(interview)}>
+                        <Button size="icon" variant="ghost" aria-label={t("company.cancel")} className="text-red-500" onClick={() => cancel(interview)}>
                           <XCircle className="h-4 w-4" />
                         </Button>
                       )}

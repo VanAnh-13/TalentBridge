@@ -10,16 +10,18 @@ import {
   Clock,
   Briefcase,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
-import { levelColors, levelLabels } from "@/shared/presentation/tagColors.ts";
+import { levelColors } from "@/shared/presentation/tagColors.ts";
 
 type JobSectionProps = {
   job: Job;
 };
 
 const JobSection = ({ job }: JobSectionProps) => {
+  const { t } = useTranslation(["job", "common"]);
   return (
     <div className="space-y-6">
       {/* Job Header */}
@@ -31,7 +33,7 @@ const JobSection = ({ job }: JobSectionProps) => {
             </h1>
             <div className="mb-4 flex items-center gap-4">
               <Badge className={`${levelColors[job.level]}`}>
-                {levelLabels[job.level]}
+                {t(`common:levels.${job.level}`)}
               </Badge>
               <div
                 className={`rounded-full px-3 py-1 text-sm font-medium ${
@@ -40,7 +42,7 @@ const JobSection = ({ job }: JobSectionProps) => {
                     : "bg-red-100 text-red-700"
                 }`}
               >
-                {job.active ? "Đang tuyển dụng" : "Đã đóng"}
+                {job.active ? t("hiringNow") : t("closed")}
               </div>
             </div>
           </div>
@@ -76,7 +78,9 @@ const JobSection = ({ job }: JobSectionProps) => {
         <div className="rounded-lg border bg-white p-4">
           <div className="mb-2 flex items-center gap-2">
             <MapPin className="h-5 w-5 text-orange-600" />
-            <span className="font-medium text-gray-900">Địa điểm làm việc</span>
+            <span className="font-medium text-gray-900">
+              {t("details.workLocation")}
+            </span>
           </div>
           <p className="text-gray-700">{job.location}</p>
         </div>
@@ -84,7 +88,9 @@ const JobSection = ({ job }: JobSectionProps) => {
         <div className="rounded-lg border bg-white p-4">
           <div className="mb-2 flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-orange-600" />
-            <span className="font-medium text-gray-900">Mức lương</span>
+            <span className="font-medium text-gray-900">
+              {t("fields.salary")}
+            </span>
           </div>
           <p className="font-semibold text-gray-700">
             {formatSalary(job.salary)}
@@ -94,15 +100,21 @@ const JobSection = ({ job }: JobSectionProps) => {
         <div className="rounded-lg border bg-white p-4">
           <div className="mb-2 flex items-center gap-2">
             <Users className="h-5 w-5 text-orange-600" />
-            <span className="font-medium text-gray-900">Số lượng tuyển</span>
+            <span className="font-medium text-gray-900">
+              {t("details.quantity")}
+            </span>
           </div>
-          <p className="text-gray-700">{job.quantity} người</p>
+          <p className="text-gray-700">
+            {t("quantityPeople", { count: job.quantity })}
+          </p>
         </div>
 
         <div className="rounded-lg border bg-white p-4">
           <div className="mb-2 flex items-center gap-2">
             <Clock className="h-5 w-5 text-orange-600" />
-            <span className="font-medium text-gray-900">Hạn nộp hồ sơ</span>
+            <span className="font-medium text-gray-900">
+              {t("details.deadline")}
+            </span>
           </div>
           <p className="font-semibold text-red-600">{formatISO(job.endDate)}</p>
         </div>
@@ -112,7 +124,7 @@ const JobSection = ({ job }: JobSectionProps) => {
       <div className="rounded-lg border bg-white p-6">
         <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
           <Briefcase className="h-5 w-5 text-orange-600" />
-          Kỹ năng yêu cầu
+          {t("fields.requiredSkills")}
         </h3>
         <div className="flex flex-wrap gap-2">
           {job.skills.map((skill) => (
@@ -130,7 +142,7 @@ const JobSection = ({ job }: JobSectionProps) => {
       {/* Job Description */}
       <div className="rounded-lg border bg-white p-6">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
-          Mô tả công việc
+          {t("details.description")}
         </h3>
         <RichTextPreview content={job.description} />
       </div>
@@ -138,17 +150,17 @@ const JobSection = ({ job }: JobSectionProps) => {
       {/* Job Dates */}
       <div className="rounded-lg border bg-white p-6">
         <h3 className="mb-4 text-lg font-semibold text-gray-900">
-          Thông tin thời gian
+          {t("details.dates")}
         </h3>
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-gray-600" />
-            <span className="text-gray-600">Ngày đăng:</span>
+            <span className="text-gray-600">{t("details.postedOn")}</span>
             <span className="font-medium">{formatISO(job.startDate)}</span>
           </div>
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-gray-600" />
-            <span className="text-gray-600">Hạn nộp:</span>
+            <span className="text-gray-600">{t("labels.deadline")}</span>
             <span className="font-medium text-red-600">
               {formatISO(job.endDate)}
             </span>

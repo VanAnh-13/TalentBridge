@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Label } from "@/shared/presentation/ui/label.tsx";
 import { Button } from "@/shared/presentation/ui/button.tsx";
@@ -9,6 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/presentation/ui/select.tsx";
+import type { Level } from "../../domain/job";
+
+const LEVELS: Level[] = ["INTERN", "FRESHER", "MIDDLE", "SENIOR"];
 
 interface JobSearchSectionProps {
   searchName: string;
@@ -36,14 +40,15 @@ export function JobSearchSection({
   onExpandToggle,
   onChange,
 }: JobSearchSectionProps) {
+  const { t } = useTranslation(["job", "common"]);
   return (
     <div className="bg-card rounded-lg border p-4">
       <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="search-title">Tên công việc:</Label>
+          <Label htmlFor="search-title">{t("search.name")}</Label>
           <Input
             id="search-title"
-            placeholder="Nhập tên công việc..."
+            placeholder={t("search.namePlaceholder")}
             value={searchName}
             onChange={(e) => onChange.name(e.target.value)}
           />
@@ -51,18 +56,18 @@ export function JobSearchSection({
         <div className="flex gap-2">
           <Button variant="outline" onClick={onReset}>
             <RotateCcw className="mr-2 h-4 w-4" />
-            Làm lại
+            {t("common:actions.reset")}
           </Button>
           <Button variant="outline" onClick={onExpandToggle}>
             {isExpanded ? (
               <>
                 <ChevronUp className="mr-2 h-4 w-4" />
-                Thu gọn
+                {t("common:actions.less")}
               </>
             ) : (
               <>
                 <ChevronDown className="mr-2 h-4 w-4" />
-                Mở rộng
+                {t("common:actions.more")}
               </>
             )}
           </Button>
@@ -75,10 +80,10 @@ export function JobSearchSection({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {typeof onChange.company === "function" && (
               <div className="space-y-2">
-                <Label htmlFor="search-company">Công ty:</Label>
+                <Label htmlFor="search-company">{t("common:fields.company")}:</Label>
                 <Input
                   id="search-company"
-                  placeholder="Tên công ty..."
+                  placeholder={t("search.companyPlaceholder")}
                   value={searchCompanyName ?? ""}
                   onChange={(e) => onChange.company?.(e.target.value)}
                 />
@@ -86,25 +91,26 @@ export function JobSearchSection({
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="search-level">Level:</Label>
+              <Label htmlFor="search-level">{t("search.level")}</Label>
               <Select value={searchLevel} onValueChange={onChange.level}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Chọn level..." />
+                  <SelectValue placeholder={t("search.levelPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tất cả</SelectItem>
-                  <SelectItem value="INTERN">Intern</SelectItem>
-                  <SelectItem value="FRESHER">Fresher</SelectItem>
-                  <SelectItem value="MIDDLE">Middle</SelectItem>
-                  <SelectItem value="SENIOR">Senior</SelectItem>
+                  <SelectItem value="all">{t("search.allLevels")}</SelectItem>
+                  {LEVELS.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {t(`common:levels.${level}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="search-location">Địa điểm:</Label>
+              <Label htmlFor="search-location">{t("search.location")}</Label>
               <Input
                 id="search-location"
-                placeholder="Nhập địa điểm..."
+                placeholder={t("search.locationPlaceholder")}
                 value={searchLocation}
                 onChange={(e) => onChange.location(e.target.value)}
               />

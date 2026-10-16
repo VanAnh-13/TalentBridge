@@ -3,6 +3,7 @@ import { subscribers } from "@/app/container";
 import type { SkillRef } from "@/features/skill/domain/skill";
 import type { Subscriber } from "../../domain/subscriber";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   Card,
@@ -31,6 +32,8 @@ import { SkillSelection } from "@/features/skill";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 
 const UserSubscriberPage = () => {
+  const { t } = useTranslation(["subscriber", "common"]);
+
   // Data
   const [subscriber, setSubscriber] =
     useState<Subscriber | null>();
@@ -77,7 +80,7 @@ const UserSubscriberPage = () => {
   // =========================================================
   const handleCreateOrUpdateSubscriber = async () => {
     if (selectedSkills.length === 0) {
-      toast.error("Vui lòng chọn ít nhất một kỹ năng");
+      toast.error(t("toast.skillRequired"));
       return;
     }
 
@@ -90,13 +93,13 @@ const UserSubscriberPage = () => {
         isUpdate,
       );
       toast.success(
-        isUpdate ? "Cập nhật đăng ký thành công" : "Đăng ký nhận thông báo thành công",
+        isUpdate ? t("toast.updated") : t("toast.subscribed"),
       );
 
       setSubscriber(saved);
       setIsEditing(false);
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("toast.failed")));
     } finally {
       setIsLoading(false);
     }
@@ -113,9 +116,9 @@ const UserSubscriberPage = () => {
       setSubscriber(null);
       setSelectedSkills([]);
       setIsEditing(false);
-      toast.success("Hủy đăng ký thành công");
+      toast.success(t("toast.unsubscribed"));
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("toast.failed")));
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +177,7 @@ const UserSubscriberPage = () => {
         <div className="flex min-h-[400px] items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="text-primary h-8 w-8 animate-spin" />
-            <p className="text-muted-foreground">Đang tải dữ liệu...</p>
+            <p className="text-muted-foreground">{t("common:states.loading")}</p>
           </div>
         </div>
       </div>
@@ -187,10 +190,10 @@ const UserSubscriberPage = () => {
       <div className="flex items-center gap-3">
         <div>
           <h1 className="text-3xl font-bold">
-            Đăng ký nhận thông báo việc làm
+            {t("page.title")}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Nhận thông báo về các công việc phù hợp với kỹ năng của bạn
+            {t("page.subtitle")}
           </p>
         </div>
       </div>
@@ -204,18 +207,18 @@ const UserSubscriberPage = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
-                <CardTitle className="text-xl">Trạng thái đăng ký</CardTitle>
+                <CardTitle className="text-xl">{t("current.title")}</CardTitle>
               </div>
             </div>
             <CardDescription>
-              Bạn đang nhận thông báo cho các kỹ năng sau
+              {t("current.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <h4 className="mb-2 flex items-center gap-2 font-medium">
                 <Wrench className="h-4 w-4" />
-                Kỹ năng đã đăng ký ({subscriber.skills?.length || 0})
+                {t("current.skills", { count: subscriber.skills?.length || 0 })}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {subscriber.skills?.map((skill: SkillRef) => (
@@ -237,16 +240,16 @@ const UserSubscriberPage = () => {
                 className="border border-orange-500 bg-white py-3 font-semibold text-orange-500 hover:border-orange-600 hover:bg-orange-50"
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Chỉnh sửa
+                {t("common:actions.edit")}
               </Button>
 
               <DeleteConfirmDialog
                 onConfirm={handleDelete}
-                description="Bạn chắc chắn muốn hủy đăng ký không?"
+                description={t("current.unsubscribeConfirm")}
               >
                 <Button variant="destructive">
                   <Trash className="mr-2 h-4 w-4" />
-                  Hủy đăng ký
+                  {t("current.unsubscribe")}
                 </Button>
               </DeleteConfirmDialog>
             </div>
@@ -262,17 +265,16 @@ const UserSubscriberPage = () => {
               <BellOff className="text-muted-foreground h-16 w-16" />
             </div>
             <CardTitle className="text-xl">
-              Chưa đăng ký nhận thông báo
+              {t("none.title")}
             </CardTitle>
             <CardDescription>
-              Đăng ký ngay để nhận thông báo về các công việc phù hợp với kỹ
-              năng của bạn
+              {t("none.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <Button onClick={() => setIsEditing(true)} size="lg">
               <Bell className="mr-2 h-4 w-4" />
-              Đăng ký ngay
+              {t("none.subscribe")}
             </Button>
           </CardContent>
         </Card>
@@ -284,20 +286,19 @@ const UserSubscriberPage = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              {subscriber ? "Chỉnh sửa đăng ký" : "Đăng ký nhận thông báo"}
+              {subscriber ? t("form.editTitle") : t("form.createTitle")}
             </CardTitle>
             <CardDescription>
               {subscriber
-                ? "Cập nhật kỹ năng để nhận thông báo phù hợp hơn"
-                : "Chọn kỹ năng để nhận thông báo về các công việc phù hợp"}
+                ? t("form.editDescription")
+                : t("form.createDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <Alert>
               <Bell className="h-4 w-4" />
               <AlertDescription>
-                Chọn các kỹ năng mà bạn quan tâm. Hệ thống sẽ gửi thông báo khi
-                có công việc yêu cầu những kỹ năng này.
+                {t("form.hint")}
               </AlertDescription>
             </Alert>
 
@@ -314,7 +315,7 @@ const UserSubscriberPage = () => {
               >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <Save className="mr-2 h-4 w-4" />
-                {subscriber ? "Cập nhật" : "Đăng ký"}
+                {subscriber ? t("common:actions.update") : t("form.subscribe")}
               </Button>
 
               <Button
@@ -322,14 +323,14 @@ const UserSubscriberPage = () => {
                 onClick={handleCancelEdit}
                 disabled={isLoading}
               >
-                Hủy
+                {t("common:actions.cancel")}
               </Button>
             </div>
 
             {selectedSkills.length === 0 && (
               <Alert>
                 <AlertDescription className="text-amber-600">
-                  Vui lòng chọn ít nhất một kỹ năng để tiếp tục.
+                  {t("form.skillRequired")}
                 </AlertDescription>
               </Alert>
             )}

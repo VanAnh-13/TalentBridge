@@ -8,3 +8,5 @@ export { CompanyForm } from "./presentation/components/CompanyForm";
 export { default as CompanySelection } from "./presentation/components/CompanySelection";
 export { default as TopCompaniesSection } from "./presentation/components/TopCompaniesSection";
 export type { Company, CompanyRef } from "./domain/company";
+
+export { messages as companyMessages } from "./presentation/i18n";

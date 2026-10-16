@@ -14,6 +14,7 @@ import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { formatISO } from "@/shared/presentation/format.ts";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { HasPermission } from "@/features/auth";
+import { Trans, useTranslation } from "react-i18next";
 
 interface CompanyTableProps {
   companies: Company[];
@@ -32,30 +33,31 @@ export function CompanyTable({
   onEdit,
   onDelete,
 }: CompanyTableProps) {
+  const { t } = useTranslation(["company", "common"]);
   return (
     <div className="overflow-hidden rounded-lg border border-blue-600">
       <Table>
         <TableHeader className="bg-blue-600 text-white">
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Logo
+              {t("common:fields.logo")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Tên công ty
+              {t("fields.name")}
             </TableHead>
             <TableHead className="w-[200px] text-center font-bold text-white">
-              Địa chỉ
+              {t("common:fields.address")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày tạo
+              {t("common:fields.createdAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Lần cập nhật gần
+              {t("common:fields.updatedAt")}
             </TableHead>
-            <TableHead className="font-bold text-white">Hành động</TableHead>
+            <TableHead className="font-bold text-white">{t("common:fields.actions")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -73,8 +75,8 @@ export function CompanyTable({
             <TableRow>
               <TableCell colSpan={7}>
                 <EmptyState
-                  title="Không tìm thấy công ty nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm công ty mới"
+                  title={t("notFound.title")}
+                  description={t("notFound.description")}
                   icon={
                     <Building2 className="text-muted-foreground h-12 w-12" />
                   }
@@ -102,7 +104,7 @@ export function CompanyTable({
                     {company.logoUrl ? (
                       <img
                         src={company.logoUrl}
-                        alt={`${company.name} logo`}
+                        alt={t("logoAlt", { name: company.name })}
                         className="h-20 w-20 rounded-lg border object-contain"
                       />
                     ) : (
@@ -143,15 +145,14 @@ export function CompanyTable({
                       <HasPermission perm={"DELETE /companies/{id}"}>
                         <DeleteConfirmDialog
                           onConfirm={() => onDelete(company.id)}
-                          title="Bạn có chắc muốn xóa công ty này?"
+                          title={t("deleteDialog.title")}
                           styledDescription={
                             <p>
-                              Hành động này sẽ
-                              <span className="text-red-500">
-                                {" "}
-                                xóa CÔNG TY, CÔNG VIỆC và HỒ SƠ ỨNG VIÊN
-                              </span>{" "}
-                              đã nộp cho công việc này.
+                              <Trans
+                                t={t}
+                                i18nKey="deleteDialog.description"
+                                components={{ danger: <span className="text-red-500" /> }}
+                              />
                             </p>
                           }
                         />

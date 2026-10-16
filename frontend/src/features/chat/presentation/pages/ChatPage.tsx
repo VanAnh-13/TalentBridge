@@ -1,5 +1,7 @@
 import { Check, CheckCheck, Send } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -7,18 +9,21 @@ import { chat as chatUseCases } from "@/app/container";
 import { useAccount } from "@/features/auth";
 import { errorMessage } from "@/shared/domain/errors";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
+import { currentLocale } from "@/shared/presentation/i18n/locale";
 import { Badge } from "@/shared/presentation/ui/badge";
 import { Button } from "@/shared/presentation/ui/button";
 import { Input } from "@/shared/presentation/ui/input";
 
+import { InvalidMessageError } from "../../application/chatUseCases";
 import { MAX_LENGTH, merge, sendable } from "../../domain/chat";
 import type { ChatMessage, Conversation } from "../../domain/chat";
 
 const time = (iso: string) =>
-  new Date(iso).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+  new Date(iso).toLocaleString(currentLocale(), { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
 
 /** Conversations on the left, the open thread on the right; new messages appear live. */
 const ChatPage = () => {
+  const { t } = useTranslation(["chat", "common"]);
   const me = Number(useAccount().id);
   const [params, setParams] = useSearchParams();
 
@@ -39,9 +44,9 @@ const ChatPage = () => {
     try {
       setConversations((await chatUseCases.conversations()).content);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể tải danh sách trò chuyện"));
+      toast.error(errorMessage(err, t("errors.conversations")));
     }
-  }, []);
+  }, [t]);
 
   // open what the URL asks for: ?resume=<application id> (creates the thread) or ?conversation=<id>
   useEffect(() => {
@@ -58,7 +63,7 @@ const ChatPage = () => {
           setSelected(Number(conversation));
         }
       } catch (err) {
-        toast.error(errorMessage(err, "Không thể mở cuộc trò chuyện"));
+        toast.error(errorMessage(err, t("errors.open")));
       }
       if (resume || conversation) setParams({}, { replace: true });
     })();
@@ -79,7 +84,8 @@ const ChatPage = () => {
         await chatUseCases.markRead(selected);
         setConversations((list) => list.map((c) => (c.id === selected ? { ...c, unread: 0 } : c)));
       } catch (err) {
-        toast.error(errorMessage(err, "Không thể tải tin nhắn"));
+        // i18n.t rather than t: the thread reloads when the selection changes, not when the language does
+        toast.error(errorMessage(err, i18n.t("errors.messages", { ns: "chat" })));
       }
     })();
   }, [selected]);
@@ -128,7 +134,7 @@ const ChatPage = () => {
       setHasOlder(history.hasOlder);
       setOlderPage(next);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể tải tin nhắn cũ"));
+      toast.error(errorMessage(err, t("errors.older")));
     }
   };
 
@@ -137,13 +143,13 @@ const ChatPage = () => {
     setSending(true);
     try {
       const sent = await chatUseCases.send(selected, text);
-      setMessages((list) => merge(list, [{ ...sent, senderName: "Bạn" }]));
+      setMessages((list) => merge(list, [{ ...sent, senderName: t("you") }]));
       setText("");
       setConversations((list) =>
         list.map((c) => (c.id === selected ? { ...c, lastMessage: sent, lastMessageAt: sent.sentAt } : c)),
       );
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể gửi tin nhắn"));
+      toast.error(err instanceof InvalidMessageError ? t("errors.invalid") : errorMessage(err, t("errors.send")));
     } finally {
       setSending(false);
     }
@@ -154,9 +160,9 @@ const ChatPage = () => {
   return (
     <div className="mx-auto flex h-[75vh] max-w-6xl overflow-hidden rounded-lg border bg-white shadow">
       <aside className="w-72 shrink-0 overflow-y-auto border-r">
-        <h2 className="border-b p-3 font-semibold">Tin nhắn</h2>
+        <h2 className="border-b p-3 font-semibold">{t("title")}</h2>
         {conversations.length === 0 ? (
-          <p className="p-4 text-sm text-gray-500">Chưa có cuộc trò chuyện nào. Mở từ hồ sơ ứng tuyển.</p>
+          <p className="p-4 text-sm text-gray-500">{t("noConversations")}</p>
         ) : (
           conversations.map((c) => (
             <button
@@ -179,7 +185,7 @@ const ChatPage = () => {
       <section className="flex min-w-0 flex-1 flex-col">
         {!current ? (
           <div className="flex flex-1 items-center justify-center">
-            <EmptyState title="Chọn một cuộc trò chuyện" description="Tin nhắn sẽ hiện ở đây." />
+            <EmptyState title={t("selectTitle")} description={t("selectText")} />
           </div>
         ) : (
           <>
@@ -191,7 +197,7 @@ const ChatPage = () => {
               {hasOlder && (
                 <div className="text-center">
                   <Button variant="ghost" size="sm" onClick={loadOlder}>
-                    Xem tin nhắn cũ hơn
+                    {t("loadOlder")}
                   </Button>
                 </div>
               )}
@@ -205,7 +211,7 @@ const ChatPage = () => {
                       <p className="whitespace-pre-wrap break-words">{m.text}</p>
                       <p className={`mt-1 flex items-center justify-end gap-1 text-[10px] ${mine ? "text-blue-100" : "text-gray-400"}`}>
                         {time(m.sentAt)}
-                        {mine && (seen ? <CheckCheck className="h-3 w-3" aria-label="Đã xem" /> : <Check className="h-3 w-3" aria-label="Đã gửi" />)}
+                        {mine && (seen ? <CheckCheck className="h-3 w-3" aria-label={t("seen")} /> : <Check className="h-3 w-3" aria-label={t("sent")} />)}
                       </p>
                     </div>
                   </div>
@@ -223,12 +229,12 @@ const ChatPage = () => {
               <Input
                 value={text}
                 maxLength={MAX_LENGTH}
-                placeholder="Nhập tin nhắn..."
+                placeholder={t("placeholder")}
                 onChange={(e) => setText(e.target.value)}
-                aria-label="Tin nhắn"
+                aria-label={t("messageLabel")}
               />
               <Button type="submit" disabled={sending || !sendable(text)}>
-                <Send className="mr-1 h-4 w-4" /> Gửi
+                <Send className="mr-1 h-4 w-4" /> {t("common:actions.send")}
               </Button>
             </form>
           </>

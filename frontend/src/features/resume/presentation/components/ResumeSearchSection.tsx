@@ -2,6 +2,7 @@ import { RotateCcw } from "lucide-react";
 import { Label } from "@/shared/presentation/ui/label.tsx";
 import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Button } from "@/shared/presentation/ui/button.tsx";
+import { useTranslation } from "react-i18next";
 
 interface ResumeSearchSectionProps {
   onReset: () => void;
@@ -20,25 +21,26 @@ export const ResumeSearchSection = ({
   setSearchCompanyName,
   isRecruiter = false,
 }: ResumeSearchSectionProps) => {
+  const { t } = useTranslation(["resume", "common"]);
   return (
     <div className="bg-card rounded-lg border p-4">
       <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-3">
         {!isRecruiter && setSearchCompanyName && (
           <div className="space-y-2">
-            <Label htmlFor="search-company-name">Tên công ty:</Label>
+            <Label htmlFor="search-company-name">{t("search.companyName")}:</Label>
             <Input
               id="search-company-name"
-              placeholder="Nhập tên công ty..."
+              placeholder={t("search.companyPlaceholder")}
               value={searchCompanyName}
               onChange={(e) => setSearchCompanyName(e.target.value)}
             />
           </div>
         )}
         <div className="space-y-2">
-          <Label htmlFor="search-job-name">Tên công việc:</Label>
+          <Label htmlFor="search-job-name">{t("search.jobName")}:</Label>
           <Input
             id="search-job-name"
-            placeholder="Nhập tên công việc..."
+            placeholder={t("search.jobPlaceholder")}
             value={searchJobName}
             onChange={(e) => setSearchJobName(e.target.value)}
           />
@@ -46,7 +48,7 @@ export const ResumeSearchSection = ({
         <div className="flex gap-2">
           <Button variant="outline" onClick={onReset}>
             <RotateCcw className="mr-2 h-4 w-4" />
-            Làm lại
+            {t("common:actions.reset")}
           </Button>
         </div>
       </div>

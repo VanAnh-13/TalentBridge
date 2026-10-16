@@ -19,7 +19,8 @@ import {
   TooltipTrigger,
 } from "@radix-ui/react-tooltip";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
-import { getResumeStatusColor } from "@/shared/presentation/tagColors.ts";
+import { getResumeStatusColor, statusOptions } from "@/shared/presentation/tagColors.ts";
+import { useTranslation } from "react-i18next";
 
 interface ResumeTableProps {
   resumes: Resume[];
@@ -40,6 +41,11 @@ export function ResumeTable({
   onChat,
   theme = "blue",
 }: ResumeTableProps) {
+  const { t } = useTranslation(["resume", "common"]);
+  const statusLabel = (status: string) => {
+    const known = statusOptions.find((option) => option.value === status);
+    return known ? t(`common:resumeStatus.${known.value}`) : status;
+  };
   return (
     <div className={`overflow-hidden rounded-lg border border-${theme}-600`}>
       <Table>
@@ -48,31 +54,31 @@ export function ResumeTable({
         >
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Logo
+              {t("common:fields.logo")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Công ty
+              {t("common:fields.company")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Công việc
+              {t("common:fields.job")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Người nộp
+              {t("table.applicant")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày nộp
+              {t("table.submittedAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Lần cập nhật gần nhất
+              {t("common:fields.updatedAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Trạng thái
+              {t("common:fields.status")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -89,8 +95,8 @@ export function ResumeTable({
             <TableRow>
               <TableCell colSpan={9}>
                 <EmptyState
-                  title="Không tìm thấy hồ sơ xin việc nào"
-                  description="Chưa có ai nộp hồ sơ cả"
+                  title={t("table.emptyTitle")}
+                  description={t("table.emptyText")}
                   icon={
                     <Wrench className="text-muted-foreground mb-4 h-12 w-12" />
                   }
@@ -127,7 +133,7 @@ export function ResumeTable({
                 </TableCell>
                 <TableCell className="text-center">
                   <Badge className={getResumeStatusColor(resume.status)}>
-                    {resume.status}
+                    {statusLabel(resume.status)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -145,7 +151,7 @@ export function ResumeTable({
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Xem hồ sơ ứng viên</p>
+                          <p>{t("table.viewCv")}</p>
                         </TooltipContent>
                       </Tooltip>
                       {onChat && (
@@ -154,7 +160,7 @@ export function ResumeTable({
                             <Button
                               size="icon"
                               variant="ghost"
-                              aria-label="Nhắn tin"
+                              aria-label={t("table.message")}
                               className="text-blue-600 hover:text-blue-700"
                               onClick={() => onChat(resume)}
                             >
@@ -162,7 +168,7 @@ export function ResumeTable({
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Nhắn tin với ứng viên</p>
+                            <p>{t("table.messageCandidate")}</p>
                           </TooltipContent>
                         </Tooltip>
                       )}
@@ -172,7 +178,7 @@ export function ResumeTable({
                             <Button
                               size="icon"
                               variant="ghost"
-                              aria-label="Mời phỏng vấn"
+                              aria-label={t("table.invite")}
                               className="text-purple-600 hover:text-purple-700"
                               onClick={() => onScheduleInterview(resume)}
                             >
@@ -180,7 +186,7 @@ export function ResumeTable({
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Mời phỏng vấn</p>
+                            <p>{t("table.invite")}</p>
                           </TooltipContent>
                         </Tooltip>
                       )}

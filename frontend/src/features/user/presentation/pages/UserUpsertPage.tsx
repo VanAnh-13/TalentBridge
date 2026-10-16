@@ -30,8 +30,11 @@ import type { CompanyRef } from "@/features/company";
 import { CompanySelection } from "@/features/company";
 import { RoleSelection } from "@/features/access";
 import type { RoleRef } from "@/features/access";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 export default function UserUpsertPage() {
+  const { t } = useTranslation(["user", "common"]);
   const { permissions } = useAccount();
 
   // ============================
@@ -85,7 +88,8 @@ export default function UserUpsertPage() {
           setSelectedCompany(user.company ?? undefined);
           setSelectedRole(user.role ?? undefined);
         } catch (err) {
-          toast.error(errorMessage(err, "Không tìm thấy người dùng này"));
+          // i18n.t rather than t: the effect keeps its dependencies, so switching language does not fetch again
+          toast.error(errorMessage(err, i18n.t("upsert.notFound", { ns: "user" })));
           setSearchParams({});
         } finally {
           setIsLoading(false);
@@ -169,15 +173,13 @@ export default function UserUpsertPage() {
         });
       }
 
-      toast.success(
-        isEdit ? "Cập nhật người dùng thành công" : "Tạo người dùng thành công",
-      );
+      toast.success(isEdit ? t("upsert.updated") : t("upsert.created"));
       handleBack();
     } catch (err) {
       toast.error(
         errorMessage(
           err,
-          isEdit ? "Cập nhật người dùng thất bại" : "Tạo người dùng thất bại",
+          isEdit ? t("upsert.updateFailed") : t("upsert.createFailed"),
         ),
       );
     } finally {
@@ -216,13 +218,13 @@ export default function UserUpsertPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink onClick={handleBack} className="cursor-pointer">
-              Quản lý người dùng
+              {t("upsert.breadcrumb")}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              {isEdit ? "Cập nhật" : "Tạo mới"} người dùng
+              {isEdit ? t("upsert.breadcrumbEdit") : t("upsert.breadcrumbCreate")}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -235,12 +237,10 @@ export default function UserUpsertPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold">
-            {isEdit ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
+            {isEdit ? t("upsert.titleEdit") : t("upsert.titleCreate")}
           </h1>
           <p className="text-muted-foreground">
-            {isEdit
-              ? "Cập nhật thông tin người dùng"
-              : "Tạo tài khoản người dùng mới trong hệ thống"}
+            {isEdit ? t("upsert.subtitleEdit") : t("upsert.subtitleCreate")}
           </p>
         </div>
       </div>
@@ -248,7 +248,7 @@ export default function UserUpsertPage() {
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin cá nhân</CardTitle>
+          <CardTitle>{t("upsert.personalInfo")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="space-y-6">
@@ -256,11 +256,11 @@ export default function UserUpsertPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">
-                  Họ và tên <span className="text-red-500">*</span>
+                  {t("fields.fullName")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="name"
-                  placeholder="Nhập họ và tên..."
+                  placeholder={t("upsert.namePlaceholder")}
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className={errors.name ? "border-red-500" : ""}
@@ -275,7 +275,7 @@ export default function UserUpsertPage() {
               {!isEdit && (
                 <div className="space-y-2">
                   <Label htmlFor="email">
-                    Email <span className="text-red-500">*</span>
+                    {t("common:fields.email")} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="email"
@@ -299,13 +299,13 @@ export default function UserUpsertPage() {
               {!isEdit && (
                 <div className="space-y-2">
                   <Label htmlFor="password">
-                    Mật khẩu <span className="text-red-500">*</span>
+                    {t("common:fields.password")} <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Nhập mật khẩu..."
+                      placeholder={t("upsert.passwordPlaceholder")}
                       value={formData.password}
                       onChange={(e) =>
                         handleInputChange("password", e.target.value)
@@ -337,7 +337,7 @@ export default function UserUpsertPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="dob">
-                  Ngày sinh <span className="text-red-500">*</span>
+                  {t("fields.dob")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="dob"
@@ -358,11 +358,11 @@ export default function UserUpsertPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="address">
-                  Địa chỉ <span className="text-red-500">*</span>
+                  {t("common:fields.address")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="address"
-                  placeholder="Số nhà, đường, phường, quận, thành phố..."
+                  placeholder={t("upsert.addressPlaceholder")}
                   value={formData.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
                   className={errors.address ? "border-red-500" : ""}
@@ -375,7 +375,7 @@ export default function UserUpsertPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="gender">
-                  Giới tính <span className="text-red-500">*</span>
+                  {t("fields.gender")} <span className="text-red-500">*</span>
                 </Label>
                 <Select
                   value={formData.gender}
@@ -384,12 +384,12 @@ export default function UserUpsertPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn giới tính" />
+                    <SelectValue placeholder={t("fields.genderPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="MALE">Nam</SelectItem>
-                    <SelectItem value="FEMALE">Nữ</SelectItem>
-                    <SelectItem value="OTHER">Khác</SelectItem>
+                    <SelectItem value="MALE">{t("gender.MALE")}</SelectItem>
+                    <SelectItem value="FEMALE">{t("gender.FEMALE")}</SelectItem>
+                    <SelectItem value="OTHER">{t("gender.OTHER")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -418,7 +418,7 @@ export default function UserUpsertPage() {
       {/* Actions */}
       <div className="flex justify-end gap-4">
         <Button type="button" variant="outline" onClick={handleBack}>
-          Hủy
+          {t("common:actions.cancel")}
         </Button>
         <Button
           type="button"
@@ -426,7 +426,11 @@ export default function UserUpsertPage() {
           disabled={isLoading}
           className="bg-blue-500 text-white hover:bg-blue-600"
         >
-          {isLoading ? "Đang xử lý..." : isEdit ? "Cập nhật" : "Tạo người dùng"}
+          {isLoading
+            ? t("upsert.processing")
+            : isEdit
+              ? t("common:actions.update")
+              : t("upsert.submitCreate")}
         </Button>
       </div>
     </div>

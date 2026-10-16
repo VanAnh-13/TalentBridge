@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Button } from "@/shared/presentation/ui/button";
 import { FileEdit, Upload, X, FileText } from "lucide-react";
 import {
@@ -20,6 +21,7 @@ interface UpdateResumeDialogProps {
 }
 
 export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
+  const { t } = useTranslation(["resume", "common"]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +33,7 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
 
   const openInput = () => {
     if (pdfInputRef.current) pdfInputRef.current.click();
-    else toast.error("Hệ thống đã gặp vấn đề");
+    else toast.error(t("upload.systemError"));
   };
 
   // =============================
@@ -52,7 +54,7 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
     const file = event.target.files?.[0];
     if (file) {
       if (!checkFileSizeAndFileType(file, 5 * 1024 * 1024, "application/pdf")) {
-        toast.error("File không hợp lệ");
+        toast.error(t("upload.invalidFile"));
         return;
       }
 
@@ -65,7 +67,7 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
   // =============================
   const handleSubmit = async () => {
     if (!selectedFile) {
-      alert("Vui lòng chọn file CV");
+      alert(t("upload.chooseFile"));
       return;
     }
     setIsLoading(true);
@@ -88,21 +90,21 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
         type="button"
       >
         <FileEdit className="mr-2 h-5 w-5" />
-        Cập nhật hồ sơ
+        {t("update.open")}
       </Button>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="flex !h-11/12 !max-h-none !w-full !max-w-none flex-col lg:!w-2/3">
           <DialogHeader>
-            <DialogTitle className="text-xl">Cập nhật hồ sơ PDF</DialogTitle>
-            <DialogDescription>Tải lên hồ sơ PDF mới của bạn</DialogDescription>
+            <DialogTitle className="text-xl">{t("update.title")}</DialogTitle>
+            <DialogDescription>{t("update.description")}</DialogDescription>
           </DialogHeader>
 
           <div className="flex min-h-0 flex-1 flex-col">
             {!selectedFile ? (
               <div className="flex flex-1 flex-col justify-center">
                 <Label htmlFor="cv-upload" className="mb-4 text-sm font-medium">
-                  Hồ sơ xin việc mới <span className="text-red-500">*</span>
+                  {t("update.cvLabel")} <span className="text-red-500">*</span>
                 </Label>
                 <div
                   onClick={openInput}
@@ -110,8 +112,11 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
                 >
                   <Upload className="mx-auto mb-4 h-12 w-12 text-gray-400" />
                   <div className="mb-4 text-base text-gray-600">
-                    Kéo thả file PDF vào đây hoặc{" "}
-                    <span className="text-orange-500">nhấp để chọn file</span>
+                    <Trans
+                      t={t}
+                      i18nKey="upload.dropHint"
+                      components={{ highlight: <span className="text-orange-500" /> }}
+                    />
                   </div>
                   <Input
                     id="cv-upload"
@@ -131,10 +136,10 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
                     }}
                     className="mx-auto"
                   >
-                    Tải lên từ thiết bị
+                    {t("upload.fromDevice")}
                   </Button>
                   <div className="mt-4 text-xs text-gray-500">
-                    Dung lượng tối đa 5MB
+                    {t("upload.maxSizeLong")}
                   </div>
                 </div>
               </div>
@@ -178,7 +183,7 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
                 className="flex-1 py-3"
                 disabled={isLoading}
               >
-                Hủy
+                {t("common:actions.cancel")}
               </Button>
               <Button
                 type="button"
@@ -186,7 +191,7 @@ export function UpdateResumeDialog({ onSubmitFile }: UpdateResumeDialogProps) {
                 disabled={!selectedFile || isLoading}
                 className="flex-1 bg-orange-600 py-3 hover:bg-orange-700"
               >
-                {isLoading ? "Đang cập nhật..." : "Cập nhật"}
+                {isLoading ? t("update.updating") : t("common:actions.update")}
               </Button>
             </div>
           </div>

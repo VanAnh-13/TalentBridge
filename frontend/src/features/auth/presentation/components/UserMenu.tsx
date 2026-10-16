@@ -26,12 +26,14 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import HasPermission from "./HasPermission.tsx";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UserMenuProps {
   blackTheme?: boolean;
 }
 
 const UserMenu = ({ blackTheme }: UserMenuProps) => {
+  const { t } = useTranslation("auth");
   const user = useAccount();
   const dispatch = useAuthDispatch();
 
@@ -111,7 +113,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
           </div>
         </div>
 
-        <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+        <DropdownMenuLabel>{t("userMenu.myAccount")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>
@@ -123,7 +125,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
               <User className="h-4 w-4 text-gray-600" />
             </div>
             <div className="min-w-0">
-              <p className="font-medium">Thông tin người dùng</p>
+              <p className="font-medium">{t("userMenu.profile")}</p>
             </div>
           </Link>
         </DropdownMenuItem>
@@ -138,7 +140,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
                 <Mail className="h-4 w-4 text-gray-600" />
               </div>
               <div className="min-w-0">
-                <p className="font-medium">Đăng ký thông báo</p>
+                <p className="font-medium">{t("userMenu.subscriber")}</p>
               </div>
             </Link>
           </DropdownMenuItem>
@@ -154,7 +156,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
                 <Briefcase className="h-4 w-4 text-gray-600" />
               </div>
               <div className="min-w-0">
-                <p className="font-medium">Hồ sơ tuyển dụng</p>
+                <p className="font-medium">{t("userMenu.resumes")}</p>
               </div>
             </Link>
           </DropdownMenuItem>
@@ -169,7 +171,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
               <LockKeyhole className="h-4 w-4 text-gray-600" />
             </div>
             <div className="min-w-0">
-              <p className="font-medium">Bảo mật</p>
+              <p className="font-medium">{t("userMenu.security")}</p>
             </div>
           </Link>
         </DropdownMenuItem>
@@ -184,7 +186,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
                 <Briefcase className="h-4 w-4 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="font-medium">Tuyển dụng</p>
+                <p className="font-medium">{t("userMenu.recruiter")}</p>
               </div>
             </Link>
           </DropdownMenuItem>
@@ -200,7 +202,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
                 <Shield className="h-4 w-4 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="font-medium">Quản trị</p>
+                <p className="font-medium">{t("userMenu.admin")}</p>
               </div>
             </Link>
           </DropdownMenuItem>
@@ -216,7 +218,7 @@ const UserMenu = ({ blackTheme }: UserMenuProps) => {
             <LogOut className="h-4 w-4 text-red-600" />
           </div>
           <div className="min-w-0">
-            <p className="font-medium">Đăng xuất</p>
+            <p className="font-medium">{t("userMenu.logout")}</p>
           </div>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -15,6 +15,7 @@ import type { AccountDetails } from "@/features/auth/domain/account";
 import type { ProfileChange } from "../../domain/user";
 import { Save, User, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ProfileEditFormProps {
   userDetails: AccountDetails;
@@ -29,6 +30,7 @@ const ProfileEditForm = ({
   onCancel,
   isLoading = false,
 }: ProfileEditFormProps) => {
+  const { t } = useTranslation(["user", "common"]);
   const [formData, setFormData] = useState<ProfileChange>({
     name: userDetails.name,
     dob: userDetails.dob ? userDetails.dob.split("T")[0] : "",
@@ -58,7 +60,7 @@ const ProfileEditForm = ({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-xl font-bold text-orange-800">
             <User className="h-5 w-5" />
-            Cập nhật thông tin cá nhân
+            {t("profileForm.title")}
           </CardTitle>
           <Button
             variant="ghost"
@@ -80,14 +82,14 @@ const ProfileEditForm = ({
                 htmlFor="name"
                 className="text-sm font-medium text-gray-700"
               >
-                Họ và tên *
+                {t("fields.fullName")} *
               </Label>
               <Input
                 id="name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                placeholder="Nhập họ và tên"
+                placeholder={t("profileForm.namePlaceholder")}
               />
             </div>
 
@@ -97,7 +99,7 @@ const ProfileEditForm = ({
                 htmlFor="dob"
                 className="text-sm font-medium text-gray-700"
               >
-                Ngày sinh *
+                {t("fields.dob")} *
               </Label>
               <Input
                 id="dob"
@@ -115,7 +117,7 @@ const ProfileEditForm = ({
                 htmlFor="gender"
                 className="text-sm font-medium text-gray-700"
               >
-                Giới tính *
+                {t("fields.gender")} *
               </Label>
               <Select
                 value={formData.gender}
@@ -124,12 +126,12 @@ const ProfileEditForm = ({
                 }
               >
                 <SelectTrigger className="border-gray-300 focus:border-orange-500">
-                  <SelectValue placeholder="Chọn giới tính" />
+                  <SelectValue placeholder={t("fields.genderPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="MALE">Nam</SelectItem>
-                  <SelectItem value="FEMALE">Nữ</SelectItem>
-                  <SelectItem value="OTHER">Khác</SelectItem>
+                  <SelectItem value="MALE">{t("gender.MALE")}</SelectItem>
+                  <SelectItem value="FEMALE">{t("gender.FEMALE")}</SelectItem>
+                  <SelectItem value="OTHER">{t("gender.OTHER")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -140,14 +142,14 @@ const ProfileEditForm = ({
                 htmlFor="address"
                 className="text-sm font-medium text-gray-700"
               >
-                Địa chỉ *
+                {t("common:fields.address")} *
               </Label>
               <Input
                 id="address"
                 type="text"
                 value={formData.address}
                 onChange={(e) => handleInputChange("address", e.target.value)}
-                placeholder="Nhập địa chỉ đầy đủ"
+                placeholder={t("profileForm.addressPlaceholder")}
               />
             </div>
           </div>
@@ -162,12 +164,12 @@ const ProfileEditForm = ({
               {isLoading ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Đang cập nhật...
+                  {t("form.updating")}
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Cập nhật thông tin
+                  {t("profileForm.submit")}
                 </>
               )}
             </Button>
@@ -179,7 +181,7 @@ const ProfileEditForm = ({
               disabled={isLoading}
               className="flex-1 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50"
             >
-              Hủy bỏ
+              {t("common:actions.cancel")}
             </Button>
           </div>
         </form>

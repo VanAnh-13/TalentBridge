@@ -10,6 +10,7 @@ import { Input } from "@/shared/presentation/ui/input.tsx";
 import { Label } from "@/shared/presentation/ui/label.tsx";
 import type { NewSkill, Skill, SkillChange } from "../../domain/skill";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useTranslation } from "react-i18next";
 
 interface SkillFormProps {
   open: boolean;
@@ -28,6 +29,7 @@ export function SkillForm({
   onCloseForm,
   theme = "blue",
 }: SkillFormProps) {
+  const { t } = useTranslation(["skill", "common"]);
   const [formData, setFormData] = useState<
     NewSkill | SkillChange
   >({ name: "" });
@@ -51,16 +53,16 @@ export function SkillForm({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center">
-            Biểu mẫu thông tin kỹ năng
+            {t("form.title")}
           </DialogTitle>
           <DialogDescription className="text-center">
-            {initialData ? "Chỉnh sửa kỹ năng" : "Thêm kỹ năng mới"}
+            {initialData ? t("form.editMode") : t("form.createMode")}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">
-              Tên kỹ năng <span className="text-red-500">*</span>
+              {t("fields.name")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -77,13 +79,13 @@ export function SkillForm({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Hủy
+              {t("common:actions.cancel")}
             </Button>
             <Button
               type="submit"
               className={`${theme === "blue" ? "bg-blue-600 hover:bg-blue-700" : "bg-purple-600 hover:bg-purple-700"}`}
             >
-              {initialData ? "Lưu thay đổi" : "Thêm"}
+              {initialData ? t("form.saveChanges") : t("common:actions.add")}
             </Button>
           </div>
         </form>

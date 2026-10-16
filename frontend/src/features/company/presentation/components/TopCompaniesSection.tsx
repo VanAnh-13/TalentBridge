@@ -7,8 +7,11 @@ import { Building2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const TopCompaniesSection = () => {
+  const { t } = useTranslation("company");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,7 +21,8 @@ const TopCompaniesSection = () => {
       const res = await companyUseCases.featured();
       setCompanies(res.content);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+      // i18n.t rather than t: fetchCompanies stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadList", { ns: "company" })));
     } finally {
       setIsLoading(false);
     }
@@ -32,10 +36,10 @@ const TopCompaniesSection = () => {
     <section className="bg-white px-4 py-16">
       <div className="mx-auto mb-10 max-w-7xl text-center">
         <h2 className="text-3xl font-bold text-gray-900">
-          Top công ty đang tuyển dụng
+          {t("top.title")}
         </h2>
         <p className="mt-2 text-gray-600">
-          Khám phá những công ty hàng đầu với môi trường làm việc lý tưởng
+          {t("top.subtitle")}
         </p>
       </div>
 
@@ -49,8 +53,8 @@ const TopCompaniesSection = () => {
         {!isLoading && companies.length === 0 && (
           <div className="col-span-5 flex items-center justify-center">
             <EmptyState
-              title="Không tìm thấy công ty nào"
-              description="Có thể đã có lỗi xảy ra"
+              title={t("notFound.title")}
+              description={t("top.emptyDescription")}
               icon={<Building2 className="text-muted-foreground h-12 w-12" />}
             />
           </div>
@@ -76,7 +80,7 @@ const TopCompaniesSection = () => {
                 to={`/companies/${company.id}`}
                 className="inline-block text-sm font-medium text-orange-600 hover:underline"
               >
-                Xem việc làm
+                {t("top.viewJobs")}
               </Link>
             </div>
           ))}

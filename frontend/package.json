@@ -1,7 +1,7 @@
 {
   "name": "talentbridge-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -33,11 +33,13 @@
     "clsx": "^2.1.1",
     "dompurify": "^3.2.6",
     "html-to-text": "^9.0.5",
+    "i18next": "26.4.2",
     "lucide-react": "^0.514.0",
     "next-themes": "^0.4.6",
     "quill-delta": "github:slab/delta",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-i18next": "17.0.15",
     "react-quill-new": "^3.4.6",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",

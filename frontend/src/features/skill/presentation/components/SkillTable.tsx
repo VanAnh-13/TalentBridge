@@ -14,6 +14,7 @@ import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 interface SkillTableProps {
   skills: Skill[];
@@ -30,6 +31,7 @@ export function SkillTable({
   onDelete,
   theme = "blue",
 }: SkillTableProps) {
+  const { t } = useTranslation(["skill", "common"]);
   return (
     <div
       className={`overflow-hidden rounded-lg border ${theme === "blue" ? "border-blue-600" : "border-purple-600"}`}
@@ -40,19 +42,19 @@ export function SkillTable({
         >
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Tên kỹ năng
+              {t("fields.name")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày tạo
+              {t("common:fields.createdAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Cập nhật
+              {t("fields.updatedAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -69,8 +71,8 @@ export function SkillTable({
             <TableRow>
               <TableCell colSpan={5}>
                 <EmptyState
-                  title="Không tìm thấy kỹ năng nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm kỹ năng mới"
+                  title={t("notFound.title")}
+                  description={t("notFound.description")}
                   icon={
                     <Wrench className="text-muted-foreground mb-4 h-12 w-12" />
                   }

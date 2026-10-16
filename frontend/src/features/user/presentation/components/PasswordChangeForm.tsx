@@ -8,6 +8,7 @@ import type { PasswordChange } from "../../domain/user";
 import { Eye, EyeOff, Lock, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface PasswordChangeFormProps {
   onSubmit: (data: PasswordChange) => void;
@@ -24,6 +25,7 @@ const PasswordChangeForm = ({
   onCancel,
   isLoading = false,
 }: PasswordChangeFormProps) => {
+  const { t } = useTranslation(["user", "common"]);
   const [formData, setFormData] = useState<FormData>({
     oldPassword: "",
     newPassword: "",
@@ -40,7 +42,7 @@ const PasswordChangeForm = ({
     e.preventDefault();
 
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("Mật khẩu mới không trùng");
+      toast.error(t("passwordForm.mismatch"));
       return;
     }
 
@@ -65,7 +67,7 @@ const PasswordChangeForm = ({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-xl font-bold text-orange-800">
             <Lock className="h-5 w-5" />
-            Đổi mật khẩu
+            {t("passwordForm.title")}
           </CardTitle>
           <Button
             variant="ghost"
@@ -87,7 +89,7 @@ const PasswordChangeForm = ({
                 htmlFor="oldPassword"
                 className="text-sm font-medium text-gray-700"
               >
-                Mật khẩu hiện tại *
+                {t("passwordForm.current")} *
               </Label>
               <div className="relative">
                 <Input
@@ -97,7 +99,7 @@ const PasswordChangeForm = ({
                   onChange={(e) =>
                     handleInputChange("oldPassword", e.target.value)
                   }
-                  placeholder="Nhập mật khẩu hiện tại"
+                  placeholder={t("passwordForm.currentPlaceholder")}
                 />
                 <Button
                   type="button"
@@ -121,7 +123,7 @@ const PasswordChangeForm = ({
                 htmlFor="newPassword"
                 className="text-sm font-medium text-gray-700"
               >
-                Mật khẩu mới *
+                {t("passwordForm.new")} *
               </Label>
               <div className="relative">
                 <Input
@@ -131,7 +133,7 @@ const PasswordChangeForm = ({
                   onChange={(e) =>
                     handleInputChange("newPassword", e.target.value)
                   }
-                  placeholder="Nhập mật khẩu mới"
+                  placeholder={t("passwordForm.newPlaceholder")}
                 />
                 <Button
                   type="button"
@@ -155,7 +157,7 @@ const PasswordChangeForm = ({
                 htmlFor="confirmPassword"
                 className="text-sm font-medium text-gray-700"
               >
-                Xác nhận mật khẩu mới *
+                {t("passwordForm.confirm")} *
               </Label>
               <div className="relative">
                 <Input
@@ -165,7 +167,7 @@ const PasswordChangeForm = ({
                   onChange={(e) =>
                     handleInputChange("confirmPassword", e.target.value)
                   }
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder={t("passwordForm.confirmPlaceholder")}
                 />
                 <Button
                   type="button"
@@ -187,14 +189,14 @@ const PasswordChangeForm = ({
           {/* Password Requirements */}
           <div className="mx-auto max-w-md rounded-lg border border-orange-200 bg-orange-50 p-4">
             <h4 className="mb-2 text-sm font-medium text-orange-800">
-              Yêu cầu mật khẩu:
+              {t("passwordForm.rulesTitle")}
             </h4>
             <ul className="space-y-1 text-xs text-orange-700">
-              <li>• Ít nhất 6 ký tự</li>
-              <li>• Chứa ít nhất 1 chữ hoa (A-Z)</li>
-              <li>• Chứa ít nhất 1 chữ thường (a-z)</li>
-              <li>• Chứa ít nhất 1 số (0-9)</li>
-              <li>• Khác với mật khẩu hiện tại</li>
+              <li>• {t("passwordForm.rules.minLength")}</li>
+              <li>• {t("passwordForm.rules.uppercase")}</li>
+              <li>• {t("passwordForm.rules.lowercase")}</li>
+              <li>• {t("passwordForm.rules.digit")}</li>
+              <li>• {t("passwordForm.rules.different")}</li>
             </ul>
           </div>
 
@@ -208,12 +210,12 @@ const PasswordChangeForm = ({
               {isLoading ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Đang cập nhật...
+                  {t("form.updating")}
                 </>
               ) : (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Đổi mật khẩu
+                  {t("passwordForm.title")}
                 </>
               )}
             </Button>
@@ -225,7 +227,7 @@ const PasswordChangeForm = ({
               disabled={isLoading}
               className="flex-1 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50"
             >
-              Hủy bỏ
+              {t("common:actions.cancel")}
             </Button>
           </div>
         </form>

@@ -15,6 +15,7 @@ import { formatISO } from "@/shared/presentation/format.ts";
 
 import type { User } from "../../domain/user";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
 
 interface UserTableProps {
   users: User[];
@@ -29,28 +30,29 @@ export function UserTable({
   onEdit,
   onDelete,
 }: UserTableProps) {
+  const { t } = useTranslation(["user", "common"]);
   return (
     <div className="overflow-hidden rounded-lg border border-blue-600">
       <Table>
         <TableHeader className="bg-blue-600 text-white">
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Tên người dùng
+              {t("fields.userName")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Email
+              {t("common:fields.email")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày tạo
+              {t("common:fields.createdAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Lần cập nhật gần nhất
+              {t("common:fields.updatedAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -67,8 +69,8 @@ export function UserTable({
             <TableRow>
               <TableCell colSpan={6}>
                 <EmptyState
-                  title="Không tìm thấy người dùng nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm người dùng mới"
+                  title={t("list.emptyTitle")}
+                  description={t("list.emptyDescription")}
                   icon={
                     <KeyRound className="text-muted-foreground mb-4 h-12 w-12" />
                   }

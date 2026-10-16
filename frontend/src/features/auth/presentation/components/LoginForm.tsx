@@ -1,16 +1,19 @@
 import type React from "react";
+import type { ParseKeys } from "i18next";
 
 import { errorMessage } from "@/shared/domain/errors";
 import type { Credentials } from "../../domain/account";
 import { login } from "../state/authThunks";
 import { useAuthDispatch } from "../state/hooks";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function LoginPage() {
+  const { t } = useTranslation(["auth", "common"]);
   const [form, setForm] = useState<Credentials>({ email: "", password: "" });
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<ParseKeys<"auth"> | "">("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAuthDispatch();
 
@@ -28,12 +31,12 @@ export default function LoginPage() {
     setError("");
 
     if (!form.email || !form.password) {
-      setError("Vui lòng điền đầy đủ thông tin.");
+      setError("validation.fillAll");
       return;
     }
 
     if (!validateEmail(form.email)) {
-      setError("Email không hợp lệ.");
+      setError("validation.invalidEmail");
       return;
     }
 
@@ -41,7 +44,7 @@ export default function LoginPage() {
       setIsLoading(true);
       await dispatch(login(form)).unwrap();
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.failed")));
     } finally {
       setIsLoading(false);
     }
@@ -57,16 +60,16 @@ export default function LoginPage() {
               {/* Header */}
               <div className="mb-8 text-center">
                 <h1 className="mb-2 text-3xl font-bold text-gray-900">
-                  Đăng nhập
+                  {t("login.title")}
                 </h1>
-                <p className="text-gray-600">Chào mừng bạn quay trở lại!</p>
+                <p className="text-gray-600">{t("login.subtitle")}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Email Field */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Email <span className="text-orange-500">*</span>
+                    {t("common:fields.email")} <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -82,7 +85,7 @@ export default function LoginPage() {
                 {/* Password Field */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Mật khẩu <span className="text-orange-500">*</span>
+                    {t("common:fields.password")} <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="password"
@@ -90,7 +93,7 @@ export default function LoginPage() {
                     value={form.password}
                     onChange={handleChange}
                     className="w-full rounded-lg border border-gray-200 px-4 py-3 transition-all duration-200 outline-none focus:border-transparent focus:ring-2 focus:ring-orange-500"
-                    placeholder="Nhập mật khẩu của bạn"
+                    placeholder={t("login.passwordPlaceholder")}
                     disabled={isLoading}
                   />
                 </div>
@@ -98,7 +101,7 @@ export default function LoginPage() {
                 {/* Error Message */}
                 {error && (
                   <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {error}
+                    {t(error)}
                   </div>
                 )}
 
@@ -111,10 +114,10 @@ export default function LoginPage() {
                   {isLoading ? (
                     <div className="flex items-center justify-center">
                       <div className="mr-2 h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
-                      Đang đăng nhập...
+                      {t("login.submitting")}
                     </div>
                   ) : (
-                    "Đăng nhập"
+                    t("login.submit")
                   )}
                 </button>
               </form>
@@ -122,12 +125,12 @@ export default function LoginPage() {
               {/* Register Link */}
               <div className="mt-6 text-center">
                 <p className="text-gray-600">
-                  Chưa có tài khoản?{" "}
+                  {t("login.noAccount")}{" "}
                   <Link
                     to="/auth?mode=register"
                     className="font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600 hover:underline"
                   >
-                    Đăng ký ngay
+                    {t("login.registerLink")}
                   </Link>
                 </p>
               </div>
@@ -139,7 +142,7 @@ export default function LoginPage() {
                     <div className="w-full border-t border-gray-200"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-4 text-gray-500">Hoặc</span>
+                    <span className="bg-white px-4 text-gray-500">{t("login.or")}</span>
                   </div>
                 </div>
               </div>
@@ -162,9 +165,9 @@ export default function LoginPage() {
                   />
                 </svg>
               </div>
-              <h2 className="mb-4 text-2xl font-bold">Chào mừng trở lại!</h2>
+              <h2 className="mb-4 text-2xl font-bold">{t("login.asideTitle")}</h2>
               <p className="text-lg leading-relaxed text-orange-100">
-                Đăng nhập để tiếp tục hành trình nghề nghiệp của bạn
+                {t("login.asideText")}
               </p>
             </div>
           </div>

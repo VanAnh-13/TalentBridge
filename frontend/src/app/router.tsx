@@ -50,6 +50,7 @@ const router = createBrowserRouter([
   {
     path: "",
     element: <ClientLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Navigate to={"/home"} /> },
       { path: "home", element: <HomePage /> },
@@ -106,6 +107,7 @@ const router = createBrowserRouter([
           { path: "sessions", element: <SessionsPage /> },
         ],
       },
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 

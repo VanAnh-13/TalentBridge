@@ -12,8 +12,9 @@ import { Badge } from "@/shared/presentation/ui/badge";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
-import { levelColors, levelLabels } from "@/shared/presentation/tagColors.ts";
+import { levelColors } from "@/shared/presentation/tagColors.ts";
 
 type JobGridProps = {
   isLoading: boolean;
@@ -22,6 +23,7 @@ type JobGridProps = {
 
 const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation(["job", "common"]);
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -34,8 +36,8 @@ const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
       {!isLoading && jobs.length === 0 && (
         <div className="col-span-3 flex min-h-[300px] items-center justify-center">
           <EmptyState
-            title="Không tìm thấy công việc nào"
-            description="Thử thay đổi tiêu chí tìm kiếm hoặc xem các công việc khác"
+            title={t("empty.title")}
+            description={t("empty.browse")}
             icon={<Building2 className="text-muted-foreground h-12 w-12" />}
           />
         </div>
@@ -53,7 +55,7 @@ const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
                 {job.name}
               </h3>
               <Badge className={`ml-2 flex-shrink-0 ${levelColors[job.level]}`}>
-                {levelLabels[job.level]}
+                {t(`common:levels.${job.level}`)}
               </Badge>
             </div>
 
@@ -84,7 +86,7 @@ const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center text-gray-600">
                   <DollarSign className="mr-1 h-4 w-4" />
-                  <span>Lương:</span>
+                  <span>{t("labels.salary")}</span>
                 </div>
                 <span className="font-medium text-green-500">
                   {formatSalary(job.salary)}
@@ -93,14 +95,16 @@ const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center text-gray-600">
                   <Users className="mr-1 h-4 w-4" />
-                  <span>Số lượng:</span>
+                  <span>{t("labels.quantity")}</span>
                 </div>
-                <span className="font-medium">{job.quantity} người</span>
+                <span className="font-medium">
+                  {t("quantityPeople", { count: job.quantity })}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center text-gray-600">
                   <Clock className="mr-1 h-4 w-4" />
-                  <span>Hạn nộp:</span>
+                  <span>{t("labels.deadline")}</span>
                 </div>
                 <span className="font-medium text-black">
                   {formatISO(job.endDate)}
@@ -133,12 +137,14 @@ const JobGrid = ({ isLoading, jobs }: JobGridProps) => {
             <div className="flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center">
                 <Calendar className="mr-1 h-3 w-3" />
-                <span>Đăng: {formatISO(job.startDate)}</span>
+                <span>
+                  {t("labels.posted", { date: formatISO(job.startDate) })}
+                </span>
               </div>
               <div
                 className={`rounded-full px-2 py-1 ${job.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
               >
-                {job.active ? "Đang tuyển" : "Đã đóng"}
+                {job.active ? t("hiring") : t("closed")}
               </div>
             </div>
           </CardContent>

@@ -1,4 +1,6 @@
-import { toneOf, TONE_LABEL } from "../../domain/match";
+import { useTranslation } from "react-i18next";
+
+import { toneOf } from "../../domain/match";
 import type { ScoreTone } from "../../domain/match";
 
 const CLASSES: Record<ScoreTone, string> = {
@@ -10,10 +12,11 @@ const CLASSES: Record<ScoreTone, string> = {
 
 /** The AI score of an application, coloured by band. */
 const ScoreBadge = ({ score }: { score: number }) => {
+  const { t } = useTranslation("matching");
   const tone = toneOf(score);
   return (
     <span
-      title={TONE_LABEL[tone]}
+      title={t(`tone.${tone}`)}
       className={`inline-flex min-w-14 items-center justify-center rounded-full border px-2.5 py-0.5 text-sm font-semibold ${CLASSES[tone]}`}
     >
       {score}

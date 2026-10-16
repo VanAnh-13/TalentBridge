@@ -13,8 +13,12 @@ import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
 import { CompanyTable } from "../components/CompanyTable";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 export default function CompanyManagerPage() {
+  const { t } = useTranslation("company");
+
   // Data
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +91,8 @@ export default function CompanyManagerPage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+      // i18n.t rather than t: fetchCompanies stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadList", { ns: "company" })));
     } finally {
       setIsLoading(false);
     }
@@ -127,15 +132,15 @@ export default function CompanyManagerPage() {
       setIsLoading(true);
       if (id) {
         await companyUseCases.update(id, data, logo);
-        toast.success("Cập nhật công ty thành công.");
+        toast.success(t("toasts.updated"));
       } else {
         await companyUseCases.create(data, logo);
-        toast.success("Thêm công ty thành công.");
+        toast.success(t("toasts.created"));
       }
       setIsLoading(false);
       handleReset();
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, t("errors.failed")));
     } finally {
       setIsLoading(false);
     }
@@ -146,11 +151,11 @@ export default function CompanyManagerPage() {
       setIsLoading(true);
       if (hoveredCompany?.id === id) handleCloseSidebar();
       await companyUseCases.remove(id);
-      toast.success("Xóa công ty thành công.");
+      toast.success(t("toasts.deleted"));
 
       await handleReset();
     } catch (err) {
-      toast.error(errorMessage(err, "Xóa công ty thất bại."));
+      toast.error(errorMessage(err, t("errors.deleteFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -166,14 +171,14 @@ export default function CompanyManagerPage() {
         onReset={handleReset}
       />
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Danh sách Công Ty</h2>
+        <h2 className="text-lg font-semibold">{t("manager.title")}</h2>
         <HasPermission perm={"POST /companies"}>
           <Button
             onClick={openCreateForm}
             className="bg-blue-600 hover:bg-blue-700"
           >
             <Plus className="mr-2 h-4 w-4" />
-            Thêm mới
+            {t("manager.add")}
           </Button>
         </HasPermission>
       </div>

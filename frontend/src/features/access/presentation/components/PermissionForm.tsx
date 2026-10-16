@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/presentation/ui/select";
+import { useTranslation } from "react-i18next";
 
 const METHOD_COLORS: Record<string, string> = {
   GET: "bg-green-500",
@@ -53,6 +54,7 @@ export function PermissionForm({
   initialData,
   onCloseForm,
 }: PermissionFormProps) {
+  const { t } = useTranslation(["access", "common"]);
   const [formData, setFormData] = useState<PermissionData>({
     name: "",
     apiPath: "",
@@ -84,17 +86,17 @@ export function PermissionForm({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center">
-            Biểu mẫu quyền hạn API
+            {t("permission.form.title")}
           </DialogTitle>
           <DialogDescription className="text-center">
-            {initialData ? "Chỉnh sửa quyền hạn" : "Thêm quyền hạn mới"}
+            {initialData ? t("permission.form.editDescription") : t("permission.form.createDescription")}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name">
-              Tên quyền <span className="text-red-500">*</span>
+              {t("permission.form.name")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -108,7 +110,7 @@ export function PermissionForm({
           {/* API Path */}
           <div className="space-y-2">
             <Label htmlFor="apiPath">
-              API Path <span className="text-red-500">*</span>
+              {t("permission.form.apiPath")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="apiPath"
@@ -120,10 +122,10 @@ export function PermissionForm({
               }
             />
           </div>
-          {/* Method chọn bằng badge */}
+          {/* Method, chosen by clicking a badge */}
           <div className="space-y-2">
             <Label>
-              Phương thức <span className="text-red-500">*</span>
+              {t("permission.fields.method")} <span className="text-red-500">*</span>
             </Label>
             <div className="flex flex-wrap gap-2">
               {METHODS.map((m) => (
@@ -138,17 +140,17 @@ export function PermissionForm({
                 </Badge>
               ))}
             </div>
-            {/* Báo lỗi nếu chưa chọn method */}
+            {/* Error while no method is chosen */}
             {!formData.method && (
               <span className="text-xs text-red-500">
-                Vui lòng chọn phương thức
+                {t("permission.form.methodRequired")}
               </span>
             )}
           </div>
           {/* Module */}
           <div className="space-y-2">
             <Label>
-              Module <span className="text-red-500">*</span>
+              {t("permission.fields.module")} <span className="text-red-500">*</span>
             </Label>
             <Select
               value={formData.module}
@@ -157,7 +159,7 @@ export function PermissionForm({
               }
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Chọn module" />
+                <SelectValue placeholder={t("permission.form.modulePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 {MODULES.map((mod) => (
@@ -176,14 +178,14 @@ export function PermissionForm({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Hủy
+              {t("common:actions.cancel")}
             </Button>
             <Button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700"
               disabled={!formData.method}
             >
-              {initialData ? "Lưu thay đổi" : "Thêm"}
+              {initialData ? t("actions.saveChanges") : t("common:actions.add")}
             </Button>
           </div>
         </form>

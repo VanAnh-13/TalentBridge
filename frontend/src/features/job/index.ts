@@ -6,3 +6,5 @@ export { default as RecruiterJobUpsertPage } from "./presentation/pages/Recruite
 export { default as JobBrowsePage } from "./presentation/pages/JobBrowsePage";
 export { default as JobDetailsPage } from "./presentation/pages/JobDetailsPage";
 export type { Job, JobData, Level } from "./domain/job";
+
+export { messages as jobMessages } from "./presentation/i18n";

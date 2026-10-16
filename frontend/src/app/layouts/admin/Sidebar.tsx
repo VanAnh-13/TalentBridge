@@ -28,14 +28,18 @@ import {
 } from "@/shared/presentation/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/shared/presentation/lib/utils";
+import { useTranslation } from "react-i18next";
+import type { ParseKeys } from "i18next";
+
+type MenuKey = ParseKeys<"app">;
 
 interface MenuItem {
-  title: string;
+  title: MenuKey;
   url?: string;
   icon: LucideIcon;
   permission?: string;
   children?: {
-    title: string;
+    title: MenuKey;
     url: string;
     icon?: LucideIcon;
     permission?: string;
@@ -44,34 +48,34 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   {
-    title: "Tổng quan",
+    title: "admin.menu.dashboard",
     url: "/admin/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Công ty",
+    title: "admin.menu.companies",
     url: "/admin/company",
     icon: Building2,
     permission: "GET /companies",
   },
   {
-    title: "Tuyển dụng",
+    title: "admin.menu.recruitment",
     icon: Wrench,
     children: [
       {
-        title: "Quản lý việc làm",
+        title: "admin.menu.jobs",
         url: "/admin/recruitment/job-manager",
         icon: Briefcase,
         permission: "GET /jobs",
       },
       {
-        title: "Quản lý kỹ năng",
+        title: "admin.menu.skills",
         url: "/admin/recruitment/skill-manager",
         icon: Settings,
         permission: "GET /skills",
       },
       {
-        title: "Hồ sơ ứng tuyển",
+        title: "admin.menu.resumes",
         url: "/admin/resume",
         icon: FileText,
         permission: "GET /resumes",
@@ -79,23 +83,23 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    title: "Tài khoản",
+    title: "admin.menu.users",
     url: "/admin/user-manager",
     icon: User,
     permission: "GET /users",
   },
   {
-    title: "Quyền quản trị",
+    title: "admin.menu.accessControl",
     icon: ShieldCheck,
     children: [
       {
-        title: "Quyền quản trị",
+        title: "admin.menu.permissions",
         url: "/admin/access-control/permission",
         icon: KeyRound,
         permission: "GET /permissions/*",
       },
       {
-        title: "Cấu hình",
+        title: "admin.menu.roles",
         url: "/admin/access-control/role",
         icon: UserCog,
         permission: "GET /roles",
@@ -105,22 +109,23 @@ const menuItems: MenuItem[] = [
 ];
 
 export function AdminSidebar() {
+  const { t } = useTranslation("app");
   const { pathname } = useLocation();
   const permissions =
     useAccount()?.permissions ?? [];
 
   // ======================================================================================================
-  // Quản lý trạng thái mở rộng (expand/collapse) của các menu cha trong sidebar
+  // Which parent menus are expanded (keyed by their message key, so it survives a language switch)
   // ======================================================================================================
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   /**
-   * Thay đổi trạng thái mở rộng của một menu cha (expand/collapse).
+   * Expands or collapses a parent menu.
    *
-   * Ví dụ trạng thái expandedItems:
-   *   + Xổ xuống menu cha "Tuyển dụng":      toggleExpanded("Tuyển dụng")  => ["Tuyển dụng"]
-   *   + Xổ xuống menu cha "Phân quyền":     toggleExpanded("Phân quyền")  => ["Tuyển dụng", "Phân quyền"]
-   *   + Đóng lại menu cha "Tuyển dụng":     toggleExpanded("Tuyển dụng")  => ["Phân quyền"]
+   * For example:
+   *   + open "recruitment":  toggleExpanded("admin.menu.recruitment")    => ["admin.menu.recruitment"]
+   *   + open "access":       toggleExpanded("admin.menu.accessControl")  => [..., "admin.menu.accessControl"]
+   *   + close "recruitment": toggleExpanded("admin.menu.recruitment")    => ["admin.menu.accessControl"]
    */
   const toggleExpanded = (title: string) => {
     setExpandedItems((prev) =>
@@ -131,20 +136,20 @@ export function AdminSidebar() {
   };
 
   // ======================================================================================================
-  // Hàm kiểm tra trạng thái kích hoạt (active) của menu trong sidebar
+  // Which menu entries are active
   // ======================================================================================================
   /**
-   * Kiểm tra xem menu item cấp 1 (menu cha) có đang được kích hoạt không.
-   * - Nếu là menu không có con: so sánh trực tiếp với pathname.
-   * - Nếu là menu có con: chỉ cần một child active thì parent cũng được coi là active.
+   * Whether a top-level entry is active.
+   * - Without children: compared with the current path.
+   * - With children: active as soon as one child is.
    */
   const isItemActive = (item: MenuItem): boolean => {
     if (item.url) {
-      // Menu không có con
+      // no children
       return pathname === item.url || pathname.startsWith(item.url + "/");
     }
     if (item.children) {
-      // Menu có con, kiểm tra nếu có child nào đang active
+      // with children: active when one of them is
       return item.children.some(
         (child) =>
           pathname === child.url || pathname.startsWith(child.url + "/"),
@@ -154,7 +159,7 @@ export function AdminSidebar() {
   };
 
   /**
-   * Kiểm tra xem menu item cấp 2 (menu con) có đang được kích hoạt không.
+   * Whether a second-level entry is active.
    */
   const isChildActive = useCallback(
     (childUrl: string): boolean =>
@@ -163,8 +168,7 @@ export function AdminSidebar() {
   );
 
   // ======================================================================================================
-  // Tự động mở rộng (expand) menu cha khi truy cập trực tiếp vào route của một menu con.
-  // Giúp sidebar luôn hiển thị đúng trạng thái các menu cha đang mở, tương ứng với URL hiện tại.
+  // Opening a child's route directly expands its parent, so the sidebar always matches the current URL.
   //======================================================================================================
   useEffect(() => {
     menuItems.forEach((item) => {
@@ -188,8 +192,8 @@ export function AdminSidebar() {
             <MonitorCog className="h-4 w-4 text-white" />
           </div>
           <div>
-            <span className="text-lg font-semibold text-white">QUẢN TRỊ</span>
-            <p className="text-xs text-blue-100">Bảng điều khiển</p>
+            <span className="text-lg font-semibold text-white">{t("admin.brand")}</span>
+            <p className="text-xs text-blue-100">{t("admin.brandSubtitle")}</p>
           </div>
         </div>
       </div>
@@ -215,10 +219,10 @@ export function AdminSidebar() {
 
                   return (
                     <SidebarMenuItem key={item.title}>
-                      {/*Trường hợp có Menu cấp 1 có con*/}
+                      {/* top-level entry with children */}
                       {hasChildren && (
                         <>
-                          {/* Menu cấp 1 */}
+                          {/* top level */}
                           <div
                             onClick={() => toggleExpanded(item.title)}
                             className={cn(
@@ -230,7 +234,7 @@ export function AdminSidebar() {
                           >
                             <div className="flex items-center gap-3">
                               <item.icon className="h-4 w-4" />
-                              <span>{item.title}</span>
+                              <span>{t(item.title)}</span>
                             </div>
                             <ChevronRight
                               className={cn(
@@ -239,7 +243,7 @@ export function AdminSidebar() {
                               )}
                             />
                           </div>
-                          {/* Menu cấp 2 */}
+                          {/* second level */}
                           {isExpanded && (
                             <div className="mt-1 ml-6 space-y-1 border-l border-gray-200 pl-3">
                               {filteredChildren?.map((child) => (
@@ -263,7 +267,7 @@ export function AdminSidebar() {
                                     ) : (
                                       <div className="h-1.5 w-1.5 rounded-full bg-current"></div>
                                     )}
-                                    <span>{child.title}</span>
+                                    <span>{t(child.title)}</span>
                                   </Link>
                                 </SidebarMenuButton>
                               ))}
@@ -271,7 +275,7 @@ export function AdminSidebar() {
                           )}
                         </>
                       )}
-                      {/*Trường hợp có Menu cấp 1 không có con*/}
+                      {/* top-level entry without children */}
                       {!hasChildren && (
                         <>
                           <SidebarMenuButton
@@ -294,7 +298,7 @@ export function AdminSidebar() {
                               <span
                                 className={`${isActive ? "font-bold text-white" : ""}`}
                               >
-                                {item.title}
+                                {t(item.title)}
                               </span>
                             </Link>
                           </SidebarMenuButton>
@@ -317,7 +321,7 @@ export function AdminSidebar() {
             >
               <Link to="/" className="flex w-full items-center gap-3">
                 <Home className="h-4 w-4" />
-                <span>Quay về trang chủ</span>
+                <span>{t("nav.backHome")}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

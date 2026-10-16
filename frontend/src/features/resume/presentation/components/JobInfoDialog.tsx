@@ -12,6 +12,7 @@ import type { Resume } from "../../domain/resume";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview";
 import { ScrollArea } from "@/shared/presentation/ui/scroll-area";
 import { Badge } from "@/shared/presentation/ui/badge";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   job: Resume["job"];
@@ -20,12 +21,13 @@ type Props = {
 };
 
 export default function JobInfoDialog({ job, companyName, location }: Props) {
+  const { t } = useTranslation("resume");
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="border border-orange-500 bg-white py-3 font-semibold text-orange-500 hover:border-orange-600 hover:bg-orange-50">
           <BookText className="mr-2 h-4 w-4" />
-          Xem mô tả công việc
+          {t("job.viewDescription")}
         </Button>
       </DialogTrigger>
       <DialogContent className="flex !h-11/12 !max-h-none !w-full !max-w-none flex-col lg:!w-2/3">
@@ -38,7 +40,7 @@ export default function JobInfoDialog({ job, companyName, location }: Props) {
         <div className="flex flex-1 flex-col space-y-5">
           <div>
             <span className="font-semibold text-gray-700">
-              Kỹ năng yêu cầu:
+              {t("job.requiredSkills")}:
             </span>
             <div className="mt-2 flex flex-wrap gap-2">
               {job.skills.map((skill) => (
@@ -50,7 +52,7 @@ export default function JobInfoDialog({ job, companyName, location }: Props) {
           </div>
           <div className="flex-1">
             <span className="font-semibold text-gray-700">
-              Mô tả công việc:
+              {t("job.description")}:
             </span>
             <ScrollArea className="mt-2 h-[200px] rounded-lg border bg-gray-50 p-4 sm:h-[300px] md:h-[350px] lg:h-[450px]">
               <RichTextPreview content={job.description} />

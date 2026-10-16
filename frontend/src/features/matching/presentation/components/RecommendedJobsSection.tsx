@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { matching as matchingUseCases } from "@/app/container";
@@ -8,6 +9,7 @@ import type { Recommendation } from "../../domain/match";
 
 /** "Recommended for you" on the home page: shown only to signed-in candidates who follow some skills. */
 const RecommendedJobsSection = () => {
+  const { t } = useTranslation("matching");
   const { isLogin, user } = useAuthState();
   const allowed = isLogin && user?.permissions?.includes("GET /matching/me/recommendations");
   const [items, setItems] = useState<Recommendation[]>([]);
@@ -21,8 +23,8 @@ const RecommendedJobsSection = () => {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-8">
-      <h2 className="mb-1 text-2xl font-bold">Gợi ý cho bạn</h2>
-      <p className="text-muted-foreground mb-4 text-sm">Dựa trên các kỹ năng bạn đang theo dõi.</p>
+      <h2 className="mb-1 text-2xl font-bold">{t("recommended.title")}</h2>
+      <p className="text-muted-foreground mb-4 text-sm">{t("recommended.subtitle")}</p>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <Link
@@ -32,7 +34,7 @@ const RecommendedJobsSection = () => {
           >
             <div className="flex items-start justify-between gap-2">
               <h3 className="font-semibold">{item.name}</h3>
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800" title="Tỉ lệ kỹ năng yêu cầu bạn đã có">
+              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800" title={t("recommended.fitTitle")}>
                 {item.fitPercent}%
               </span>
             </div>

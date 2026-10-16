@@ -1,12 +1,15 @@
 import { auth } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import type { Registration } from "../../domain/account";
+import type { ParseKeys } from "i18next";
 import type React from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function RegisterForm() {
+  const { t } = useTranslation(["auth", "common"]);
   const [form, setForm] = useState<Registration>({
     name: "",
     email: "",
@@ -18,7 +21,7 @@ export default function RegisterForm() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<ParseKeys<"auth"> | "">("");
   const navigate = useNavigate();
 
   const handleChange = (
@@ -58,25 +61,25 @@ export default function RegisterForm() {
       setIsLoading(true);
 
       if (!form.name || !form.email || !form.password) {
-        setError("Vui lòng điền các trường bắt buộc.");
+        setError("validation.fillRequired");
         return;
       }
 
       if (!validateEmail(form.email)) {
-        setError("Email không hợp lệ.");
+        setError("validation.invalidEmail");
         return;
       }
 
       if (form.dob && !validateDateOfBirth(form.dob)) {
-        setError("Ngày sinh không hợp lệ.");
+        setError("validation.invalidDob");
         return;
       }
 
       await auth.register(form);
-      toast.info("Đăng ký thành công, vui lòng đăng nhập lại");
+      toast.info(t("register.success"));
       navigate("/auth?mode=login");
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.failed")));
     } finally {
       setIsLoading(false);
       setError("");
@@ -93,10 +96,10 @@ export default function RegisterForm() {
               {/* Header */}
               <div className="mb-8 text-center">
                 <h1 className="mb-2 text-3xl font-bold text-gray-900">
-                  Đăng ký tài khoản
+                  {t("register.title")}
                 </h1>
                 <p className="text-gray-600">
-                  Tạo tài khoản để bắt đầu hành trình của bạn
+                  {t("register.subtitle")}
                 </p>
               </div>
 
@@ -104,7 +107,7 @@ export default function RegisterForm() {
                 {/* Name Field */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Họ và tên <span className="text-orange-500">*</span>
+                    {t("register.name")} <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -112,14 +115,14 @@ export default function RegisterForm() {
                     value={form.name}
                     onChange={handleChange}
                     className="w-full rounded-lg border border-gray-200 px-4 py-3 transition-all duration-200 outline-none focus:border-transparent focus:ring-2 focus:ring-orange-500"
-                    placeholder="Nhập họ và tên của bạn"
+                    placeholder={t("register.namePlaceholder")}
                   />
                 </div>
 
                 {/* Email Field */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Email <span className="text-orange-500">*</span>
+                    {t("common:fields.email")} <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -134,7 +137,7 @@ export default function RegisterForm() {
                 {/* Password Field */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Mật khẩu <span className="text-orange-500">*</span>
+                    {t("common:fields.password")} <span className="text-orange-500">*</span>
                   </label>
                   <input
                     type="password"
@@ -142,14 +145,14 @@ export default function RegisterForm() {
                     value={form.password}
                     onChange={handleChange}
                     className="w-full rounded-lg border border-gray-200 px-4 py-3 transition-all duration-200 outline-none focus:border-transparent focus:ring-2 focus:ring-orange-500"
-                    placeholder="Nhập mật khẩu"
+                    placeholder={t("register.passwordPlaceholder")}
                   />
                 </div>
 
                 {/* Role Field */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Vai trò <span className="text-orange-500">*</span>
+                    {t("register.role")} <span className="text-orange-500">*</span>
                   </label>
                   <select
                     name="role"
@@ -163,10 +166,10 @@ export default function RegisterForm() {
                     className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 transition-all duration-200 outline-none focus:border-transparent focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="candidate">
-                      🎯 Ứng cử viên - Tìm kiếm việc làm
+                      {t("register.roles.candidate")}
                     </option>
                     <option value="recruiter">
-                      🏢 Nhà tuyển dụng - Đăng tin tuyển dụng
+                      {t("register.roles.recruiter")}
                     </option>
                   </select>
                 </div>
@@ -174,7 +177,7 @@ export default function RegisterForm() {
                 {/* Date of Birth */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Ngày sinh
+                    {t("register.dob")}
                   </label>
                   <input
                     type="date"
@@ -189,7 +192,7 @@ export default function RegisterForm() {
                 {/* Address */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Địa chỉ
+                    {t("common:fields.address")}
                   </label>
                   <input
                     type="text"
@@ -197,14 +200,14 @@ export default function RegisterForm() {
                     value={form.address}
                     onChange={handleChange}
                     className="w-full rounded-lg border border-gray-200 px-4 py-3 transition-all duration-200 outline-none focus:border-transparent focus:ring-2 focus:ring-orange-500"
-                    placeholder="Nhập địa chỉ của bạn"
+                    placeholder={t("register.addressPlaceholder")}
                   />
                 </div>
 
                 {/* Gender */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Giới tính
+                    {t("register.gender")}
                   </label>
                   <select
                     name="gender"
@@ -212,16 +215,16 @@ export default function RegisterForm() {
                     onChange={handleChange}
                     className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 transition-all duration-200 outline-none focus:border-transparent focus:ring-2 focus:ring-orange-500"
                   >
-                    <option value="MALE">Nam</option>
-                    <option value="FEMALE">Nữ</option>
-                    <option value="OTHER">Khác</option>
+                    <option value="MALE">{t("register.genders.MALE")}</option>
+                    <option value="FEMALE">{t("register.genders.FEMALE")}</option>
+                    <option value="OTHER">{t("register.genders.OTHER")}</option>
                   </select>
                 </div>
 
                 {/* Error Message */}
                 {error && (
                   <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {error}
+                    {t(error)}
                   </div>
                 )}
 
@@ -234,10 +237,10 @@ export default function RegisterForm() {
                   {isLoading ? (
                     <div className="flex items-center justify-center">
                       <div className="mr-2 h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
-                      Đang xử lý...
+                      {t("register.submitting")}
                     </div>
                   ) : (
-                    "Đăng ký ngay"
+                    t("register.submit")
                   )}
                 </button>
               </form>
@@ -245,12 +248,12 @@ export default function RegisterForm() {
               {/* Login Link */}
               <div className="mt-6 text-center">
                 <p className="text-gray-600">
-                  Đã có tài khoản?{" "}
+                  {t("register.hasAccount")}{" "}
                   <Link
                     to="/auth?mode=login"
                     className="font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600 hover:underline"
                   >
-                    Đăng nhập ngay
+                    {t("register.loginLink")}
                   </Link>
                 </p>
               </div>
@@ -273,10 +276,9 @@ export default function RegisterForm() {
                   />
                 </svg>
               </div>
-              <h2 className="mb-4 text-2xl font-bold">Chào mừng bạn!</h2>
+              <h2 className="mb-4 text-2xl font-bold">{t("register.asideTitle")}</h2>
               <p className="text-lg leading-relaxed text-orange-100">
-                Tham gia cộng đồng để khám phá những cơ hội nghề nghiệp tuyệt
-                vời
+                {t("register.asideText")}
               </p>
             </div>
           </div>

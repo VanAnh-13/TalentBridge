@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -12,10 +13,11 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requiredPermission, to }: ProtectedRouteProps) {
+  const { t } = useTranslation("auth");
   const user = useAccount();
 
   if (!hasAnyPermission(user, requiredPermission)) {
-    toast.error("Không có quyền truy cập");
+    toast.error(t("errors.accessDenied"));
     return <Navigate to={to} replace />;
   }
 

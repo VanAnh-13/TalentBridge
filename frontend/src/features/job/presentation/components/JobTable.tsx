@@ -9,6 +9,7 @@ import {
 import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { Edit, Briefcase } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
@@ -33,19 +34,12 @@ export function JobTable({
   onView,
   theme = "blue",
 }: JobTableProps) {
-  const getStatusBadge = (active: boolean) => {
-    const status = active ? "Active" : "Inactive";
-    const variants = {
-      Active: "default",
-      Inactive: "secondary",
-    } as const;
-
-    return (
-      <Badge variant={variants[status]} className="capitalize">
-        {status}
-      </Badge>
-    );
-  };
+  const { t } = useTranslation(["job", "common"]);
+  const getStatusBadge = (active: boolean) => (
+    <Badge variant={active ? "default" : "secondary"} className="capitalize">
+      {active ? t("common:states.active") : t("common:states.inactive")}
+    </Badge>
+  );
 
   return (
     <div
@@ -57,28 +51,28 @@ export function JobTable({
         >
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Tên Công việc
+              {t("fields.title")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Công ty
+              {t("common:fields.company")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Trình độ
+              {t("fields.level")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Trạng thái
+              {t("common:fields.status")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày tạo
+              {t("common:fields.createdAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày kết thúc
+              {t("fields.endDate")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -99,8 +93,8 @@ export function JobTable({
             <TableRow>
               <TableCell colSpan={8}>
                 <EmptyState
-                  title="Không tìm thấy công việc nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm công việc mới"
+                  title={t("empty.title")}
+                  description={t("empty.manage")}
                   icon={
                     <Briefcase className="text-muted-foreground h-12 w-12" />
                   }
@@ -124,7 +118,7 @@ export function JobTable({
                   {job.company.name}
                 </TableCell>
                 <TableCell className="text-center text-sm">
-                  <Badge className={levelColors[job.level]}>{job.level}</Badge>
+                  <Badge className={levelColors[job.level]}>{t(`common:levels.${job.level}`)}</Badge>
                 </TableCell>
                 <TableCell className="text-center text-sm">
                   {getStatusBadge(job.active)}
@@ -157,16 +151,13 @@ export function JobTable({
                     >
                       <DeleteConfirmDialog
                         onConfirm={() => onDelete(job.id)}
-                        title="Bạn có chắc muốn xóa công việc này?"
+                        title={t("delete.title")}
                         styledDescription={
-                          <p>
-                            Hành động này sẽ
-                            <span className="text-red-500">
-                              {" "}
-                              xóa CÔNG VIỆC và HỒ SƠ ỨNG VIÊN
-                            </span>{" "}
-                            đã nộp cho công việc này.
-                          </p>
+                          <Trans
+                            t={t}
+                            i18nKey="delete.description"
+                            components={{ warn: <span className="text-red-500" /> }}
+                          />
                         }
                       />
                     </HasPermission>

@@ -3,60 +3,38 @@ import { NotificationBell } from "@/features/notification";
 import { useLocation } from "react-router-dom";
 import { Clock } from "lucide-react";
 import { SidebarTrigger } from "@/shared/presentation/ui/sidebar";
+import { LanguageSwitcher } from "@/shared/presentation/components/LanguageSwitcher";
+import { currentLocale } from "@/shared/presentation/i18n/locale";
+import { useTranslation } from "react-i18next";
 
-const routeTitles: Record<
-  string,
-  { title: string; subtitle?: string; icon?: string }
-> = {
-  "/recruiter/company": {
-    title: "Công ty tôi",
-    subtitle: "Thông tin và cài đặt công ty",
-    icon: "🏢",
-  },
-  "/recruiter/members": {
-    title: "Đội ngũ tuyển dụng",
-    subtitle: "Thông tin nhà tuyển dụng thuộc công ty bạn",
-    icon: "👤",
-  },
-  "/recruiter/jobs": {
-    title: "Việc làm",
-    subtitle: "Quản lý tin tuyển dụng",
-    icon: "💼",
-  },
-  "/recruiter/jobs/create": {
-    title: "Tạo việc làm mới",
-    subtitle: "Đăng tin tuyển dụng",
-    icon: "➕",
-  },
-  "/recruiter/jobs/edit": {
-    title: "Chỉnh sửa việc làm",
-    subtitle: "Cập nhật tin tuyển dụng",
-    icon: "✏️",
-  },
-  "/recruiter/skills": {
-    title: "Kỹ năng",
-    subtitle: "Quản lý kỹ năng yêu cầu",
-    icon: "🛠️",
-  },
-  "/recruiter/resumes": {
-    title: "Hồ sơ ứng tuyển",
-    subtitle: "Danh sách CV ứng viên",
-    icon: "📄",
-  },
-  "/recruiter/resumes/detail": {
-    title: "Chi tiết hồ sơ",
-    subtitle: "Thông tin ứng viên",
-    icon: "👤",
-  },
+type RouteKey = keyof typeof import("@/app/i18n/app").appMessages.en.recruiter.routes;
+
+/** Title and subtitle of each page, as message keys under app:recruiter.routes. */
+const routeTitles: Record<string, { key: RouteKey; icon?: string }> = {
+  "/recruiter/company": { key: "company", icon: "🏢" },
+  "/recruiter/members": { key: "members", icon: "👤" },
+  "/recruiter/jobs": { key: "jobs", icon: "💼" },
+  "/recruiter/jobs/create": { key: "jobCreate", icon: "➕" },
+  "/recruiter/jobs/edit": { key: "jobEdit", icon: "✏️" },
+  "/recruiter/skills": { key: "skills", icon: "🛠️" },
+  "/recruiter/resumes": { key: "resumes", icon: "📄" },
+  "/recruiter/resumes/detail": { key: "resumeDetail", icon: "👤" },
+  "/recruiter/matching": { key: "matching", icon: "✨" },
+  "/recruiter/interviews": { key: "interviews", icon: "📅" },
+  "/recruiter/chat": { key: "chat", icon: "💬" },
 };
 
 export function RecruiterTopBar() {
   const { isLogin } = useAuthState();
   const location = useLocation();
 
-  const currentRoute = routeTitles[location.pathname] || {
-    title: "Recruiter",
-    subtitle: "Hệ thống tuyển dụng",
+  const { t } = useTranslation("app");
+  const route = routeTitles[location.pathname];
+  const routeKey: RouteKey = route?.key ?? "fallback";
+  const currentRoute = {
+    icon: route?.icon,
+    title: t(`recruiter.routes.${routeKey}.title`),
+    subtitle: t(`recruiter.routes.${routeKey}.subtitle`),
   };
 
   return (
@@ -90,7 +68,7 @@ export function RecruiterTopBar() {
         <div className="flex items-center gap-2 rounded-lg border bg-gray-50 px-3 py-2">
           <Clock className="h-4 w-4 text-gray-500" />
           <span className="text-sm font-medium text-gray-700">
-            {new Date().toLocaleTimeString("vi-VN", {
+            {new Date().toLocaleTimeString(currentLocale(), {
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -99,12 +77,15 @@ export function RecruiterTopBar() {
       </div>
 
       {/* Right side */}
-      {isLogin && (
-        <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3">
+        <LanguageSwitcher />
+        {isLogin && (
+          <>
           <NotificationBell />
           <UserMenu blackTheme />
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </header>
   );
 }

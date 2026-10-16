@@ -12,6 +12,7 @@ import {
 import { Button } from "@/shared/presentation/ui/button";
 import { Trash2 } from "lucide-react";
 import { type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DeleteConfirmDialogProps {
   onConfirm: () => void;
@@ -23,11 +24,12 @@ interface DeleteConfirmDialogProps {
 
 export const DeleteConfirmDialog = ({
   onConfirm,
-  description = "Hành động này không thể hoàn tác.",
+  description,
   styledDescription,
-  title = "Bạn có chắc chắn muốn xóa?",
+  title,
   children,
 }: DeleteConfirmDialogProps) => {
+  const { t } = useTranslation();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -47,15 +49,15 @@ export const DeleteConfirmDialog = ({
         className="z-[9999]"
       >
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle>{title ?? t("deleteDialog.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {styledDescription ? styledDescription : description}
+            {styledDescription ? styledDescription : (description ?? t("deleteDialog.description"))}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Hủy</AlertDialogCancel>
+          <AlertDialogCancel>{t("actions.cancel")}</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} className="bg-orange-500">
-            Xác nhận xóa
+            {t("deleteDialog.confirm")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

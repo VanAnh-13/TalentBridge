@@ -9,8 +9,12 @@ import { Plus } from "lucide-react";
 import Pagination from "@/shared/presentation/components/Pagination";
 import { PermissionTable } from "../components/PermissionTable";
 import { PermissionForm } from "../components/PermissionForm";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const PermissionManagerPage = () => {
+  const { t } = useTranslation("access");
+
   // Data
   const [permissions, setPermissions] = useState<
     Permission[]
@@ -65,7 +69,8 @@ const PermissionManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+      // i18n.t rather than t: the fetcher stays free of render values, so the effects need no extra dependency
+      toast.error(errorMessage(err, i18n.t("permission.list.loadFailed", { ns: "access" })));
     } finally {
       setIsLoading(false);
     }
@@ -102,14 +107,14 @@ const PermissionManagerPage = () => {
       if (id) {
         await permissionUseCases.update(id, data);
         await fetchPermissions(1, itemsPerPage, searchName, searchApiPath);
-        toast.success("Cập nhật quyền hạn mới thành công");
+        toast.success(t("permission.list.updated"));
       } else {
         await permissionUseCases.create(data);
         await fetchPermissions(1, itemsPerPage, searchName, searchApiPath);
-        toast.success("Tạo quyền hạn mới thành công");
+        toast.success(t("permission.list.created"));
       }
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -125,9 +130,9 @@ const PermissionManagerPage = () => {
       await permissionUseCases.remove(id);
       await fetchPermissions(1, itemsPerPage, searchName, searchApiPath);
 
-      toast.success("Xóa quyền hạn thành công");
+      toast.success(t("permission.list.deleted"));
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -144,13 +149,13 @@ const PermissionManagerPage = () => {
       />
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Danh sách Kỹ năng</h2>
+        <h2 className="text-lg font-semibold">{t("permission.list.title")}</h2>
         <Button
           className="bg-blue-600 hover:bg-blue-700"
           onClick={handleOpenCreateForm}
         >
           <Plus className="mr-2 h-4 w-4" />
-          Thêm quyền hạn
+          {t("permission.list.add")}
         </Button>
       </div>
 

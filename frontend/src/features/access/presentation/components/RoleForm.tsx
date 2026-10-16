@@ -21,6 +21,7 @@ import {
 import type { Permission } from "../../domain/permission";
 import type { Role, RoleData } from "../../domain/role";
 import { getMethodColor } from "@/shared/presentation/tagColors";
+import { useTranslation } from "react-i18next";
 
 interface RoleFormProps {
   open: boolean;
@@ -39,6 +40,7 @@ export function RoleForm({
   onCloseForm,
   permissions,
 }: RoleFormProps) {
+  const { t } = useTranslation(["access", "common"]);
   const [formData, setFormData] = useState<RoleData>({
     name: "",
     description: "",
@@ -46,7 +48,7 @@ export function RoleForm({
     permissions: [],
   });
 
-  // Check tab nào đang được xổ ra
+  // Which module sections are expanded
   const [expandedModules, setExpandedModules] = useState<Set<string>>(
     new Set(),
   );
@@ -139,10 +141,10 @@ export function RoleForm({
       <DialogContent className="flex !h-5/6 !max-h-none !w-full !max-w-none flex-col lg:!w-2/3">
         <DialogHeader>
           <DialogTitle className="text-center">
-            Biểu mẫu thông tin chức vụ
+            {t("role.form.title")}
           </DialogTitle>
           <DialogDescription className="text-center">
-            {initialData ? "Chỉnh sửa chức vụ" : "Thêm chức vụ mới"}
+            {initialData ? t("role.form.editDescription") : t("role.form.createDescription")}
           </DialogDescription>
         </DialogHeader>
 
@@ -155,7 +157,7 @@ export function RoleForm({
               {/* Name */}
               <div className="space-y-2">
                 <Label htmlFor="name">
-                  Tên chức vụ <span className="text-red-500">*</span>
+                  {t("role.fields.name")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -168,7 +170,7 @@ export function RoleForm({
                 />
                 {isDefaultRoleName && (
                   <span className="text-sm text-red-600 italic">
-                    Chức vụ mặc định không được phép đổi tên
+                    {t("role.form.defaultNameLocked")}
                   </span>
                 )}
               </div>
@@ -176,7 +178,7 @@ export function RoleForm({
               {/* Description */}
               <div className="space-y-2">
                 <Label htmlFor="description">
-                  Mô tả <span className="text-red-500">*</span>
+                  {t("common:fields.description")} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="description"
@@ -192,7 +194,7 @@ export function RoleForm({
                 />
                 {isDefaultRoleName && (
                   <span className="text-sm text-red-600 italic">
-                    Chức vụ mặc định không được phép đổi mô tả
+                    {t("role.form.defaultDescriptionLocked")}
                   </span>
                 )}
               </div>
@@ -208,7 +210,7 @@ export function RoleForm({
                   defaultChecked={true}
                 />
                 <Label htmlFor="active">
-                  Hoạt động <span className="text-red-500">*</span>
+                  {t("common:states.active")} <span className="text-red-500">*</span>
                 </Label>
               </div>
             </div>
@@ -217,10 +219,10 @@ export function RoleForm({
             <div className="flex min-h-0 flex-1 flex-col">
               <div className="mb-4">
                 <Label className="text-base font-medium">
-                  Quyền hạn <span className="text-red-500">*</span>
+                  {t("role.form.permissions")} <span className="text-red-500">*</span>
                 </Label>
                 <p className="text-muted-foreground mt-1 text-sm">
-                  Chọn các quyền hạn cho chức vụ này
+                  {t("role.form.permissionsHint")}
                 </p>
               </div>
 
@@ -298,10 +300,10 @@ export function RoleForm({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Hủy
+                {t("common:actions.cancel")}
               </Button>
               <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                {initialData ? "Lưu thay đổi" : "Thêm"}
+                {initialData ? t("actions.saveChanges") : t("common:actions.add")}
               </Button>
             </div>
           </form>

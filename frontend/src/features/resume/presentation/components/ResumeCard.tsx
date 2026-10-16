@@ -10,6 +10,7 @@ import type { Resume } from "../../domain/resume";
 import PDFViewer from "@/shared/presentation/components/PDFViewer";
 import { FileX, MapPin, MessageCircle, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 import JobInfoDialog from "./JobInfoDialog";
 import { UpdateResumeDialog } from "./UpdateResumeDialog";
@@ -27,6 +28,7 @@ export default function ResumeCard({
   onDelete,
   onUpdateResumeFile,
 }: Props) {
+  const { t } = useTranslation("resume");
   const navigate = useNavigate();
   const submitUpdatedResumeFile = async (file: File) => {
     await onUpdateResumeFile(resume.id, file);
@@ -61,7 +63,7 @@ export default function ResumeCard({
             <MapPin className="mt-0.5 h-4 w-4 text-gray-500" />
             <div>
               <p className="text-sm font-medium text-gray-700">
-                Địa điểm làm việc
+                {t("job.location")}
               </p>
               <p className="text-sm text-gray-600">{resume.job.location}</p>
             </div>
@@ -72,7 +74,7 @@ export default function ResumeCard({
             <Sparkles className="mt-0.5 h-4 w-4 text-gray-500" />
             <div className="flex flex-col">
               <p className="text-sm font-medium text-gray-700">
-                Kỹ năng yêu cầu
+                {t("job.requiredSkills")}
               </p>
               <div className="mt-1 flex flex-wrap gap-2">
                 {resume.job.skills.map((skill) => (
@@ -88,14 +90,14 @@ export default function ResumeCard({
           </div>
 
           <div className="flex items-center justify-between border-t pt-2 text-xs text-gray-500">
-            <span>Nộp: {formatISO(resume.createdAt)}</span>
-            <span>Cập nhật: {formatISO(resume.updatedAt)}</span>
+            <span>{t("card.submittedAt", { date: formatISO(resume.createdAt) })}</span>
+            <span>{t("card.updatedAt", { date: formatISO(resume.updatedAt) })}</span>
           </div>
 
           {resume.pdfUrl && (
             <div>
               <p className="mb-2 text-sm font-medium text-gray-700">
-                CV đã nộp
+                {t("card.submittedCv")}
               </p>
               <div
                 className="overflow-auto rounded-md border"
@@ -116,19 +118,19 @@ export default function ResumeCard({
 
           <Button variant="outline" onClick={() => navigate(`/user/chat?resume=${resume.id}`)}>
             <MessageCircle className="mr-2 h-4 w-4" />
-            Nhắn tin
+            {t("card.message")}
           </Button>
 
           <UpdateResumeDialog onSubmitFile={submitUpdatedResumeFile} />
 
           <DeleteConfirmDialog
             onConfirm={() => onDelete(resume.job.id)}
-            title="Rút hồ sơ"
-            description="Bạn có chắc chắn muốn rút hồ sơ không? Thao tác này không thể thu hồi"
+            title={t("card.withdrawTitle")}
+            description={t("card.withdrawConfirm")}
           >
             <Button className="bg-red-600 py-3 font-semibold text-white hover:bg-red-700">
               <FileX className="mr-2 h-4 w-4" />
-              Rút hồ sơ
+              {t("card.withdraw")}
             </Button>
           </DeleteConfirmDialog>
         </CardFooter>

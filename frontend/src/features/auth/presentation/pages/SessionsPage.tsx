@@ -2,6 +2,8 @@ import { auth } from "@/app/container";
 import { errorMessage } from "@/shared/domain/errors";
 import type { DeviceSession } from "../../domain/account";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
 import { Button } from "@/shared/presentation/ui/button";
@@ -16,6 +18,7 @@ import { formatLoginTime } from "@/shared/presentation/format";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 
 const UserSessionPage = () => {
+  const { t } = useTranslation("auth");
   // Data
   const [sessions, setSessions] = useState<DeviceSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +33,9 @@ const UserSessionPage = () => {
 
       setSessions(sortedSessions);
     } catch (err) {
+      // i18n.t rather than t: fetchSessions stays free of render values, so the effect below needs no extra dependency
       toast.error(
-        errorMessage(err, "Không thể lấy danh sách phiên đăng nhập."),
+        errorMessage(err, i18n.t("sessions.loadFailed", { ns: "auth" })),
       );
     } finally {
       setIsLoading(false);
@@ -46,10 +50,10 @@ const UserSessionPage = () => {
     try {
       setIsLoggingOut(sessionId);
       await auth.endSession(sessionId);
-      toast.success("Đăng xuất phiên thành công");
+      toast.success(t("sessions.ended"));
       fetchSessions();
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể đăng xuất phiên này"));
+      toast.error(errorMessage(err, t("sessions.endFailed")));
     } finally {
       setIsLoggingOut(null);
     }
@@ -79,10 +83,10 @@ const UserSessionPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="mb-2 text-3xl font-bold text-gray-900">
-            Phiên đăng nhập
+            {t("sessions.title")}
           </h1>
           <p className="text-gray-600">
-            Quản lý các thiết bị đã đăng nhập vào tài khoản của bạn
+            {t("sessions.subtitle")}
           </p>
         </div>
 
@@ -92,7 +96,7 @@ const UserSessionPage = () => {
             <Card className="border-orange-200">
               <CardContent className="py-12 text-center">
                 <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-orange-400" />
-                <p className="text-gray-600">Không có phiên đăng nhập nào</p>
+                <p className="text-gray-600">{t("sessions.empty")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -124,7 +128,7 @@ const UserSessionPage = () => {
                       <Clock className="h-4 w-4 text-orange-500" />
                       <div>
                         <span className="font-medium text-gray-700">
-                          Thời gian đăng nhập:
+                          {t("sessions.loginTime")}
                         </span>
                         <p className="text-gray-600">
                           {formatLoginTime(session.loginAt)}
@@ -150,12 +154,12 @@ const UserSessionPage = () => {
                             {isLoggingOut === index.toString() ? (
                               <>
                                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent" />
-                                Đang đăng xuất...
+                                {t("sessions.loggingOut")}
                               </>
                             ) : (
                               <>
                                 <LogOut className="mr-2 h-4 w-4" />
-                                Đăng xuất
+                                {t("sessions.logout")}
                               </>
                             )}
                           </Button>
@@ -169,7 +173,7 @@ const UserSessionPage = () => {
                   {/* User Agent Details */}
                   <div className="mt-4 rounded-lg bg-gray-50 p-3">
                     <p className="mb-1 text-xs font-medium text-gray-500">
-                      Chi tiết trình duyệt:
+                      {t("sessions.browserDetails")}
                     </p>
                     <p className="text-xs break-all text-gray-600">
                       {session.userAgent}
@@ -181,12 +185,11 @@ const UserSessionPage = () => {
                       <div className="flex items-center gap-2">
                         <Shield className="h-4 w-4 text-green-600" />
                         <p className="text-sm font-medium text-green-800">
-                          Đây là phiên đăng nhập hiện tại của bạn
+                          {t("sessions.currentTitle")}
                         </p>
                       </div>
                       <p className="mt-1 text-xs text-green-600">
-                        Bạn không thể đăng xuất phiên này. Để đăng xuất, vui
-                        lòng sử dụng nút đăng xuất chính.
+                        {t("sessions.currentText")}
                       </p>
                     </div>
                   )}

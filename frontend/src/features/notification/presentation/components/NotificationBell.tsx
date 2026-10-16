@@ -1,5 +1,6 @@
 import { Bell, CheckCheck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -20,6 +21,7 @@ import type { Notification } from "../../domain/notification";
 
 /** The bell with the unread count; new notifications appear live while the page is open. */
 const NotificationBell = () => {
+  const { t } = useTranslation("notification");
   const navigate = useNavigate();
   const [items, setItems] = useState<Notification[]>([]);
   const [unread, setUnread] = useState(0);
@@ -49,7 +51,7 @@ const NotificationBell = () => {
     try {
       if (!notification.read) await notificationUseCases.markRead(notification.id);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể cập nhật thông báo"));
+      toast.error(errorMessage(err, t("bell.updateFailed")));
     }
     void refresh();
     if (notification.link) navigate(notification.link);
@@ -60,14 +62,14 @@ const NotificationBell = () => {
       await notificationUseCases.markAllRead();
       void refresh();
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể cập nhật thông báo"));
+      toast.error(errorMessage(err, t("bell.updateFailed")));
     }
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative" aria-label="Thông báo">
+        <Button variant="ghost" size="icon" className="relative" aria-label={t("bell.title")}>
           <Bell className="h-5 w-5" />
           {unread > 0 && (
             <Badge className="absolute -right-1 -top-1 h-5 min-w-5 justify-center rounded-full bg-red-500 px-1 text-xs text-white">
@@ -78,16 +80,16 @@ const NotificationBell = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
         <div className="flex items-center justify-between pr-2">
-          <DropdownMenuLabel>Thông báo</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("bell.title")}</DropdownMenuLabel>
           {unread > 0 && (
             <Button variant="ghost" size="sm" onClick={readAll} className="h-7 gap-1 text-xs">
-              <CheckCheck className="h-3 w-3" /> Đánh dấu đã đọc
+              <CheckCheck className="h-3 w-3" /> {t("bell.markAllRead")}
             </Button>
           )}
         </div>
         <DropdownMenuSeparator />
         {items.length === 0 ? (
-          <p className="p-4 text-center text-sm text-gray-500">Chưa có thông báo nào</p>
+          <p className="p-4 text-center text-sm text-gray-500">{t("bell.empty")}</p>
         ) : (
           <ul className="max-h-96 overflow-y-auto">
             {items.map((n) => (

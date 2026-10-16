@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import CompanySection from "../components/CompanySection.tsx";
 import JobsSection from "../components/CompanyJobsSection.tsx";
+import { useTranslation } from "react-i18next";
 
 type CompanyDetailsProp = {
   initialCompany?: Company;
@@ -29,6 +30,7 @@ const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("company");
 
   useEffect(() => {
     if (!id) {
@@ -44,14 +46,14 @@ const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
         setCompany(res);
         setJobs(jobRes || []);
       } catch (err) {
-        toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
+        toast.error(errorMessage(err, t("errors.loadOne")));
       } finally {
         setIsLoading(false);
       }
     };
 
     if (!initialCompany) fetchCompany();
-  }, [id, navigate, initialCompany]);
+  }, [id, navigate, initialCompany, t]);
 
   if (isLoading) {
     return (
@@ -74,12 +76,12 @@ const CompanyDetailsClientPage = ({ initialCompany }: CompanyDetailsProp) => {
               onClick={() => navigate("/companies")}
               className="cursor-pointer"
             >
-              Danh sách công ty
+              {t("details.breadcrumb")}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Công ty {company.name}</BreadcrumbPage>
+            <BreadcrumbPage>{t("details.current", { name: company.name })}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

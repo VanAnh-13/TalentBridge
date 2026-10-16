@@ -2,6 +2,7 @@ import type { Company } from "../../domain/company";
 import { Building2, MapPin, CalendarDays } from "lucide-react";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 import { formatISO } from "@/shared/presentation/format.ts";
+import { useTranslation } from "react-i18next";
 
 type CompanySectionProps = {
   company: Company;
@@ -14,6 +15,7 @@ const CompanySection = ({
   jobsCount,
   isRecruiter = false,
 }: CompanySectionProps) => {
+  const { t } = useTranslation(["company", "common"]);
   return (
     <>
       <div
@@ -45,18 +47,18 @@ const CompanySection = ({
         </div>
 
         <div className="rounded-2xl border bg-white p-4 shadow">
-          <h3 className="mb-2 text-lg font-semibold text-gray-800">Mô tả</h3>
+          <h3 className="mb-2 text-lg font-semibold text-gray-800">{t("common:fields.description")}</h3>
           <RichTextPreview content={company.description} />
         </div>
 
         <div className="space-y-2 rounded-2xl border bg-white p-4 text-sm text-gray-600 shadow">
           <p className="flex items-center">
             <CalendarDays className="mr-1 h-4 w-4" />
-            Ngày tạo: {formatISO(company.createdAt)}
+            {t("dates.created")} {formatISO(company.createdAt)}
           </p>
           <p className="flex items-center">
             <CalendarDays className="mr-1 h-4 w-4" />
-            Cập nhật: {formatISO(company.updatedAt)}
+            {t("dates.updated")} {formatISO(company.updatedAt)}
           </p>
         </div>
       </div>

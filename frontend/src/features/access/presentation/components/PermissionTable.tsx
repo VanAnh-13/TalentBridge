@@ -15,6 +15,7 @@ import { formatISO } from "@/shared/presentation/format.ts";
 import type { Permission } from "../../domain/permission";
 import { Badge } from "@/shared/presentation/ui/badge";
 import { getMethodColor } from "@/shared/presentation/tagColors.ts";
+import { useTranslation } from "react-i18next";
 
 interface PermissionTableProps {
   permissions: Permission[];
@@ -29,34 +30,35 @@ export function PermissionTable({
   onEdit,
   onDelete,
 }: PermissionTableProps) {
+  const { t } = useTranslation(["access", "common"]);
   return (
     <div className="overflow-hidden rounded-lg border border-blue-600">
       <Table>
         <TableHeader className="bg-blue-600 text-white">
           <TableRow>
             <TableHead className="text-center font-bold text-white">
-              ID
+              {t("common:fields.id")}
             </TableHead>
             <TableHead className="w-[300px] text-center font-bold text-white">
-              Tên quyền hạn
+              {t("permission.fields.name")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Đường dẫn API
+              {t("permission.fields.apiPath")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Phương thức
+              {t("permission.fields.method")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Module
+              {t("permission.fields.module")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Ngày tạo
+              {t("common:fields.createdAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Cập nhật
+              {t("common:fields.updatedAt")}
             </TableHead>
             <TableHead className="text-center font-bold text-white">
-              Hành động
+              {t("common:fields.actions")}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -73,8 +75,8 @@ export function PermissionTable({
             <TableRow>
               <TableCell colSpan={8}>
                 <EmptyState
-                  title="Không tìm thấy quyền hạn nào"
-                  description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm quyền hạn mới"
+                  title={t("permission.list.emptyTitle")}
+                  description={t("permission.list.emptyDescription")}
                   icon={
                     <KeyRound className="text-muted-foreground mb-4 h-12 w-12" />
                   }

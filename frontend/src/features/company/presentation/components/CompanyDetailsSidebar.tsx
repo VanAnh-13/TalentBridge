@@ -7,6 +7,7 @@ import type { Company } from "../../domain/company";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog";
 import { formatISO } from "@/shared/presentation/format.ts";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview";
+import { Trans, useTranslation } from "react-i18next";
 
 interface CompanyDetailsSidebarProps {
   company: Company | null;
@@ -23,6 +24,7 @@ export function CompanyDetailsSidebar({
   onEdit,
   onDelete,
 }: CompanyDetailsSidebarProps) {
+  const { t } = useTranslation(["company", "common"]);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export function CompanyDetailsSidebar({
           <div className="flex h-full flex-col">
             {/* Header */}
             <div className="flex items-center justify-between border-b bg-white p-6">
-              <h2 className="text-lg font-semibold">Chi tiết công ty</h2>
+              <h2 className="text-lg font-semibold">{t("details.title")}</h2>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>
@@ -90,7 +92,7 @@ export function CompanyDetailsSidebar({
                   {company.logoUrl ? (
                     <img
                       src={company.logoUrl}
-                      alt={`${company.name} logo`}
+                      alt={t("logoAlt", { name: company.name })}
                       className="h-20 w-20 rounded-lg border object-contain"
                     />
                   ) : (
@@ -104,7 +106,7 @@ export function CompanyDetailsSidebar({
                     {company.name}
                   </h3>
                   <Badge variant="secondary" className="mt-2">
-                    ID: {company.id}
+                    {t("common:fields.id")}: {company.id}
                   </Badge>
                 </div>
               </div>
@@ -115,7 +117,7 @@ export function CompanyDetailsSidebar({
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium tracking-wide text-gray-500 uppercase">
-                    Địa chỉ
+                    {t("common:fields.address")}
                   </label>
                   <div className="mt-2 flex items-start gap-2">
                     <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-400" />
@@ -126,7 +128,7 @@ export function CompanyDetailsSidebar({
                 {company.description && (
                   <div>
                     <label className="text-sm font-medium tracking-wide text-gray-500 uppercase">
-                      Mô tả
+                      {t("common:fields.description")}
                     </label>
                     <RichTextPreview content={company.description} />
                   </div>
@@ -139,14 +141,14 @@ export function CompanyDetailsSidebar({
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-500">Ngày tạo:</span>
+                  <span className="text-gray-500">{t("dates.created")}</span>
                   <span className="font-medium text-gray-900">
                     {formatISO(company.createdAt)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-500">Cập nhật:</span>
+                  <span className="text-gray-500">{t("dates.updated")}</span>
                   <span className="font-medium text-gray-900">
                     {formatISO(company.updatedAt)}
                   </span>
@@ -159,26 +161,25 @@ export function CompanyDetailsSidebar({
               <div className="flex gap-3">
                 <Button className="flex-1" onClick={() => onEdit?.(company)}>
                   <Edit className="mr-2 h-4 w-4" />
-                  Chỉnh sửa
+                  {t("common:actions.edit")}
                 </Button>
 
                 <DeleteConfirmDialog
                   onConfirm={() => onDelete?.(company.id)}
-                  title="Bạn có chắc muốn xóa công ty này?"
+                  title={t("deleteDialog.title")}
                   styledDescription={
                     <p>
-                      Hành động này sẽ
-                      <span className="text-red-500">
-                        {" "}
-                        xóa CÔNG TY, CÔNG VIỆC và HỒ SƠ ỨNG VIÊN
-                      </span>{" "}
-                      đã nộp cho công việc này.
+                      <Trans
+                        t={t}
+                        i18nKey="deleteDialog.description"
+                        components={{ danger: <span className="text-red-500" /> }}
+                      />
                     </p>
                   }
                 >
                   <Button variant="destructive" className="flex-1">
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Xóa
+                    {t("common:actions.delete")}
                   </Button>
                 </DeleteConfirmDialog>
               </div>

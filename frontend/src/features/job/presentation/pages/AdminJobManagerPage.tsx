@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 import type { Job } from "../../domain/job";
 import { JobSearchSection } from "../components/JobSearchSection.tsx";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
 import { jobs as jobUseCases } from "@/app/container";
@@ -17,6 +19,7 @@ import { HasPermission } from "@/features/auth";
 
 const JobManagerPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("job");
 
   // ============================
   // Data
@@ -86,7 +89,8 @@ const JobManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
+      // i18n.t rather than t: fetchJobs stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("browse.loadFailed", { ns: "job" })));
     } finally {
       setIsLoading(false);
     }
@@ -137,12 +141,12 @@ const JobManagerPage = () => {
     setIsLoading(true);
     try {
       await jobUseCases.remove("all", id);
-      toast.success("Xóa công ty thành công");
+      toast.success(t("manager.deleted"));
 
       if (hoveredJob?.id === id) handleCloseDetails();
       handleReset();
     } catch (err) {
-      toast.error(errorMessage(err, "Xóa công ty thất bại"));
+      toast.error(errorMessage(err, t("manager.deleteFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -175,14 +179,14 @@ const JobManagerPage = () => {
 
       {/* Header Section */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Danh sách công việc</h2>
+        <h2 className="text-lg font-semibold">{t("manager.title")}</h2>
         <HasPermission perm={"POST /jobs"}>
           <Button
             className="bg-blue-600 hover:bg-blue-700"
             onClick={() => navigate("/admin/recruitment/job-manager/upsert")}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Thêm mới
+            {t("manager.add")}
           </Button>
         </HasPermission>
       </div>

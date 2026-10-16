@@ -3,14 +3,14 @@ describe('Job Page Tests', () => {
     cy.visit('/jobs')
   })
 
-  describe('FE_JOB_01: Hiển thị danh sách jobs', () => {
+  describe('FE_JOB_01: Job list is displayed', () => {
     it('should display job list correctly', () => {
       cy.get('[data-testid="job-grid"]').should('be.visible')
       cy.get('[data-testid="job-card"]').should('have.length.greaterThan', 0)
     })
   })
 
-  describe('FE_JOB_02: Filter jobs theo level', () => {
+  describe('FE_JOB_02: Filter jobs by level', () => {
     it('should filter jobs by level', () => {
       cy.get('[data-testid="level-filter"]').select('FRESHER')
       cy.wait(500)
@@ -28,7 +28,7 @@ describe('Job Page Tests', () => {
     })
   })
 
-  describe('FE_JOB_03: Search jobs theo tên', () => {
+  describe('FE_JOB_03: Search jobs by name', () => {
     it('should search jobs by name', () => {
       cy.get('[data-testid="search-input"]').type('Software Engineer')
       cy.get('[data-testid="search-button"]').click()
@@ -39,7 +39,7 @@ describe('Job Page Tests', () => {
     })
   })
 
-  describe('FE_JOB_04: Search jobs theo địa điểm', () => {
+  describe('FE_JOB_04: Search jobs by location', () => {
     it('should search jobs by location', () => {
       cy.get('[data-testid="location-input"]').type('Ho Chi Minh')
       cy.get('[data-testid="search-button"]').click()
@@ -50,7 +50,7 @@ describe('Job Page Tests', () => {
     })
   })
 
-  describe('FE_JOB_05: Pagination hoạt động đúng', () => {
+  describe('FE_JOB_05: Pagination works', () => {
     it('should navigate between pages', () => {
       // Check first page
       cy.get('[data-testid="page-1"]').should('have.class', 'active')
@@ -69,7 +69,7 @@ describe('Job Page Tests', () => {
     })
   })
 
-  describe('FE_JOB_06: Job card hiển thị đầy đủ thông tin', () => {
+  describe('FE_JOB_06: Job card shows all its details', () => {
     it('should display complete job information on card', () => {
       cy.get('[data-testid="job-card"]').first().within(() => {
         cy.get('[data-testid="job-title"]').should('be.visible')
@@ -81,7 +81,7 @@ describe('Job Page Tests', () => {
     })
   })
 
-  describe('FE_JOB_07: Click job card mở job details', () => {
+  describe('FE_JOB_07: Clicking a job card opens its details', () => {
     it('should navigate to job details on card click', () => {
       cy.get('[data-testid="job-card"]').first().click()
       cy.url().should('match', /\/jobs\/\d+/)
@@ -89,7 +89,7 @@ describe('Job Page Tests', () => {
     })
   })
 
-  describe('FE_JOB_08: Responsive layout trên mobile/tablet', () => {
+  describe('FE_JOB_08: Responsive layout on mobile and tablet', () => {
     it('should display correctly on mobile viewport', () => {
       cy.viewport('iphone-x')
       cy.get('[data-testid="job-grid"]').should('have.css', 'grid-template-columns', '1fr')
@@ -109,7 +109,7 @@ describe('Job Details Tests', () => {
     cy.visit('/jobs/1') // Assuming job with ID 1 exists
   })
 
-  describe('FE_APPLY_01: Hiển thị chi tiết job', () => {
+  describe('FE_APPLY_01: Job details are displayed', () => {
     it('should display job details correctly', () => {
       cy.get('[data-testid="job-title"]').should('be.visible')
       cy.get('[data-testid="job-description"]').should('be.visible')
@@ -118,7 +118,7 @@ describe('Job Details Tests', () => {
     })
   })
 
-  describe('FE_APPLY_02: Nút "Ứng tuyển" chỉ hiện khi đã login', () => {
+  describe('FE_APPLY_02: The "Apply" button only shows when logged in', () => {
     it('should not show apply button when not logged in', () => {
       // Clear any existing auth
       cy.window().then((win) => {
@@ -143,7 +143,7 @@ describe('Job Details Tests', () => {
     })
   })
 
-  describe('FE_APPLY_03: Form upload CV validation', () => {
+  describe('FE_APPLY_03: CV upload form validation', () => {
     beforeEach(() => {
       // Mock logged in state
       cy.window().then((win) => {
@@ -167,7 +167,7 @@ describe('Job Details Tests', () => {
         })
       })
       cy.get('[data-testid="submit-application"]').click()
-      cy.get('[data-testid="error-message"]').should('contain', 'Chỉ chấp nhận file PDF')
+      cy.get('[data-testid="error-message"]').should('contain', 'Only PDF files are accepted')
     })
 
     it('should accept valid PDF file', () => {
@@ -183,7 +183,7 @@ describe('Job Details Tests', () => {
     })
   })
 
-  describe('FE_APPLY_05: Không cho phép ứng tuyển lại job đã apply', () => {
+  describe('FE_APPLY_05: A job cannot be applied for twice', () => {
     it('should disable apply button for already applied jobs', () => {
       // Mock already applied state
       cy.intercept('GET', '/resumes/me*', {

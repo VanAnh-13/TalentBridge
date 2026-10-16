@@ -1,13 +1,13 @@
 import { offerProblems } from "../domain/interview";
-import type { InterviewOffer } from "../domain/interview";
+import type { InterviewOffer, OfferProblem } from "../domain/interview";
 import type { InterviewRepository } from "./ports";
 
-/** Raised before anything is sent, with the sentence to show. */
+/** Raised before anything is sent, with the problems found (codes the interface translates). */
 export class InvalidOfferError extends Error {
-  readonly problems: string[];
+  readonly problems: OfferProblem[];
 
-  constructor(problems: string[]) {
-    super(problems.join(". "));
+  constructor(problems: OfferProblem[]) {
+    super(problems.join(", "));
     this.name = "InvalidOfferError";
     this.problems = problems;
   }

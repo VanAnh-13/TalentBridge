@@ -7,6 +7,10 @@ import { Input } from "@/shared/presentation/ui/input";
 import { Label } from "@/shared/presentation/ui/label";
 import { Camera, ImageIcon, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+/** Why the chosen file cannot be used, as a key under avatarForm.errors. */
+type AvatarError = "invalidType" | "tooLarge" | "required";
 
 interface AvatarUploadFormProps {
   currentAvatarUrl?: string;
@@ -23,9 +27,10 @@ const AvatarUploadForm = ({
   onCancel,
   isLoading = false,
 }: AvatarUploadFormProps) => {
+  const { t } = useTranslation(["user", "common"]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<AvatarError | "">("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const getUserInitials = (name: string) => {
@@ -47,14 +52,14 @@ const AvatarUploadForm = ({
       "image/webp",
     ];
     if (!allowedTypes.includes(file.type)) {
-      setError("Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WebP)");
+      setError("invalidType");
       return false;
     }
 
     // Check file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      setError("Kích thước file không được vượt quá 5MB");
+      setError("tooLarge");
       return false;
     }
 
@@ -84,7 +89,7 @@ const AvatarUploadForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile) {
-      setError("Vui lòng chọn file ảnh");
+      setError("required");
       return;
     }
 
@@ -127,7 +132,7 @@ const AvatarUploadForm = ({
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-xl font-bold text-orange-800">
               <Camera className="h-5 w-5" />
-              Cập nhật ảnh đại diện
+              {t("avatarForm.title")}
             </CardTitle>
             <Button
               variant="ghost"
@@ -156,14 +161,14 @@ const AvatarUploadForm = ({
                 </Avatar>
               </div>
               <p className="text-sm text-gray-600">
-                {previewUrl ? "Ảnh mới được chọn" : "Ảnh hiện tại"}
+                {previewUrl ? t("avatarForm.newSelected") : t("avatarForm.current")}
               </p>
             </div>
 
             {/* File Upload Area */}
             <div className="space-y-4">
               <Label className="text-sm font-medium text-gray-700">
-                Chọn ảnh mới *
+                {t("avatarForm.choose")} *
               </Label>
 
               <div
@@ -177,7 +182,7 @@ const AvatarUploadForm = ({
               >
                 <ImageIcon className="mx-auto mb-4 size-6 text-orange-400" />
                 <p className="mb-2 text-sm text-gray-600">
-                  Kéo thả ảnh vào đây hoặc
+                  {t("avatarForm.dropHint")}
                 </p>
                 <Button
                   type="button"
@@ -186,7 +191,7 @@ const AvatarUploadForm = ({
                   className="border-orange-500 text-orange-600 hover:bg-orange-50"
                 >
                   <Upload className="mr-2 h-4 w-4" />
-                  Chọn file
+                  {t("avatarForm.chooseFile")}
                 </Button>
                 <Input
                   ref={fileInputRef}
@@ -224,7 +229,7 @@ const AvatarUploadForm = ({
 
               {error && (
                 <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
-                  {error}
+                  {t(`avatarForm.errors.${error}`)}
                 </p>
               )}
             </div>
@@ -239,12 +244,12 @@ const AvatarUploadForm = ({
                 {isLoading ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Đang tải lên...
+                    {t("avatarForm.uploading")}
                   </>
                 ) : (
                   <>
                     <Upload className="mr-2 h-4 w-4" />
-                    Cập nhật ảnh
+                    {t("avatarForm.submit")}
                   </>
                 )}
               </Button>
@@ -256,7 +261,7 @@ const AvatarUploadForm = ({
                 disabled={isLoading}
                 className="flex-1 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50"
               >
-                Hủy bỏ
+                {t("common:actions.cancel")}
               </Button>
             </div>
           </form>

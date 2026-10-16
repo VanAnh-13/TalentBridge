@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import { jobs as jobUseCases } from "@/app/container";
 import { toast } from "sonner";
 import { errorMessage } from "@/shared/domain/errors";
@@ -22,6 +24,7 @@ type JobDetailsProp = {
 };
 
 const JobDetailsClientPage = ({ initialJob }: JobDetailsProp) => {
+  const { t } = useTranslation("job");
   const [isLoading, setIsLoading] = useState(false);
   const [job, setJob] = useState<Job | undefined>(initialJob);
   const { id } = useParams();
@@ -39,7 +42,8 @@ const JobDetailsClientPage = ({ initialJob }: JobDetailsProp) => {
         const res = await jobUseCases.find(Number.parseInt(id));
         setJob(res);
       } catch (err) {
-        toast.error(errorMessage(err, "Không thể lấy thông tin công việc"));
+        // i18n.t rather than t: the effect keeps its dependencies, so switching language does not fetch again
+        toast.error(errorMessage(err, i18n.t("details.loadFailed", { ns: "job" })));
       } finally {
         setIsLoading(false);
       }
@@ -67,7 +71,7 @@ const JobDetailsClientPage = ({ initialJob }: JobDetailsProp) => {
               onClick={() => navigate("/jobs")}
               className="cursor-pointer"
             >
-              Danh sách việc làm
+              {t("details.breadcrumb")}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

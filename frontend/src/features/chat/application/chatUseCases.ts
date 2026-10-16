@@ -3,6 +3,14 @@ import type { ChatListener, ChatRepository, ChatStream } from "./ports";
 
 const PAGE = 30;
 
+/** Raised before anything is sent when the text is blank or longer than the server accepts. */
+export class InvalidMessageError extends Error {
+  constructor() {
+    super("Invalid message");
+    this.name = "InvalidMessageError";
+  }
+}
+
 export const createChatUseCases = (repository: ChatRepository, stream: ChatStream) => ({
   open: (resumeId: number) => repository.open(resumeId),
 
@@ -15,7 +23,7 @@ export const createChatUseCases = (repository: ChatRepository, stream: ChatStrea
   },
 
   async send(conversationId: number, text: string) {
-    if (!sendable(text)) throw new Error("Tin nhắn không hợp lệ");
+    if (!sendable(text)) throw new InvalidMessageError();
     return repository.send(conversationId, text.trim());
   },
 

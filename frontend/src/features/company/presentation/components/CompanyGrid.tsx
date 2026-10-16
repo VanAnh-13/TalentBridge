@@ -5,6 +5,7 @@ import { getFirstLineFromHtml } from "@/shared/presentation/format.ts";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner";
 import { EmptyState } from "@/shared/presentation/components/EmptyState";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type CompanyGridProps = {
   isLoading: boolean;
@@ -13,6 +14,7 @@ type CompanyGridProps = {
 
 const CompanyGrid = ({ isLoading, companies }: CompanyGridProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation("company");
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -25,8 +27,8 @@ const CompanyGrid = ({ isLoading, companies }: CompanyGridProps) => {
       {!isLoading && companies.length === 0 && (
         <div className="col-span-3 flex min-h-[300px] items-center justify-center">
           <EmptyState
-            title="Không tìm thấy công ty nào"
-            description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm công ty mới"
+            title={t("notFound.title")}
+            description={t("notFound.description")}
             icon={<Building2 className="text-muted-foreground h-12 w-12" />}
           />
         </div>
@@ -45,7 +47,7 @@ const CompanyGrid = ({ isLoading, companies }: CompanyGridProps) => {
                   {company.logoUrl ? (
                     <img
                       src={company.logoUrl || "/placeholder.svg"}
-                      alt={`${company.name} logo`}
+                      alt={t("logoAlt", { name: company.name })}
                       className="h-full w-full object-contain"
                     />
                   ) : (
@@ -71,7 +73,7 @@ const CompanyGrid = ({ isLoading, companies }: CompanyGridProps) => {
             </p>
 
             <div className="font-medium text-orange-600">
-              {company.jobsCount || 0} việc làm
+              {t("grid.jobs", { count: company.jobsCount || 0 })}
             </div>
           </CardContent>
         </Card>

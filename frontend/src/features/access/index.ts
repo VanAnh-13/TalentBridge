@@ -4,3 +4,5 @@ export { default as PermissionManagerPage } from "./presentation/pages/Permissio
 export { default as RoleManagerPage } from "./presentation/pages/RoleManagerPage";
 export { default as RoleSelection } from "./presentation/components/RoleSelection";
 export type { RoleRef } from "./domain/role";
+
+export { messages as accessMessages } from "./presentation/i18n";

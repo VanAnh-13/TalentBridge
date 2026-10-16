@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   X,
   MapPin,
@@ -14,7 +15,7 @@ import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Badge } from "@/shared/presentation/ui/badge.tsx";
 import { Separator } from "@/shared/presentation/ui/separator.tsx";
 import { DeleteConfirmDialog } from "@/shared/presentation/components/DeleteConfirmationDialog.tsx";
-import { formatISO } from "@/shared/presentation/format.ts";
+import { formatISO, formatSalary } from "@/shared/presentation/format.ts";
 import type { Job } from "../../domain/job";
 import RichTextPreview from "@/shared/presentation/components/RichText/index-preview.tsx";
 
@@ -33,6 +34,7 @@ export function JobDetailsSidebar({
   onEdit,
   onDelete,
 }: JobDetailsSidebarProps) {
+  const { t } = useTranslation(["job", "common"]);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export function JobDetailsSidebar({
           <div className="flex h-full flex-col">
             {/* Header */}
             <div className="flex items-center justify-between border-b bg-white p-6">
-              <h2 className="text-lg font-semibold">Chi tiết công việc</h2>
+              <h2 className="text-lg font-semibold">{t("sidebar.title")}</h2>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>
@@ -92,7 +94,9 @@ export function JobDetailsSidebar({
               {/* Job Title */}
               <div className="space-y-3 text-center">
                 <h3 className="text-xl font-bold text-gray-900">{job.name}</h3>
-                <Badge variant="secondary">ID: {job.id}</Badge>
+                <Badge variant="secondary">
+                  {t("common:fields.id")}: {job.id}
+                </Badge>
               </div>
 
               <Separator />
@@ -101,7 +105,7 @@ export function JobDetailsSidebar({
               <div>
                 <div className="my-4">
                   <label className="text-sm font-medium tracking-wide text-gray-500 uppercase">
-                    Công ty
+                    {t("common:fields.company")}
                   </label>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
@@ -127,7 +131,7 @@ export function JobDetailsSidebar({
                 <>
                   <div className="my-4">
                     <label className="text-sm font-medium tracking-wide text-gray-500 uppercase">
-                      Kỹ năng yêu cầu
+                      {t("fields.requiredSkills")}
                     </label>
                   </div>
 
@@ -146,7 +150,7 @@ export function JobDetailsSidebar({
               {/* Job Info */}
               <div className="my-4">
                 <label className="text-sm font-medium tracking-wide text-gray-500 uppercase">
-                  Thông tin chung
+                  {t("sidebar.general")}
                 </label>
               </div>
 
@@ -158,22 +162,21 @@ export function JobDetailsSidebar({
 
                 <div className="flex items-center gap-2">
                   <BadgeDollarSign className="h-4 w-4 text-gray-400" />
-                  <p className="text-gray-900">
-                    {job.salary === 0
-                      ? "Thương lượng"
-                      : job.salary.toLocaleString()}{" "}
-                    VND
-                  </p>
+                  <p className="text-gray-900">{formatSalary(job.salary)}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-gray-400" />
-                  <p className="text-gray-900">Số lượng: {job.quantity}</p>
+                  <p className="text-gray-900">
+                    {t("sidebar.quantity", { count: job.quantity })}
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Layers3 className="h-4 w-4 text-gray-400" />
-                  <p className="text-gray-900">Cấp bậc: {job.level}</p>
+                  <p className="text-gray-900">
+                    {t("sidebar.level", { level: t(`common:levels.${job.level}`) })}
+                  </p>
                 </div>
               </div>
 
@@ -181,7 +184,7 @@ export function JobDetailsSidebar({
 
               <div className="my-4">
                 <label className="text-sm font-medium tracking-wide text-gray-500 uppercase">
-                  Mô tả
+                  {t("common:fields.description")}
                 </label>
               </div>
               <RichTextPreview content={job.description} />
@@ -192,14 +195,14 @@ export function JobDetailsSidebar({
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-500">Ngày bắt đầu:</span>
+                  <span className="text-gray-500">{t("sidebar.startDate")}</span>
                   <span className="font-medium text-gray-900">
                     {formatISO(job.startDate)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-500">Ngày kết thúc:</span>
+                  <span className="text-gray-500">{t("sidebar.endDate")}</span>
                   <span className="font-medium text-gray-900">
                     {formatISO(job.endDate)}
                   </span>
@@ -212,26 +215,23 @@ export function JobDetailsSidebar({
               <div className="flex gap-3">
                 <Button className="flex-1" onClick={() => onEdit?.(job)}>
                   <Edit className="mr-2 h-4 w-4" />
-                  Chỉnh sửa
+                  {t("common:actions.edit")}
                 </Button>
 
                 <DeleteConfirmDialog
                   onConfirm={() => onDelete?.(job.id)}
-                  title="Bạn có chắc muốn xóa công việc này?"
+                  title={t("delete.title")}
                   styledDescription={
-                    <p>
-                      Hành động này sẽ
-                      <span className="text-red-500">
-                        {" "}
-                        xóa CÔNG VIỆC và HỒ SƠ ỨNG VIÊN
-                      </span>{" "}
-                      đã nộp cho công việc này.
-                    </p>
+                    <Trans
+                      t={t}
+                      i18nKey="delete.description"
+                      components={{ warn: <span className="text-red-500" /> }}
+                    />
                   }
                 >
                   <Button variant="destructive" className="flex-1">
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Xóa
+                    {t("common:actions.delete")}
                   </Button>
                 </DeleteConfirmDialog>
               </div>

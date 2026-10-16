@@ -9,8 +9,11 @@ import type { Company } from "../../domain/company";
 import { NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CompanyManagerRecruiterPage = () => {
+  const { t } = useTranslation("company");
   const [isLoading, setIsLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -27,7 +30,8 @@ const CompanyManagerRecruiterPage = () => {
       const res = await companyUseCases.mine();
       setCompany(res ?? undefined);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy thông tin công ty"));
+      // i18n.t rather than t: fetchCompany stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadOne", { ns: "company" })));
     } finally {
       setIsLoading(false);
     }
@@ -45,9 +49,9 @@ const CompanyManagerRecruiterPage = () => {
       setIsLoading(true);
       await companyUseCases.updateMine(data, logo);
       fetchCompany();
-      toast.success("Cập nhật công ty thành công.");
+      toast.success(t("toasts.updated"));
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại."));
+      toast.error(errorMessage(err, t("errors.failed")));
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +74,7 @@ const CompanyManagerRecruiterPage = () => {
         className="bg-purple-600 hover:bg-purple-700"
       >
         <NotebookPen className="mr-2 h-4 w-4" />
-        Chỉnh sửa thông tin công ty
+        {t("mine.edit")}
       </Button>
 
       <CompanySection company={company} jobsCount={0} isRecruiter={true} />

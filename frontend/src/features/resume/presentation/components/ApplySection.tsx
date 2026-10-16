@@ -1,5 +1,6 @@
 import { useAuthState } from "@/features/auth";
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { Button } from "@/shared/presentation/ui/button.tsx";
 import { Send, Upload, X, FileText } from "lucide-react";
@@ -25,6 +26,7 @@ interface ApplySectionProps {
 }
 
 export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
+  const { t } = useTranslation(["resume", "common"]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +40,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
 
   const openInput = () => {
     if (pdfInputRef.current) pdfInputRef.current.click();
-    else toast.error("Hệ thống đã gặp vấn đề");
+    else toast.error(t("upload.systemError"));
   };
 
   // =============================
@@ -59,7 +61,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
 
   const handleApplyClick = () => {
     if (!isLogin) {
-      toast.error("Bạn cần đăng nhập để ứng tuyển vị trí này");
+      toast.error(t("apply.loginRequired"));
       return;
     }
 
@@ -70,7 +72,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
     const file = event.target.files?.[0];
     if (file) {
       if (!checkFileSizeAndFileType(file, 5 * 1024 * 1024, "application/pdf")) {
-        toast.error("File không hợp lệ");
+        toast.error(t("upload.invalidFile"));
         return;
       }
 
@@ -84,7 +86,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
 
   const handleSubmit = async () => {
     if (!selectedFile) {
-      toast.error("Vui lòng chọn file CV");
+      toast.error(t("upload.chooseFile"));
       return;
     }
 
@@ -97,11 +99,11 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
         pdf: selectedFile,
       });
 
-      toast.success("Ứng tuyển thành công! Chúng tôi sẽ liên hệ với bạn sớm.");
+      toast.success(t("apply.success"));
       setIsModalOpen(false);
       setSelectedFile(null);
     } catch (error) {
-      toast.error(errorMessage(error, "Không thể Ứng tuyển"));
+      toast.error(errorMessage(error, t("apply.failed")));
     } finally {
       setIsLoading(false);
     }
@@ -119,7 +121,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
           onClick={handleApplyClick}
           className="w-full bg-orange-600 py-10 font-semibold text-white hover:bg-orange-700"
         >
-          Ứng tuyển ngay
+          {t("apply.applyNow")}
         </Button>
       </div>
 
@@ -131,7 +133,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
           size="lg"
         >
           <Send className="mr-2 h-5 w-5" />
-          Nộp CV
+          {t("apply.sendCv")}
         </Button>
       </div>
 
@@ -139,7 +141,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="flex h-[95vh] max-h-[95vh] !w-2/3 !max-w-none flex-col">
           <DialogHeader>
-            <DialogTitle className="text-xl">Ứng tuyển vị trí</DialogTitle>
+            <DialogTitle className="text-xl">{t("apply.title")}</DialogTitle>
             <DialogDescription className="text-sm text-gray-600">
               {jobTitle}
             </DialogDescription>
@@ -153,7 +155,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
               >
                 {/* Label */}
                 <Label htmlFor="cv-upload" className="mb-4 text-sm font-medium">
-                  Hồ sơ xin việc của bạn (PDF){" "}
+                  {t("apply.cvLabel")}{" "}
                   <span className="text-red-500">*</span>
                 </Label>
 
@@ -161,8 +163,11 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
                 <div className="flex flex-1 flex-col justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center transition-colors hover:border-orange-400">
                   <Upload className="mx-auto mb-4 h-16 w-16 text-gray-400" />
                   <div className="mb-4 text-lg text-gray-600">
-                    Kéo thả file PDF vào đây hoặc{" "}
-                    <span className="text-orange-500">nhấp để chọn file</span>
+                    <Trans
+                      t={t}
+                      i18nKey="upload.dropHint"
+                      components={{ highlight: <span className="text-orange-500" /> }}
+                    />
                   </div>
                   <Input
                     id="cv-upload"
@@ -182,9 +187,9 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
                     }}
                     className="mx-auto"
                   >
-                    Tải lên từ thiết bị
+                    {t("upload.fromDevice")}
                   </Button>
-                  <div className="mt-4 text-sm text-gray-500">Tối đa 5MB</div>
+                  <div className="mt-4 text-sm text-gray-500">{t("upload.maxSize")}</div>
                 </div>
               </div>
             ) : (
@@ -229,7 +234,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
                 className="flex-1 py-3"
                 disabled={isLoading}
               >
-                Hủy
+                {t("common:actions.cancel")}
               </Button>
               <Button
                 type="button"
@@ -237,7 +242,7 @@ export function ApplySection({ jobId, jobTitle }: ApplySectionProps) {
                 disabled={!selectedFile || isLoading}
                 className="flex-1 bg-orange-600 py-3 hover:bg-orange-700"
               >
-                {isLoading ? "Đang gửi..." : "Ứng tuyển"}
+                {isLoading ? t("apply.sending") : t("apply.submit")}
               </Button>
             </div>
           </div>

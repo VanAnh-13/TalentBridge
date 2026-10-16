@@ -1,7 +1,8 @@
+import i18n from "i18next";
 import { Globe, Monitor, Smartphone, Tablet } from "lucide-react";
 
 export const getBrowserInfo = (userAgent?: string | null) => {
-  if (!userAgent) return "Trình duyệt không xác định";
+  if (!userAgent) return i18n.t("device.unknownBrowser", { ns: "auth" });
   switch (true) {
     case /Chrome/.test(userAgent):
       return "Chrome";
@@ -14,12 +15,12 @@ export const getBrowserInfo = (userAgent?: string | null) => {
     case /Opera/.test(userAgent):
       return "Opera";
     default:
-      return "Trình duyệt khác";
+      return i18n.t("device.otherBrowser", { ns: "auth" });
   }
 };
 
 export const getLocationInfo = (userAgent?: string | null) => {
-  if (!userAgent) return "Không xác định";
+  if (!userAgent) return i18n.t("device.unknown", { ns: "auth" });
   switch (true) {
     case /Windows/.test(userAgent):
       return "Windows";
@@ -32,7 +33,7 @@ export const getLocationInfo = (userAgent?: string | null) => {
     case /iOS/.test(userAgent):
       return "iOS";
     default:
-      return "Không xác định";
+      return i18n.t("device.unknown", { ns: "auth" });
   }
 };
 

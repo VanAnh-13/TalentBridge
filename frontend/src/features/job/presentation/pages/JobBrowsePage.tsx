@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+import { useSearchParams } from "react-router-dom";
 import type { Job } from "../../domain/job";
 import JobGrid from "../components/JobGrid";
 import { JobSearchSection } from "../components/JobBrowseSearch";
@@ -7,7 +10,10 @@ import { jobs as jobUseCases } from "@/app/container";
 import { toast } from "sonner";
 import Pagination from "@/shared/presentation/components/Pagination";
 
+/** The public job list. On arrival, `?name=` and `?location=` (sent by the home page search) prefill the filters. */
 export default function JobClientPage() {
+  const { t } = useTranslation("job");
+  const [searchParams] = useSearchParams();
   // ============================
   // Data
   // ============================
@@ -25,12 +31,19 @@ export default function JobClientPage() {
   // ============================
   // Search State
   // ============================
-  const [isExpandedSearch, setIsExpandedSearch] = useState(false);
+  // The location field is in the expanded part: open it when the URL brings a location.
+  const [isExpandedSearch, setIsExpandedSearch] = useState(
+    () => !!searchParams.get("location")?.trim(),
+  );
 
-  const [searchName, setSearchName] = useState("");
+  const [searchName, setSearchName] = useState(
+    () => searchParams.get("name")?.trim() ?? "",
+  );
   const [searchCompanyName, setsearchCompanyName] = useState("");
   const [searchLevel, setSearchLevel] = useState("all");
-  const [searchLocation, setSearchLocation] = useState("");
+  const [searchLocation, setSearchLocation] = useState(
+    () => searchParams.get("location")?.trim() ?? "",
+  );
 
   // ============================
   // HANDLE FETCHING DATA
@@ -60,7 +73,8 @@ export default function JobClientPage() {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty"));
+      // i18n.t rather than t: fetchJobs stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("browse.loadFailed", { ns: "job" })));
     } finally {
       setIsLoading(false);
     }
@@ -110,24 +124,32 @@ export default function JobClientPage() {
       <div className="relative w-full bg-gradient-to-r from-orange-500 via-orange-600 to-yellow-500 px-4 py-16">
         <div className="container mx-auto text-center">
           <div className="mb-6">
-            <h1 className="mb-4 text-5xl font-bold text-white">Việc làm</h1>
+            <h1 className="mb-4 text-5xl font-bold text-white">
+              {t("browse.title")}
+            </h1>
             <p className="mx-auto max-w-2xl text-xl text-orange-100">
-              Khám phá hàng nghìn cơ hội việc làm chất lượng cao
+              {t("browse.subtitle")}
             </p>
           </div>
 
           <div className="mt-8 flex justify-center gap-8">
             <div className="text-center">
               <div className="text-2xl font-bold text-white">2000+</div>
-              <div className="text-sm text-orange-200">Việc làm</div>
+              <div className="text-sm text-orange-200">
+                {t("browse.statJobs")}
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-white">500+</div>
-              <div className="text-sm text-orange-200">Công ty</div>
+              <div className="text-sm text-orange-200">
+                {t("browse.statCompanies")}
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-white">10k+</div>
-              <div className="text-sm text-orange-200">Ứng viên</div>
+              <div className="text-sm text-orange-200">
+                {t("browse.statCandidates")}
+              </div>
             </div>
           </div>
         </div>
@@ -152,7 +174,7 @@ export default function JobClientPage() {
             }}
           />
           <div className="mt-4 text-center text-sm text-gray-500">
-            Tìm thấy {jobs.length} việc làm
+            {t("browse.found", { count: jobs.length })}
           </div>
         </div>
 

@@ -35,15 +35,9 @@ export interface MatchingStatus {
   model: string | null;
 }
 
+/** How well an application fits; presentation shows it as matching:tone.<tone>. */
 export type ScoreTone = "excellent" | "good" | "partial" | "poor";
 
 /** 90-100 excellent, 70-89 good, 40-69 partial, below that poor (the bands the AI is told to use). */
 export const toneOf = (score: number): ScoreTone =>
   score >= 90 ? "excellent" : score >= 70 ? "good" : score >= 40 ? "partial" : "poor";
-
-export const TONE_LABEL: Record<ScoreTone, string> = {
-  excellent: "Rất phù hợp",
-  good: "Phù hợp",
-  partial: "Phù hợp một phần",
-  poor: "Ít phù hợp",
-};

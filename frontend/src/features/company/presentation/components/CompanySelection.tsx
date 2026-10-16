@@ -18,6 +18,8 @@ import type { CompanyRef } from "../../domain/company";
 import { EmptyState } from "@/shared/presentation/components/EmptyState.tsx";
 import LoadingSpinner from "@/shared/presentation/components/LoadingSpinner.tsx";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 interface CompanySelectionProps {
   selectedCompany: CompanyRef | undefined;
@@ -30,6 +32,8 @@ const CompanySelection = ({
   addCompany,
   removeCompany,
 }: CompanySelectionProps) => {
+  const { t } = useTranslation(["company", "common"]);
+
   // ============================
   // Modal State
   // ============================
@@ -74,7 +78,8 @@ const CompanySelection = ({
       setTotalPages(data.totalPages);
       setIsLoading(false);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+      // i18n.t rather than t: fetchCompanies stays free of render values, so the effects calling it need no extra dependency
+      toast.error(errorMessage(err, i18n.t("errors.loadList", { ns: "company" })));
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +100,7 @@ const CompanySelection = ({
   return (
     <div className="space-y-2">
       <Label>
-        Công ty <span className="text-red-500">*</span>
+        {t("common:fields.company")} <span className="text-red-500">*</span>
       </Label>
 
       <div className="rounded-md border bg-gray-50/50 p-3">
@@ -105,7 +110,7 @@ const CompanySelection = ({
               {selectedCompany.logoUrl ? (
                 <img
                   src={selectedCompany.logoUrl}
-                  alt={`${selectedCompany.name} logo`}
+                  alt={t("logoAlt", { name: selectedCompany.name })}
                   className="h-16 w-16 rounded-lg border object-contain"
                 />
               ) : (
@@ -137,7 +142,7 @@ const CompanySelection = ({
           <div className="mb-3 flex min-h-[100px] w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
             <div>
               <Building2 className="mx-auto mb-2 h-8 w-8 text-gray-400" />
-              <p className="text-sm text-gray-500">Chưa chọn công ty</p>
+              <p className="text-sm text-gray-500">{t("selection.none")}</p>
             </div>
           </div>
         )}
@@ -150,22 +155,22 @@ const CompanySelection = ({
               className="w-full border-dashed"
             >
               <Building2 className="mr-2 h-4 w-4" />
-              {selectedCompany ? "Đổi công ty" : "Chọn công ty"}
+              {selectedCompany ? t("selection.change") : t("selection.choose")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
-                Chọn công ty
+                {t("selection.choose")}
               </DialogTitle>
-              <DialogDescription>company selection panel</DialogDescription>
+              <DialogDescription>{t("selection.description")}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="relative">
                 <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
-                  placeholder="Tìm kiếm công ty..."
+                  placeholder={t("selection.searchPlaceholder")}
                   value={searchName}
                   onChange={(e) => setsearchName(e.target.value)}
                   className="pl-10"
@@ -181,8 +186,8 @@ const CompanySelection = ({
                 {companies.length === 0 && !isLoading && (
                   <div className="py-8 text-center">
                     <EmptyState
-                      title="Không tìm thấy công ty nào"
-                      description="Thử thay đổi tiêu chí tìm kiếm hoặc thêm công ty mới"
+                      title={t("notFound.title")}
+                      description={t("notFound.description")}
                       icon={
                         <Building2 className="text-muted-foreground h-12 w-12" />
                       }
@@ -200,7 +205,7 @@ const CompanySelection = ({
                       {company.logoUrl ? (
                         <img
                           src={company.logoUrl}
-                          alt={`${company.name} logo`}
+                          alt={t("logoAlt", { name: company.name })}
                           className="h-10 w-10 rounded-lg border object-contain"
                         />
                       ) : (

@@ -4,3 +4,5 @@ export { default as RecruiterResumeManagerPage } from "./presentation/pages/Recr
 export { default as MyResumesPage } from "./presentation/pages/MyResumesPage";
 export { ApplySection } from "./presentation/components/ApplySection";
 export type { Resume } from "./domain/resume";
+
+export { messages as resumeMessages } from "./presentation/i18n";

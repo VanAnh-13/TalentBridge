@@ -12,6 +12,7 @@ import { Label } from "@/shared/presentation/ui/label";
 import RichTextEditor from "@/shared/presentation/components/RichText/index-editor";
 import type { Company, CompanyData } from "../../domain/company";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { useTranslation } from "react-i18next";
 
 interface CompanyFormProps {
   onSubmit: (data: CompanyData, logo: File | null, id?: number) => Promise<unknown>;
@@ -32,6 +33,7 @@ export function CompanyForm({
   isRecruiter = false,
   isLoading,
 }: CompanyFormProps) {
+  const { t } = useTranslation(["company", "common"]);
   const [formData, setFormData] = useState<CompanyData>({
     name: "",
     description: "",
@@ -99,16 +101,16 @@ export function CompanyForm({
       <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="text-center">
-            Biểu mẫu thông tin công ty
+            {t("form.title")}
           </DialogTitle>
           <DialogDescription className="text-center">
-            {initialData ? "Chỉnh sửa công ty" : "Thêm công ty mới"}
+            {initialData ? t("form.editMode") : t("form.createMode")}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">
-              Tên công ty{" "}
+              {t("fields.name")}{" "}
               <span className="text-red-500">
                 <span className="text-red-500">*</span>
               </span>
@@ -123,20 +125,20 @@ export function CompanyForm({
 
           <div className="space-y-2">
             <Label htmlFor="description">
-              Mô tả <span className="text-red-500">*</span>
+              {t("common:fields.description")} <span className="text-red-500">*</span>
             </Label>
             <RichTextEditor
               value={formData.description}
               onChange={(value) => {
                 handleChange("description", value);
               }}
-              placeholder="Nhập mô tả công ty..."
+              placeholder={t("form.descriptionPlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="address">
-              Địa chỉ <span className="text-red-500">*</span>
+              {t("common:fields.address")} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="address"
@@ -147,7 +149,7 @@ export function CompanyForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="logo">Logo</Label>
+            <Label htmlFor="logo">{t("common:fields.logo")}</Label>
             <Input
               id="logo"
               type="file"
@@ -158,7 +160,7 @@ export function CompanyForm({
               <div className="mt-2">
                 <img
                   src={logoPreview}
-                  alt="Xem trước logo"
+                  alt={t("form.logoPreview")}
                   className="h-16 rounded border"
                 />
               </div>
@@ -172,14 +174,14 @@ export function CompanyForm({
               disabled={isLoading}
               onClick={() => onOpenChange(false)}
             >
-              Hủy
+              {t("common:actions.cancel")}
             </Button>
             <Button
               disabled={isLoading}
               type="submit"
               className="bg-blue-600 hover:bg-blue-700"
             >
-              {initialData ? "Lưu thay đổi" : "Thêm"}
+              {initialData ? t("form.saveChanges") : t("common:actions.add")}
             </Button>
           </div>
         </form>

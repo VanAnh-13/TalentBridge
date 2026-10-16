@@ -1,5 +1,7 @@
 import { RefreshCw, Sparkles } from "lucide-react";
+import i18n from "i18next";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { jobs as jobUseCases, matching as matchingUseCases } from "@/app/container";
@@ -10,7 +12,7 @@ import { formatISO } from "@/shared/presentation/format";
 import { Button } from "@/shared/presentation/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/presentation/ui/card";
 
-import { toneOf, TONE_LABEL } from "../../domain/match";
+import { toneOf } from "../../domain/match";
 import type { MatchingStatus, RankedCandidate } from "../../domain/match";
 import ScoreBadge from "../components/ScoreBadge";
 
@@ -32,6 +34,7 @@ const Skills = ({ names, className }: { names: string[]; className: string }) =>
 
 /** The applicants of one job, best AI match first, with the reasons behind each score. */
 const CandidateRankingPage = () => {
+  const { t } = useTranslation(["matching", "common"]);
   const [options, setOptions] = useState<JobOption[]>([]);
   const [jobId, setJobId] = useState<number | null>(null);
   const [status, setStatus] = useState<MatchingStatus | null>(null);
@@ -51,7 +54,8 @@ const CandidateRankingPage = () => {
         setStatus(state);
         if (list.length > 0) setJobId(list[0].id);
       } catch (err) {
-        toast.error(errorMessage(err, "Không thể tải danh sách công việc"));
+        // i18n.t rather than t here and in load: switching language must not fetch again
+        toast.error(errorMessage(err, i18n.t("ranking.jobsLoadFailed", { ns: "matching" })));
       }
     })();
   }, []);
@@ -62,7 +66,7 @@ const CandidateRankingPage = () => {
     try {
       setRanked(await matchingUseCases.candidatesOf(jobId));
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể tải danh sách ứng viên"));
+      toast.error(errorMessage(err, i18n.t("ranking.candidatesLoadFailed", { ns: "matching" })));
     } finally {
       setLoading(false);
     }
@@ -76,9 +80,9 @@ const CandidateRankingPage = () => {
     setBusy(resumeId);
     try {
       await matchingUseCases.recompute(resumeId);
-      toast.success("Đã gửi yêu cầu chấm điểm, kết quả sẽ hiện sau ít phút");
+      toast.success(t("ranking.recomputeQueued"));
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể yêu cầu chấm điểm"));
+      toast.error(errorMessage(err, t("ranking.recomputeFailed")));
     } finally {
       setBusy(null);
     }
@@ -89,11 +93,11 @@ const CandidateRankingPage = () => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
           <Sparkles className="h-5 w-5 text-purple-600" />
-          Xếp hạng ứng viên bằng AI
+          {t("ranking.title")}
         </h2>
         <div className="flex items-center gap-2">
           <select
-            aria-label="Chọn công việc"
+            aria-label={t("ranking.selectJob")}
             className="rounded-md border px-3 py-2 text-sm"
             value={jobId ?? ""}
             onChange={(event) => setJobId(Number(event.target.value))}
@@ -106,28 +110,28 @@ const CandidateRankingPage = () => {
           </select>
           <Button variant="outline" size="sm" onClick={() => void load()}>
             <RefreshCw className="mr-1 h-4 w-4" />
-            Làm mới
+            {t("common:actions.refresh")}
           </Button>
         </div>
       </div>
 
       {status && !status.enabled && (
         <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-          Chấm điểm AI chưa được bật trên hệ thống này (thiếu khóa API). Danh sách vẫn hiển thị nhưng chưa có điểm.
+          {t("ranking.disabled")}
         </p>
       )}
       {status?.enabled && (
         <p className="text-muted-foreground text-xs">
-          Điểm do mô hình {status.model} đánh giá từ CV và mô tả công việc. Đây chỉ là gợi ý, quyết định cuối cùng thuộc về bạn.
+          {t("ranking.enabled", { model: status.model ?? "" })}
         </p>
       )}
 
       {loading ? (
         <LoadingSpinner />
       ) : options.length === 0 ? (
-        <EmptyState title="Chưa có công việc nào" description="Hãy đăng tin tuyển dụng trước" icon={<Sparkles className="text-muted-foreground mb-4 h-12 w-12" />} />
+        <EmptyState title={t("ranking.noJobs")} description={t("ranking.noJobsHint")} icon={<Sparkles className="text-muted-foreground mb-4 h-12 w-12" />} />
       ) : ranked.length === 0 ? (
-        <EmptyState title="Chưa có ứng viên" description="Công việc này chưa nhận được hồ sơ nào" icon={<Sparkles className="text-muted-foreground mb-4 h-12 w-12" />} />
+        <EmptyState title={t("ranking.noCandidates")} description={t("ranking.noCandidatesHint")} icon={<Sparkles className="text-muted-foreground mb-4 h-12 w-12" />} />
       ) : (
         <div className="space-y-3">
           {ranked.map((candidate, index) => (
@@ -140,11 +144,11 @@ const CandidateRankingPage = () => {
                 <div className="flex items-center gap-3">
                   {candidate.match ? (
                     <>
-                      <span className="text-muted-foreground text-xs">{TONE_LABEL[toneOf(candidate.match.score)]}</span>
+                      <span className="text-muted-foreground text-xs">{t(`tone.${toneOf(candidate.match.score)}`)}</span>
                       <ScoreBadge score={candidate.match.score} />
                     </>
                   ) : (
-                    <span className="text-muted-foreground text-sm">Chưa chấm điểm</span>
+                    <span className="text-muted-foreground text-sm">{t("ranking.notScored")}</span>
                   )}
                   {status?.enabled && (
                     <Button
@@ -153,7 +157,7 @@ const CandidateRankingPage = () => {
                       disabled={busy === candidate.resumeId}
                       onClick={() => void recompute(candidate.resumeId)}
                     >
-                      {candidate.match ? "Chấm lại" : "Chấm điểm"}
+                      {candidate.match ? t("ranking.rescore") : t("ranking.score")}
                     </Button>
                   )}
                 </div>
@@ -163,7 +167,9 @@ const CandidateRankingPage = () => {
                   <p>{candidate.match.summary}</p>
                   <Skills names={candidate.match.matchedSkills} className="bg-green-100 text-green-800" />
                   <Skills names={candidate.match.missingSkills} className="bg-red-100 text-red-800" />
-                  <p className="text-muted-foreground text-xs">Chấm lúc {formatISO(candidate.match.scoredAt)}</p>
+                  <p className="text-muted-foreground text-xs">
+                    {t("ranking.scoredAt", { date: formatISO(candidate.match.scoredAt) })}
+                  </p>
                 </CardContent>
               )}
             </Card>

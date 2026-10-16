@@ -11,8 +11,12 @@ import { errorMessage } from "@/shared/domain/errors";
 import { RoleTable } from "../components/RoleTable.tsx";
 import { RoleForm } from "../components/RoleForm.tsx";
 import { HasPermission } from "@/features/auth";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const RoleManagerPage = () => {
+  const { t } = useTranslation("access");
+
   // Data
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<
@@ -62,7 +66,8 @@ const RoleManagerPage = () => {
       setTotalElements(res.totalElements);
       setTotalPages(res.totalPages);
     } catch (err) {
-      toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+      // i18n.t rather than t: the fetcher stays free of render values, so the effects need no extra dependency
+      toast.error(errorMessage(err, i18n.t("role.list.loadFailed", { ns: "access" })));
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +89,7 @@ const RoleManagerPage = () => {
       try {
         setPermissions(await permissionUseCases.catalog());
       } catch (err) {
-        toast.error(errorMessage(err, "Không thể lấy danh sách công ty."));
+        toast.error(errorMessage(err, i18n.t("permission.list.loadFailed", { ns: "access" })));
       } finally {
         setIsLoading(false);
       }
@@ -114,14 +119,14 @@ const RoleManagerPage = () => {
       if (id) {
         await roleUseCases.update(id, data);
         await fetchRoles(1, itemsPerPage, searchRoleName);
-        toast.success("Cập nhật chức vụ mới thành công");
+        toast.success(t("role.list.updated"));
       } else {
         await roleUseCases.create(data);
         await fetchRoles(1, itemsPerPage, searchRoleName);
-        toast.success("Tạo chức vụ mới thành công");
+        toast.success(t("role.list.created"));
       }
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -137,9 +142,9 @@ const RoleManagerPage = () => {
       await roleUseCases.remove(id);
       await fetchRoles(1, itemsPerPage, searchRoleName);
 
-      toast.success("Xóa chức vụ thành công");
+      toast.success(t("role.list.deleted"));
     } catch (err) {
-      toast.error(errorMessage(err, "Thao tác thất bại"));
+      toast.error(errorMessage(err, t("errors.operationFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -154,14 +159,14 @@ const RoleManagerPage = () => {
       />
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Danh sách chức vụ</h2>
+        <h2 className="text-lg font-semibold">{t("role.list.title")}</h2>
         <HasPermission perm={"POST /roles"}>
           <Button
             className="bg-blue-600 hover:bg-blue-700"
             onClick={handleOpenCreateForm}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Thêm chức vụ
+            {t("role.list.add")}
           </Button>
         </HasPermission>
       </div>

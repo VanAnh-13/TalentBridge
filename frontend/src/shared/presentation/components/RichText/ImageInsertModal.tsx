@@ -2,6 +2,7 @@ import { useState } from "react";
 import type Quill from "quill";
 import { Button } from "@/shared/presentation/ui/button";
 import { Input } from "@/shared/presentation/ui/input";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function ImageInsertModal({ editor, onCancel, open }: Props) {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
 
   const handleInsert = () => {
@@ -44,7 +46,7 @@ export default function ImageInsertModal({ editor, onCancel, open }: Props) {
     <Dialog open={open} onOpenChange={onCancel}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nhập URL ảnh</DialogTitle>
+          <DialogTitle>{t("editor.imageUrlTitle")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input
@@ -55,9 +57,9 @@ export default function ImageInsertModal({ editor, onCancel, open }: Props) {
           />
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={onCancel}>
-              Hủy
+              {t("actions.cancel")}
             </Button>
-            <Button onClick={handleInsert}>Chèn ảnh</Button>
+            <Button onClick={handleInsert}>{t("editor.insertImage")}</Button>
           </div>
         </div>
       </DialogContent>

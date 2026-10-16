@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/shared/presentation/ui/input";
 import { Label } from "@/shared/presentation/ui/label";
 import { Button } from "@/shared/presentation/ui/button";
@@ -11,6 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/presentation/ui/select";
+import type { Level } from "../../domain/job";
+
+const LEVELS: Level[] = ["INTERN", "FRESHER", "MIDDLE", "SENIOR"];
+
+/**
+ * Quick location filters. Each sets the city's name in the current language, the same names the home page
+ * search suggests (app:home.search.cities), so both searches filter on the same text.
+ */
+const CITIES = ["hcm", "hanoi", "danang"] as const;
 
 interface JobSearchSectionProps {
   searchName: string;
@@ -38,16 +48,17 @@ export function JobSearchSection({
   onExpandToggle,
   onChange,
 }: JobSearchSectionProps) {
+  const { t } = useTranslation(["job", "common"]);
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="search-title" className="font-medium text-gray-700">
-            Tên công việc:
+            {t("search.name")}
           </Label>
           <Input
             id="search-title"
-            placeholder="Nhập tên công việc..."
+            placeholder={t("search.namePlaceholder")}
             value={searchName}
             onChange={(e) => onChange.name(e.target.value)}
             className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
@@ -60,7 +71,7 @@ export function JobSearchSection({
             className="border-orange-500 bg-transparent text-orange-600 hover:bg-orange-50 hover:text-orange-700"
           >
             <RotateCcw className="mr-2 h-4 w-4" />
-            Làm lại
+            {t("common:actions.reset")}
           </Button>
           <Button
             variant="outline"
@@ -70,12 +81,12 @@ export function JobSearchSection({
             {isExpanded ? (
               <>
                 <ChevronUp className="mr-2 h-4 w-4" />
-                Thu gọn
+                {t("common:actions.less")}
               </>
             ) : (
               <>
                 <ChevronDown className="mr-2 h-4 w-4" />
-                Mở rộng
+                {t("common:actions.more")}
               </>
             )}
           </Button>
@@ -91,11 +102,11 @@ export function JobSearchSection({
                 htmlFor="search-company"
                 className="font-medium text-gray-700"
               >
-                Công ty:
+                {t("common:fields.company")}:
               </Label>
               <Input
                 id="search-company"
-                placeholder="Tên công ty..."
+                placeholder={t("search.companyPlaceholder")}
                 value={searchCompanyName}
                 onChange={(e) => onChange.company(e.target.value)}
                 className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
@@ -107,18 +118,19 @@ export function JobSearchSection({
                 htmlFor="search-level"
                 className="font-medium text-gray-700"
               >
-                Level:
+                {t("search.level")}
               </Label>
               <Select value={searchLevel} onValueChange={onChange.level}>
                 <SelectTrigger className="border-gray-300 focus:border-orange-500 focus:ring-orange-500">
-                  <SelectValue placeholder="Chọn level..." />
+                  <SelectValue placeholder={t("search.levelPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tất cả</SelectItem>
-                  <SelectItem value="INTERN">Intern</SelectItem>
-                  <SelectItem value="FRESHER">Fresher</SelectItem>
-                  <SelectItem value="MIDDLE">Middle</SelectItem>
-                  <SelectItem value="SENIOR">Senior</SelectItem>
+                  <SelectItem value="all">{t("search.allLevels")}</SelectItem>
+                  {LEVELS.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {t(`common:levels.${level}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -128,44 +140,29 @@ export function JobSearchSection({
                 htmlFor="search-location"
                 className="font-medium text-gray-700"
               >
-                Địa điểm:
+                {t("search.location")}
               </Label>
               <div className="flex gap-2">
                 <Input
                   id="search-location"
-                  placeholder="Nhập địa điểm..."
+                  placeholder={t("search.locationPlaceholder")}
                   value={searchLocation}
                   onChange={(e) => onChange.location(e.target.value)}
                   className="flex-1 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 />
                 <div className="flex gap-1">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onChange.location("TP. Hồ Chí Minh")}
-                    className="border-gray-300 text-xs text-gray-600 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
-                  >
-                    HCM
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onChange.location("Hà Nội")}
-                    className="border-gray-300 text-xs text-gray-600 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
-                  >
-                    HN
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onChange.location("Đà Nẵng")}
-                    className="border-gray-300 text-xs text-gray-600 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
-                  >
-                    ĐN
-                  </Button>
+                  {CITIES.map((city) => (
+                    <Button
+                      key={city}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onChange.location(t(`search.cities.${city}`))}
+                      className="border-gray-300 text-xs text-gray-600 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+                    >
+                      {t(`search.citiesShort.${city}`)}
+                    </Button>
+                  ))}
                 </div>
               </div>
             </div>

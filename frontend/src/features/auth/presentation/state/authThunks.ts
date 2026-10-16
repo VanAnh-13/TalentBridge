@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import i18n from "i18next";
 import { toast } from "sonner";
 
 import { auth } from "@/app/container";
@@ -12,7 +13,7 @@ export const login = createAsyncThunk(
     try {
       return await auth.login(credentials);
     } catch (err) {
-      const message = errorMessage(err, "Đăng nhập thất bại");
+      const message = errorMessage(err, i18n.t("errors.loginFailed", { ns: "auth" }));
       toast.error(message);
       return thunkAPI.rejectWithValue(message);
     }
@@ -23,7 +24,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
     await auth.logout();
   } catch (err) {
-    return thunkAPI.rejectWithValue(errorMessage(err, "Đăng xuất thất bại"));
+    return thunkAPI.rejectWithValue(errorMessage(err, i18n.t("errors.logoutFailed", { ns: "auth" })));
   }
 });
 
@@ -31,6 +32,6 @@ export const getAccount = createAsyncThunk("auth/account", async (_, thunkAPI) =
   try {
     return await auth.currentAccount();
   } catch (err) {
-    return thunkAPI.rejectWithValue(errorMessage(err, "Lấy thông tin tài khoản thất bại"));
+    return thunkAPI.rejectWithValue(errorMessage(err, i18n.t("errors.accountFailed", { ns: "auth" })));
   }
 });
