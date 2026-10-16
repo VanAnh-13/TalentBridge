@@ -55,9 +55,9 @@ public class Job {
     private void describe(String name, String location, Double salary, Integer quantity, Level level,
                           String description, Instant startDate, Instant endDate, Boolean active) {
         if (name == null || name.isBlank())
-            throw new InvalidRequestException("Tên công việc không được để trống");
+            throw new InvalidRequestException("Job title is required");
         if (level == null)
-            throw new InvalidRequestException("Cấp bậc không được để trống");
+            throw new InvalidRequestException("Level is required");
         this.name = name;
         this.location = location;
         this.salary = salary;

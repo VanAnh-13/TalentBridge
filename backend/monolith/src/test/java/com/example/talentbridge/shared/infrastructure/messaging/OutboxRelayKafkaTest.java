@@ -53,7 +53,7 @@ class OutboxRelayKafkaTest {
         relay.relay();   // anything left by start-up
         // a user id no real account can have: the test database is shared with other test classes
         EventEnvelope written = tx.execute(s -> outbox.add(Topics.NOTIFICATIONS, "-42", NotificationRequested.TYPE,
-                NotificationRequested.VERSION, new NotificationRequested(-42, "TEST", "Xin chào", "body", "/x", false)));
+                NotificationRequested.VERSION, new NotificationRequested(-42, "TEST", "Hello", "body", "/x", false)));
 
         assertEquals(1, relay.relay());
         assertEquals(0, relay.relay(), "nothing is sent twice by the same relay");
@@ -65,7 +65,7 @@ class OutboxRelayKafkaTest {
             EventEnvelope received = EventCodec.read(record.value());
             assertEquals(written.eventId(), received.eventId());
             NotificationRequested payload = EventCodec.payload(received, NotificationRequested.TYPE, 1, NotificationRequested.class);
-            assertEquals("Xin chào", payload.title());
+            assertEquals("Hello", payload.title());
         }
         OutboxEventJpaEntity row = rows.findAll().stream().filter(r -> r.getEventId().equals(written.eventId())).findFirst().orElseThrow();
         assertNotNull(row.getPublishedAt());

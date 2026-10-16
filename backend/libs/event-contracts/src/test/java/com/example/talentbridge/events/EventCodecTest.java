@@ -12,7 +12,7 @@ class EventCodecTest {
 
     @Test @DisplayName("an event survives the round trip and keeps its id, type, version and time")
     void roundTrip() {
-        NotificationRequested sent = new NotificationRequested(7, "CHAT_MESSAGE", "Tin nhắn mới", "Xin chào", "/chat", true);
+        NotificationRequested sent = new NotificationRequested(7, "CHAT_MESSAGE", "New message", "Hello", "/chat", true);
         EventEnvelope envelope = EventCodec.wrap(NotificationRequested.TYPE, NotificationRequested.VERSION, sent,
                 Instant.parse("2026-10-15T10:00:00Z"));
         EventEnvelope back = EventCodec.read(EventCodec.write(envelope));

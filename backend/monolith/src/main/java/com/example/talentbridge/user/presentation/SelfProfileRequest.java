@@ -14,13 +14,13 @@ import java.time.LocalDate;
 @Data
 public class SelfProfileRequest {
 
-    @NotBlank(message = "Tên không được để trống")
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @NotNull(message = "Giới tính không được để trống")
+    @NotNull(message = "Gender is required")
     private Gender gender;
 
-    @NotNull(message = "Ngày sinh không được để trống")
+    @NotNull(message = "Date of birth is required")
     private LocalDate dob;
 
     private String address;

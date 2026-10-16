@@ -22,15 +22,15 @@ class ChatAccess {
 
     Accounts.Account caller() {
         return accounts.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     /** The conversation, provided the caller is its candidate or works for its company. */
     Conversation conversationFor(Long conversationId, Accounts.Account me) {
         Conversation conversation = chat.findConversation(conversationId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy cuộc trò chuyện"));
+                .orElseThrow(() -> new NotFoundException("Conversation not found"));
         if (!conversation.hasParticipant(me.id(), me.companyId()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         return conversation;
     }
 

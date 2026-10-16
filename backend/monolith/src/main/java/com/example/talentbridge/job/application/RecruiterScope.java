@@ -16,9 +16,9 @@ class RecruiterScope {
 
     Long companyId() {
         RecruiterCompanies.UserCompany user = recruiters.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (user.companyId() == null)
-            throw new NotFoundException("Không tìm thấy công ty người dùng");
+            throw new NotFoundException("The user's company was not found");
         return user.companyId();
     }
 }

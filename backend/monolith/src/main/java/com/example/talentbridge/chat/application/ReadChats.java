@@ -71,7 +71,7 @@ public class ReadChats {
         Applications.Application application = applications.find(c.getResumeId()).orElse(null);
         String job = application == null ? "" : application.jobName();
         boolean asCandidate = c.isCandidate(me.id());
-        String title = application == null ? "Cuộc trò chuyện"
+        String title = application == null ? "Conversation"
                 : asCandidate ? application.companyName() : application.candidateEmail();
         return new ConversationView(c, title, job, chat.findLastMessage(c.getId()).orElse(null), chat.unreadIn(c.getId(), me.id()));
     }

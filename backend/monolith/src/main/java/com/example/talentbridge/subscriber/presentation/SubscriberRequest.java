@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class SubscriberRequest {
 
-    @NotNull(message = "Danh sách kỹ năng không được để trống")
-    @Size(min = 1, message = "Phải có ít nhất 1 kỹ năng")
+    @NotNull(message = "Skills are required")
+    @Size(min = 1, message = "At least one skill is required")
     @Valid
     private List<SkillId> skills;
 
@@ -23,7 +23,7 @@ public class SubscriberRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SkillId {
-        @NotNull(message = "ID kỹ năng không được để trống")
+        @NotNull(message = "Skill id is required")
         private Long id;
     }
 

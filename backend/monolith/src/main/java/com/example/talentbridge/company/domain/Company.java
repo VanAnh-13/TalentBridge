@@ -54,7 +54,7 @@ public class Company {
 
     private void describe(String name, String description, String address) {
         if (name == null || name.isBlank())
-            throw new InvalidRequestException("Tên công ty không được để trống");
+            throw new InvalidRequestException("Company name is required");
         this.name = name;
         this.description = description;
         this.address = address;

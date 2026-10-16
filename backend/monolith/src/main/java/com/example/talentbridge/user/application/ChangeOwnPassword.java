@@ -29,10 +29,10 @@ public class ChangeOwnPassword {
      */
     public UserDetails execute(String oldPassword, String newPassword, String currentRefreshToken) {
         User user = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (!hasher.matches(oldPassword, user.getPasswordHash()))
-            throw new BusinessRuleViolationException("Mật khẩu hiện tại không chính xác");
+            throw new BusinessRuleViolationException("The current password is incorrect");
 
         user.changePasswordHash(hasher.hash(newPassword));
         UserDetails saved = users.save(user);

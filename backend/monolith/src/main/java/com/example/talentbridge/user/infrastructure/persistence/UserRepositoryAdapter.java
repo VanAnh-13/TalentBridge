@@ -34,7 +34,7 @@ public class UserRepositoryAdapter implements UserRepository {
             entity = new UserJpaEntity();
             entity.setEmail(user.getEmail());
         } else {
-            entity = jpa.findById(user.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+            entity = jpa.findById(user.getId()).orElseThrow(() -> new NotFoundException("User not found"));
         }
 
         entity.setName(user.getName());
@@ -105,7 +105,7 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public void delete(User user) {
         UserJpaEntity entity = jpa.findById(user.getId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         entity.setRole(null);
         entity.setCompany(null);
         jpa.delete(entity);

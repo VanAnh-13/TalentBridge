@@ -67,7 +67,7 @@ class SkillControllerTest {
         send(post("/skills").contentType(MediaType.APPLICATION_JSON).content(json("name", name)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("ENTITY_ALREADY_EXISTS"))
-                .andExpect(jsonPath("$.message").value("Kỹ năng này đã tồn tại"));
+                .andExpect(jsonPath("$.message").value("This skill already exists"));
     }
 
     @Test
@@ -77,7 +77,7 @@ class SkillControllerTest {
         send(post("/skills").contentType(MediaType.APPLICATION_JSON).content(json("name", "")))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("VALIDATION_ERROR"))
-                .andExpect(jsonPath("$.message", containsString("Tên kỹ năng không được để trống")));
+                .andExpect(jsonPath("$.message", containsString("Skill name is required")));
     }
 
     @Test
@@ -97,7 +97,7 @@ class SkillControllerTest {
         send(get("/skills/999999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value("ENTITY_NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Không tìm thấy kỹ năng"));
+                .andExpect(jsonPath("$.message").value("Skill not found"));
     }
 
     @Test

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ForgotPasswordRequest {
 
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email")
     private String email;
 }

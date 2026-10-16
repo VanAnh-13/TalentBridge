@@ -19,7 +19,7 @@ public final class FileUploads {
         try {
             return new FileUpload(file.getOriginalFilename(), file.getContentType(), file.getBytes());
         } catch (IOException e) {
-            throw new StorageException("Lỗi khi đọc dữ liệu từ tệp");
+            throw new StorageException("Could not read the uploaded file");
         }
     }
 }

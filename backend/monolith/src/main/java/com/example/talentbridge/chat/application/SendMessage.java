@@ -45,7 +45,7 @@ public class SendMessage {
             if (other.id().equals(me.id())) continue;
             publisher.messageSent(other.id(), saved, me.name());
             if (chat.unreadIn(conversationId, other.id()) == 1)
-                notifier.notifyIfOffline(other.id(), "Tin nhắn mới từ " + me.name(), preview(saved.getText()),
+                notifier.notifyIfOffline(other.id(), "New message from " + me.name(), preview(saved.getText()),
                         "/chat?conversation=" + conversationId);
         }
         return saved;

@@ -34,7 +34,7 @@ public class InterviewController {
     @Operation(summary = "A recruiter proposes interview time slots", description = "Required permission: <b>POST /interviews</b>")
     public ResponseEntity<InterviewResponse> schedule(@Valid @RequestBody InterviewRequest request) {
         if (request.getResumeId() == null)
-            throw new com.example.talentbridge.shared.domain.exception.InvalidRequestException("Hồ sơ ứng tuyển không được để trống");
+            throw new com.example.talentbridge.shared.domain.exception.InvalidRequestException("Application is required");
         return ResponseEntity.status(HttpStatus.CREATED).body(InterviewResponse.from(scheduleInterview.execute(
                 request.getResumeId(), request.getMode(), request.getLocation(), request.getNote(),
                 request.getDurationMinutes(), request.getSlots())));

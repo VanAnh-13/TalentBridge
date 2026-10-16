@@ -110,9 +110,9 @@ class ChatApiTest {
         call(post(url), candidate, "{\"text\":\"   \"}").andExpect(status().isBadRequest());
         call(post(url), candidate, "{\"text\":\"" + "x".repeat(2001) + "\"}").andExpect(status().isBadRequest());
 
-        call(post(url), candidate, "{\"text\":\"Xin chào, em muốn hỏi về vị trí này\"}").andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.text").value("Xin chào, em muốn hỏi về vị trí này"));
-        call(post(url), candidate, "{\"text\":\"Em nộp CV hôm qua ạ\"}").andExpect(status().isCreated());
+        call(post(url), candidate, "{\"text\":\"Hello, I would like to ask about this position\"}").andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.text").value("Hello, I would like to ask about this position"));
+        call(post(url), candidate, "{\"text\":\"I sent my CV yesterday\"}").andExpect(status().isCreated());
     }
 
     @Test @Order(3) @DisplayName("offline recipients get ONE notification for a run of messages, and unread counts add up")
@@ -147,7 +147,7 @@ class ChatApiTest {
         call(get(url).param("page", "1").param("size", "1"), recruiterA, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.totalElements").value(2))
                 .andExpect(jsonPath("$.data.totalPages").value(2))
-                .andExpect(jsonPath("$.data.content[0].text").value("Em nộp CV hôm qua ạ"))
+                .andExpect(jsonPath("$.data.content[0].text").value("I sent my CV yesterday"))
                 .andExpect(jsonPath("$.data.content[0].senderName", org.hamcrest.Matchers.startsWith("chatcand")));
 
         call(post("/chats/" + conversationId + "/read"), otherCandidate, null).andExpect(status().isForbidden());
@@ -156,7 +156,7 @@ class ChatApiTest {
         call(get("/chats/unread-count"), recruiterB, null).andExpect(jsonPath("$.data.count").value(2));   // B has not read yet
 
         // A answers: the candidate gets a notification; A has nothing unread, B sees A's reply as unread
-        call(post(url), recruiterA, "{\"text\":\"Chào em, hồ sơ đang được xem xét\"}").andExpect(status().isCreated());
+        call(post(url), recruiterA, "{\"text\":\"Hi, your application is being reviewed\"}").andExpect(status().isCreated());
         call(get("/chats/unread-count"), candidate, null).andExpect(jsonPath("$.data.count").value(1));
         call(get("/chats/unread-count"), recruiterA, null).andExpect(jsonPath("$.data.count").value(0));
         call(get("/chats/unread-count"), recruiterB, null).andExpect(jsonPath("$.data.count").value(3));

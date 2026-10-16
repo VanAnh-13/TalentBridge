@@ -41,26 +41,26 @@ ON DUPLICATE KEY UPDATE
 -- =====================================================
 INSERT INTO companies (name, description, address, created_at, updated_at, created_by, modified_by)
 VALUES 
-    ('FPT Software', 'Công ty phần mềm hàng đầu Việt Nam, cung cấp dịch vụ IT toàn cầu với hơn 30,000 nhân viên', 'Lô F8, Khu Công nghệ cao, Q.9, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('VNG Corporation', 'Công ty công nghệ hàng đầu với các sản phẩm Zalo, ZaloPay, Zing phục vụ 100+ triệu người dùng', 'Z06, Đường số 13, Tân Thuận Đông, Q.7, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Viettel Software', 'Trung tâm phát triển phần mềm thuộc Tập đoàn Quân đội Viettel', 'Tòa nhà Viettel, 285 Cách Mạng Tháng 8, Q.10, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('TMA Solutions', 'Công ty phần mềm với hơn 4000 kỹ sư, 25+ năm kinh nghiệm phục vụ thị trường toàn cầu', '111 Nguyễn Đình Chiểu, Q.3, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('KMS Technology', 'Công ty phát triển phần mềm và dịch vụ công nghệ cho khách hàng Mỹ', '123 Cộng Hòa, Tân Bình, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('NashTech Vietnam', 'Công ty công nghệ toàn cầu của Harvey Nash Group với 2000+ nhân viên tại VN', '364 Cộng Hòa, Tân Bình, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Grab Vietnam', 'Siêu ứng dụng hàng đầu Đông Nam Á về gọi xe, giao đồ ăn và thanh toán', 'Mapletree Business Centre, Q.7, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Shopee Vietnam', 'Nền tảng thương mại điện tử hàng đầu khu vực với 50+ triệu người dùng', 'Lầu 29-31, Viettel Tower, Q.10, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Tiki Corporation', 'Sàn TMĐT thuần Việt với kho hàng khổng lồ và giao hàng nhanh 2h', '52 Út Tịch, Q.Tân Bình, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('MoMo', 'Ví điện tử số 1 Việt Nam với 31+ triệu người dùng', 'Tòa nhà Phú Mỹ Hưng Tower, Q.7, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('VinAI', 'Viện nghiên cứu AI hàng đầu VN thuộc VinGroup', 'Vinhomes Grand Park, Q.9, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Axon Active Vietnam', 'Công ty phát triển phần mềm Thụy Sĩ với 500+ kỹ sư tại VN', '7-9 Tân Cảng, Bình Thạnh, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Samsung SDS Vietnam', 'Chi nhánh phát triển phần mềm của Samsung tại VN', 'Saigon Trade Center, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Bosch Vietnam', 'Tập đoàn công nghệ Đức với trung tâm R&D tại VN', '10/14 Cách Mạng Tháng 8, Q.12, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Home Credit Vietnam', 'Công ty fintech hàng đầu về cho vay tiêu dùng', 'Tòa nhà Phú Mỹ Hưng, Q.7, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('VPBank Technology', 'Trung tâm công nghệ số của VPBank', '89 Láng Hạ, Đống Đa, Hà Nội', NOW(), NOW(), 'system', 'system'),
-    ('Techcombank Digital', 'Khối số hóa ngân hàng Techcombank', '191 Bà Triệu, Hai Bà Trưng, Hà Nội', NOW(), NOW(), 'system', 'system'),
-    ('Lazada Tech Hub', 'Trung tâm công nghệ của Lazada tại VN', 'Saigon Centre, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('Sky Mavis', 'Công ty game blockchain phát triển Axie Infinity', '6 Thái Văn Lung, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system'),
-    ('NFQ Asia', 'Công ty công nghệ Đức chuyên về e-commerce và fintech', '13 Paster, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system')
+    ('FPT Software', 'Vietnam''s leading software company, providing IT services worldwide with more than 30,000 employees', 'Lot F8, Saigon Hi-Tech Park, District 9, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('VNG Corporation', 'Leading technology company behind Zalo, ZaloPay and Zing, serving 100+ million users', 'Z06, Street 13, Tân Thuận Đông, District 7, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('Viettel Software', 'Software development centre of the Viettel Group', 'Viettel Building, 285 Cách Mạng Tháng 8, District 10, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('TMA Solutions', 'Software company with 4,000+ engineers and 25+ years of experience serving global markets', '111 Nguyễn Đình Chiểu, District 3, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('KMS Technology', 'Software development and technology services for US clients', '123 Cộng Hòa, Tân Bình, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('NashTech Vietnam', 'Global technology company of the Harvey Nash Group with 2,000+ employees in Vietnam', '364 Cộng Hòa, Tân Bình, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('Grab Vietnam', 'Southeast Asia''s leading super-app for ride-hailing, food delivery and payments', 'Mapletree Business Centre, Q.7, TP.HCM', NOW(), NOW(), 'system', 'system'),
+    ('Shopee Vietnam', 'The region''s leading e-commerce platform with 50+ million users', 'Floors 29-31, Viettel Tower, District 10, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('Tiki Corporation', 'Home-grown Vietnamese marketplace with huge warehouses and 2-hour delivery', '52 Út Tịch, Tân Bình, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('MoMo', 'Vietnam''s number one e-wallet with 31+ million users', 'Phú Mỹ Hưng Tower, District 7, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('VinAI', 'Vietnam''s leading AI research institute, part of VinGroup', 'Vinhomes Grand Park, Q.9, TP.HCM', NOW(), NOW(), 'system', 'system'),
+    ('Axon Active Vietnam', 'Swiss software company with 500+ engineers in Vietnam', '7-9 Tân Cảng, Bình Thạnh, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('Samsung SDS Vietnam', 'Samsung''s software development branch in Vietnam', 'Saigon Trade Center, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system'),
+    ('Bosch Vietnam', 'German technology group with an R&D centre in Vietnam', '10/14 Cách Mạng Tháng 8, District 12, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('Home Credit Vietnam', 'Leading fintech company for consumer lending', 'Phú Mỹ Hưng Building, District 7, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('VPBank Technology', 'VPBank''s digital technology centre', '89 Láng Hạ, Đống Đa, Hanoi', NOW(), NOW(), 'system', 'system'),
+    ('Techcombank Digital', 'Techcombank''s digital banking division', '191 Bà Triệu, Hai Bà Trưng, Hanoi', NOW(), NOW(), 'system', 'system'),
+    ('Lazada Tech Hub', 'Lazada''s technology centre in Vietnam', 'Saigon Centre, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system'),
+    ('Sky Mavis', 'Blockchain game company behind Axie Infinity', '6 Thái Văn Lung, District 1, Ho Chi Minh City', NOW(), NOW(), 'system', 'system'),
+    ('NFQ Asia', 'German technology company specialising in e-commerce and fintech', '13 Paster, Q.1, TP.HCM', NOW(), NOW(), 'system', 'system')
 ON DUPLICATE KEY UPDATE
     updated_at = NOW();
 -- =====================================================
@@ -78,42 +78,42 @@ SET @user_role = (SELECT id FROM roles WHERE name = 'USER' LIMIT 1);
 -- Recruiter users (10 records)
 INSERT INTO users (email, name, password, dob, address, gender, role_id, company_id, created_at, updated_at, created_by, modified_by)
 VALUES 
-    ('hr.fpt@fpt.com.vn', 'Lê Thị Mai', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1990-03-12', 'Quận 9, TP.HCM', 'FEMALE', @recruiter_role, 1, NOW(), NOW(), 'system', 'system'),
-    ('recruiter@vng.com.vn', 'Phạm Văn Hùng', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1987-07-25', 'Quận 7, TP.HCM', 'MALE', @recruiter_role, 2, NOW(), NOW(), 'system', 'system'),
-    ('hr@viettel.com.vn', 'Nguyễn Thị Hương', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1992-11-30', 'TP.HCM', 'FEMALE', @recruiter_role, 3, NOW(), NOW(), 'system', 'system'),
-    ('talent@tma.com.vn', 'Trần Văn Nam', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1989-04-18', 'Quận 3, TP.HCM', 'MALE', @recruiter_role, 4, NOW(), NOW(), 'system', 'system'),
-    ('hr@kms-technology.com', 'Võ Thị Lan', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1991-09-05', 'Tân Bình, TP.HCM', 'FEMALE', @recruiter_role, 5, NOW(), NOW(), 'system', 'system'),
-    ('recruiter@grab.com', 'Đinh Thị Thu', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1993-02-14', 'Quận 7, TP.HCM', 'FEMALE', @recruiter_role, 7, NOW(), NOW(), 'system', 'system'),
-    ('talent@shopee.vn', 'Lý Văn Tùng', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1990-06-08', 'Quận 10, TP.HCM', 'MALE', @recruiter_role, 8, NOW(), NOW(), 'system', 'system'),
-    ('hr@tiki.vn', 'Hoàng Thị Nhung', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1991-10-16', 'Tân Bình, TP.HCM', 'FEMALE', @recruiter_role, 9, NOW(), NOW(), 'system', 'system'),
-    ('hr@momo.vn', 'Phan Thị Hạnh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1992-05-19', 'Quận 7, TP.HCM', 'FEMALE', @recruiter_role, 10, NOW(), NOW(), 'system', 'system'),
-    ('talent@vinai.io', 'Vũ Văn Thành', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1987-08-11', 'TP.HCM', 'MALE', @recruiter_role, 11, NOW(), NOW(), 'system', 'system')
+    ('hr.fpt@fpt.com.vn', 'Lê Thị Mai', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1990-03-12', 'District 9, Ho Chi Minh City', 'FEMALE', @recruiter_role, 1, NOW(), NOW(), 'system', 'system'),
+    ('recruiter@vng.com.vn', 'Phạm Văn Hùng', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1987-07-25', 'District 7, Ho Chi Minh City', 'MALE', @recruiter_role, 2, NOW(), NOW(), 'system', 'system'),
+    ('hr@viettel.com.vn', 'Nguyễn Thị Hương', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1992-11-30', 'Ho Chi Minh City', 'FEMALE', @recruiter_role, 3, NOW(), NOW(), 'system', 'system'),
+    ('talent@tma.com.vn', 'Trần Văn Nam', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1989-04-18', 'District 3, Ho Chi Minh City', 'MALE', @recruiter_role, 4, NOW(), NOW(), 'system', 'system'),
+    ('hr@kms-technology.com', 'Võ Thị Lan', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1991-09-05', 'Tân Bình, Ho Chi Minh City', 'FEMALE', @recruiter_role, 5, NOW(), NOW(), 'system', 'system'),
+    ('recruiter@grab.com', 'Đinh Thị Thu', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1993-02-14', 'District 7, Ho Chi Minh City', 'FEMALE', @recruiter_role, 7, NOW(), NOW(), 'system', 'system'),
+    ('talent@shopee.vn', 'Lý Văn Tùng', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1990-06-08', 'District 10, Ho Chi Minh City', 'MALE', @recruiter_role, 8, NOW(), NOW(), 'system', 'system'),
+    ('hr@tiki.vn', 'Hoàng Thị Nhung', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1991-10-16', 'Tân Bình, Ho Chi Minh City', 'FEMALE', @recruiter_role, 9, NOW(), NOW(), 'system', 'system'),
+    ('hr@momo.vn', 'Phan Thị Hạnh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1992-05-19', 'District 7, Ho Chi Minh City', 'FEMALE', @recruiter_role, 10, NOW(), NOW(), 'system', 'system'),
+    ('talent@vinai.io', 'Vũ Văn Thành', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1987-08-11', 'Ho Chi Minh City', 'MALE', @recruiter_role, 11, NOW(), NOW(), 'system', 'system')
 ON DUPLICATE KEY UPDATE
     updated_at = NOW();
 
 -- Regular users / Job seekers (20 records)
 INSERT INTO users (email, name, password, dob, address, gender, role_id, created_at, updated_at, created_by, modified_by)
 VALUES 
-    ('nguyenvan@gmail.com', 'Nguyễn Văn An', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-03-15', 'Quận Gò Vấp, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('tranthib@gmail.com', 'Trần Thị Bình', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-07-22', 'Quận Bình Tân, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('levanc@gmail.com', 'Lê Văn Cường', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-11-08', 'Quận Thủ Đức, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('phamthid@gmail.com', 'Phạm Thị Dung', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-02-14', 'Quận 12, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('hoangvane@gmail.com', 'Hoàng Văn Em', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1993-06-30', 'Quận Tân Phú, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('vothif@gmail.com', 'Võ Thị Phương', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1998-09-18', 'Quận Phú Nhuận, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('buivang@gmail.com', 'Bùi Văn Giang', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-12-05', 'Quận Bình Thạnh, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('dinhthih@gmail.com', 'Đinh Thị Hoa', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-04-25', 'Quận 2, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('lyvani@gmail.com', 'Lý Văn Inh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-08-12', 'Quận 4, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('ngothij@gmail.com', 'Ngô Thị Kiều', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-10-28', 'Quận 5, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('dangvank@gmail.com', 'Đặng Văn Kiên', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-01-16', 'Quận 6, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('truongthil@gmail.com', 'Trương Thị Liên', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-05-07', 'Quận 8, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('dovanlam@gmail.com', 'Đỗ Văn Lâm', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1993-09-23', 'Quận 11, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('hathimai@gmail.com', 'Hà Thị Mai', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1998-12-11', 'Hóc Môn, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('vuvannam@gmail.com', 'Vũ Văn Nam', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-03-29', 'Củ Chi, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('maithioanh@gmail.com', 'Mai Thị Oanh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-06-17', 'Nhà Bè, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('tongvanphuc@gmail.com', 'Tống Văn Phúc', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-08-04', 'Cần Giờ, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('luuthiquynh@gmail.com', 'Lưu Thị Quỳnh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-11-20', 'Bình Chánh, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('caovanrung@gmail.com', 'Cao Văn Rừng', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-02-08', 'Quận 1, TP.HCM', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
-    ('duongthisan@gmail.com', 'Dương Thị San', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-04-26', 'Quận 3, TP.HCM', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system')
+    ('nguyenvan@gmail.com', 'Nguyễn Văn An', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-03-15', 'Gò Vấp District, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('tranthib@gmail.com', 'Trần Thị Bình', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-07-22', 'Bình Tân District, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('levanc@gmail.com', 'Lê Văn Cường', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-11-08', 'Thủ Đức District, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('phamthid@gmail.com', 'Phạm Thị Dung', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-02-14', 'District 12, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('hoangvane@gmail.com', 'Hoàng Văn Em', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1993-06-30', 'Tân Phú District, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('vothif@gmail.com', 'Võ Thị Phương', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1998-09-18', 'Phú Nhuận District, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('buivang@gmail.com', 'Bùi Văn Giang', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-12-05', 'Bình Thạnh District, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('dinhthih@gmail.com', 'Đinh Thị Hoa', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-04-25', 'District 2, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('lyvani@gmail.com', 'Lý Văn Inh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-08-12', 'District 4, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('ngothij@gmail.com', 'Ngô Thị Kiều', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-10-28', 'District 5, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('dangvank@gmail.com', 'Đặng Văn Kiên', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-01-16', 'District 6, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('truongthil@gmail.com', 'Trương Thị Liên', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-05-07', 'District 8, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('dovanlam@gmail.com', 'Đỗ Văn Lâm', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1993-09-23', 'District 11, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('hathimai@gmail.com', 'Hà Thị Mai', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1998-12-11', 'Hóc Môn, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('vuvannam@gmail.com', 'Vũ Văn Nam', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-03-29', 'Củ Chi, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('maithioanh@gmail.com', 'Mai Thị Oanh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-06-17', 'Nhà Bè, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('tongvanphuc@gmail.com', 'Tống Văn Phúc', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1995-08-04', 'Cần Giờ, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('luuthiquynh@gmail.com', 'Lưu Thị Quỳnh', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1996-11-20', 'Bình Chánh, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('caovanrung@gmail.com', 'Cao Văn Rừng', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1994-02-08', 'District 1, Ho Chi Minh City', 'MALE', @user_role, NOW(), NOW(), 'system', 'system'),
+    ('duongthisan@gmail.com', 'Dương Thị San', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhCy', '1997-04-26', 'District 3, Ho Chi Minh City', 'FEMALE', @user_role, NOW(), NOW(), 'system', 'system')
 ON DUPLICATE KEY UPDATE
     updated_at = NOW();
 -- =====================================================
@@ -124,51 +124,51 @@ ON DUPLICATE KEY UPDATE
 INSERT INTO jobs (name, location, salary, quantity, level, description, start_date, end_date, active, company_id, created_at, updated_at, created_by, modified_by)
 VALUES 
     -- FPT Software jobs
-    ('Senior Java Developer', 'Quận 9, TP.HCM', 25000000, 3, 'SENIOR', 'Phát triển ứng dụng Java/Spring Boot cho khách hàng Nhật Bản. Yêu cầu 5+ năm kinh nghiệm Java, Spring Framework, Microservices. Tiếng Nhật N3 là lợi thế.', DATE_ADD(NOW(), INTERVAL -10 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 1, NOW(), NOW(), 'system', 'system'),
-    ('React Frontend Developer', 'Quận 9, TP.HCM', 18000000, 5, 'MIDDLE', 'Xây dựng UI/UX với React, Redux, TypeScript. Yêu cầu 3+ năm kinh nghiệm. Thành thạo HTML5, CSS3, responsive design.', DATE_ADD(NOW(), INTERVAL -5 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 1, NOW(), NOW(), 'system', 'system'),
+    ('Senior Java Developer', 'District 9, Ho Chi Minh City', 25000000, 3, 'SENIOR', 'Build Java/Spring Boot applications for Japanese clients. Requires 5+ years of Java, Spring Framework and microservices. Japanese N3 is a plus.', DATE_ADD(NOW(), INTERVAL -10 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 1, NOW(), NOW(), 'system', 'system'),
+    ('React Frontend Developer', 'District 9, Ho Chi Minh City', 18000000, 5, 'MIDDLE', 'Build UIs with React, Redux and TypeScript. Requires 3+ years of experience and fluency in HTML5, CSS3 and responsive design.', DATE_ADD(NOW(), INTERVAL -5 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 1, NOW(), NOW(), 'system', 'system'),
     
     -- VNG Corporation jobs  
-    ('Python AI Engineer', 'Quận 7, TP.HCM', 30000000, 2, 'SENIOR', 'Phát triển hệ thống AI/ML cho Zalo. Yêu cầu kinh nghiệm Python, TensorFlow, PyTorch. Ưu tiên có kinh nghiệm NLP, Computer Vision.', DATE_ADD(NOW(), INTERVAL -7 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 2, NOW(), NOW(), 'system', 'system'),
-    ('DevOps Engineer', 'Quận 7, TP.HCM', 22000000, 3, 'MIDDLE', 'Quản lý hạ tầng cloud AWS/GCP, CI/CD pipeline. Yêu cầu thành thạo Docker, Kubernetes, Jenkins. Kinh nghiệm 3+ năm.', DATE_ADD(NOW(), INTERVAL -3 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 2, NOW(), NOW(), 'system', 'system'),
+    ('Python AI Engineer', 'District 7, Ho Chi Minh City', 30000000, 2, 'SENIOR', 'Build AI/ML systems for Zalo. Requires Python, TensorFlow and PyTorch experience. NLP or computer vision experience preferred.', DATE_ADD(NOW(), INTERVAL -7 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 2, NOW(), NOW(), 'system', 'system'),
+    ('DevOps Engineer', 'District 7, Ho Chi Minh City', 22000000, 3, 'MIDDLE', 'Run AWS/GCP cloud infrastructure and CI/CD pipelines. Requires Docker, Kubernetes and Jenkins; 3+ years of experience.', DATE_ADD(NOW(), INTERVAL -3 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 2, NOW(), NOW(), 'system', 'system'),
     
     -- Viettel Software jobs
-    ('Backend Node.js Developer', 'Quận 10, TP.HCM', 20000000, 4, 'MIDDLE', 'Phát triển backend với Node.js, Express, MongoDB. Yêu cầu 2+ năm kinh nghiệm, hiểu về RESTful API và microservices.', DATE_ADD(NOW(), INTERVAL -8 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 3, NOW(), NOW(), 'system', 'system'),
-    ('.NET Core Developer', 'Quận 10, TP.HCM', 23000000, 2, 'SENIOR', 'Xây dựng hệ thống enterprise với .NET Core, SQL Server. Yêu cầu 4+ năm kinh nghiệm, thành thạo C#, Entity Framework.', DATE_ADD(NOW(), INTERVAL -12 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 3, NOW(), NOW(), 'system', 'system'),
+    ('Backend Node.js Developer', 'District 10, Ho Chi Minh City', 20000000, 4, 'MIDDLE', 'Build backends with Node.js, Express and MongoDB. Requires 2+ years of experience and a good grasp of RESTful APIs and microservices.', DATE_ADD(NOW(), INTERVAL -8 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 3, NOW(), NOW(), 'system', 'system'),
+    ('.NET Core Developer', 'District 10, Ho Chi Minh City', 23000000, 2, 'SENIOR', 'Build enterprise systems with .NET Core and SQL Server. Requires 4+ years of experience, fluent C# and Entity Framework.', DATE_ADD(NOW(), INTERVAL -12 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 3, NOW(), NOW(), 'system', 'system'),
     
     -- TMA Solutions jobs
-    ('Full-stack Developer', 'Quận 3, TP.HCM', 22000000, 6, 'MIDDLE', 'Phát triển full-stack với Angular và Spring Boot. Yêu cầu 3+ năm kinh nghiệm, tiếng Anh giao tiếp tốt.', DATE_ADD(NOW(), INTERVAL -6 DAY), DATE_ADD(NOW(), INTERVAL 42 DAY), true, 4, NOW(), NOW(), 'system', 'system'),
-    ('QA Automation Engineer', 'Quận 3, TP.HCM', 18000000, 3, 'MIDDLE', 'Viết test automation với Selenium, Cypress. Yêu cầu 2+ năm kinh nghiệm test automation, biết Java hoặc Python.', DATE_ADD(NOW(), INTERVAL -4 DAY), DATE_ADD(NOW(), INTERVAL 38 DAY), true, 4, NOW(), NOW(), 'system', 'system'),
+    ('Full-stack Developer', 'District 3, Ho Chi Minh City', 22000000, 6, 'MIDDLE', 'Full-stack development with Angular and Spring Boot. Requires 3+ years of experience and good spoken English.', DATE_ADD(NOW(), INTERVAL -6 DAY), DATE_ADD(NOW(), INTERVAL 42 DAY), true, 4, NOW(), NOW(), 'system', 'system'),
+    ('QA Automation Engineer', 'District 3, Ho Chi Minh City', 18000000, 3, 'MIDDLE', 'Write automated tests with Selenium and Cypress. Requires 2+ years of test automation and Java or Python.', DATE_ADD(NOW(), INTERVAL -4 DAY), DATE_ADD(NOW(), INTERVAL 38 DAY), true, 4, NOW(), NOW(), 'system', 'system'),
     
     -- KMS Technology jobs
-    ('React Native Developer', 'Tân Bình, TP.HCM', 21000000, 4, 'MIDDLE', 'Phát triển mobile app với React Native cho khách hàng Mỹ. Yêu cầu 3+ năm kinh nghiệm, đã publish app lên store.', DATE_ADD(NOW(), INTERVAL -9 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 5, NOW(), NOW(), 'system', 'system'),
-    ('AWS Cloud Architect', 'Tân Bình, TP.HCM', 35000000, 1, 'SENIOR', 'Thiết kế kiến trúc cloud trên AWS. Yêu cầu 5+ năm kinh nghiệm, có chứng chỉ AWS Solutions Architect.', DATE_ADD(NOW(), INTERVAL -15 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 5, NOW(), NOW(), 'system', 'system'),
+    ('React Native Developer', 'Tân Bình, Ho Chi Minh City', 21000000, 4, 'MIDDLE', 'Build React Native mobile apps for US clients. Requires 3+ years of experience and apps published to the stores.', DATE_ADD(NOW(), INTERVAL -9 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 5, NOW(), NOW(), 'system', 'system'),
+    ('AWS Cloud Architect', 'Tân Bình, Ho Chi Minh City', 35000000, 1, 'SENIOR', 'Design cloud architectures on AWS. Requires 5+ years of experience and the AWS Solutions Architect certification.', DATE_ADD(NOW(), INTERVAL -15 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 5, NOW(), NOW(), 'system', 'system'),
     
     -- Grab Vietnam jobs
-    ('Senior Backend Engineer', 'Quận 7, TP.HCM', 32000000, 3, 'SENIOR', 'Xây dựng backend microservices với Go/Java. Yêu cầu 5+ năm kinh nghiệm, xử lý high traffic systems.', DATE_ADD(NOW(), INTERVAL -5 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 7, NOW(), NOW(), 'system', 'system'),
-    ('Data Engineer', 'Quận 7, TP.HCM', 28000000, 2, 'SENIOR', 'Xây dựng data pipeline với Spark, Kafka. Yêu cầu 4+ năm kinh nghiệm big data, thành thạo Python/Scala.', DATE_ADD(NOW(), INTERVAL -7 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 7, NOW(), NOW(), 'system', 'system'),
+    ('Senior Backend Engineer', 'District 7, Ho Chi Minh City', 32000000, 3, 'SENIOR', 'Build backend microservices in Go/Java. Requires 5+ years of experience with high-traffic systems.', DATE_ADD(NOW(), INTERVAL -5 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 7, NOW(), NOW(), 'system', 'system'),
+    ('Data Engineer', 'District 7, Ho Chi Minh City', 28000000, 2, 'SENIOR', 'Build data pipelines with Spark and Kafka. Requires 4+ years of big data experience and fluent Python/Scala.', DATE_ADD(NOW(), INTERVAL -7 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 7, NOW(), NOW(), 'system', 'system'),
     
     -- Shopee Vietnam jobs
-    ('Frontend Vue.js Developer', 'Quận 10, TP.HCM', 19000000, 5, 'MIDDLE', 'Phát triển frontend e-commerce với Vue.js. Yêu cầu 2+ năm kinh nghiệm, hiểu về performance optimization.', DATE_ADD(NOW(), INTERVAL -3 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 8, NOW(), NOW(), 'system', 'system'),
-    ('Machine Learning Engineer', 'Quận 10, TP.HCM', 30000000, 2, 'SENIOR', 'Phát triển recommendation system. Yêu cầu 4+ năm ML experience, thành thạo Python, TensorFlow/PyTorch.', DATE_ADD(NOW(), INTERVAL -10 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 8, NOW(), NOW(), 'system', 'system'),
+    ('Frontend Vue.js Developer', 'District 10, Ho Chi Minh City', 19000000, 5, 'MIDDLE', 'Build e-commerce frontends with Vue.js. Requires 2+ years of experience and an understanding of performance optimisation.', DATE_ADD(NOW(), INTERVAL -3 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 8, NOW(), NOW(), 'system', 'system'),
+    ('Machine Learning Engineer', 'District 10, Ho Chi Minh City', 30000000, 2, 'SENIOR', 'Build recommendation systems. Requires 4+ years of ML experience and fluent Python, TensorFlow/PyTorch.', DATE_ADD(NOW(), INTERVAL -10 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 8, NOW(), NOW(), 'system', 'system'),
     
     -- Tiki jobs
-    ('PHP Laravel Developer', 'Tân Bình, TP.HCM', 17000000, 4, 'MIDDLE', 'Phát triển backend e-commerce với Laravel. Yêu cầu 2+ năm kinh nghiệm PHP, MySQL, Redis.', DATE_ADD(NOW(), INTERVAL -8 DAY), DATE_ADD(NOW(), INTERVAL 32 DAY), true, 9, NOW(), NOW(), 'system', 'system'),
-    ('Android Developer', 'Tân Bình, TP.HCM', 20000000, 3, 'MIDDLE', 'Phát triển app Android với Kotlin. Yêu cầu 3+ năm kinh nghiệm, hiểu về Android architecture components.', DATE_ADD(NOW(), INTERVAL -6 DAY), DATE_ADD(NOW(), INTERVAL 38 DAY), true, 9, NOW(), NOW(), 'system', 'system'),
+    ('PHP Laravel Developer', 'Tân Bình, Ho Chi Minh City', 17000000, 4, 'MIDDLE', 'Build e-commerce backends with Laravel. Requires 2+ years of PHP, MySQL and Redis.', DATE_ADD(NOW(), INTERVAL -8 DAY), DATE_ADD(NOW(), INTERVAL 32 DAY), true, 9, NOW(), NOW(), 'system', 'system'),
+    ('Android Developer', 'Tân Bình, Ho Chi Minh City', 20000000, 3, 'MIDDLE', 'Build Android apps with Kotlin. Requires 3+ years of experience and knowledge of Android Architecture Components.', DATE_ADD(NOW(), INTERVAL -6 DAY), DATE_ADD(NOW(), INTERVAL 38 DAY), true, 9, NOW(), NOW(), 'system', 'system'),
     
     -- MoMo jobs
-    ('iOS Developer', 'Quận 7, TP.HCM', 22000000, 3, 'MIDDLE', 'Phát triển app iOS với Swift. Yêu cầu 3+ năm kinh nghiệm, thành thạo UIKit, SwiftUI.', DATE_ADD(NOW(), INTERVAL -4 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 10, NOW(), NOW(), 'system', 'system'),
-    ('Security Engineer', 'Quận 7, TP.HCM', 28000000, 2, 'SENIOR', 'Bảo mật hệ thống fintech. Yêu cầu 4+ năm kinh nghiệm security, hiểu về OWASP, penetration testing.', DATE_ADD(NOW(), INTERVAL -12 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 10, NOW(), NOW(), 'system', 'system'),
+    ('iOS Developer', 'District 7, Ho Chi Minh City', 22000000, 3, 'MIDDLE', 'Build iOS apps with Swift. Requires 3+ years of experience and fluent UIKit and SwiftUI.', DATE_ADD(NOW(), INTERVAL -4 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 10, NOW(), NOW(), 'system', 'system'),
+    ('Security Engineer', 'District 7, Ho Chi Minh City', 28000000, 2, 'SENIOR', 'Secure fintech systems. Requires 4+ years of security experience, OWASP and penetration testing.', DATE_ADD(NOW(), INTERVAL -12 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 10, NOW(), NOW(), 'system', 'system'),
     
     -- VinAI jobs
-    ('Computer Vision Engineer', 'Quận 9, TP.HCM', 35000000, 2, 'SENIOR', 'Nghiên cứu và phát triển Computer Vision. Yêu cầu Master/PhD, kinh nghiệm với OpenCV, deep learning.', DATE_ADD(NOW(), INTERVAL -7 DAY), DATE_ADD(NOW(), INTERVAL 50 DAY), true, 11, NOW(), NOW(), 'system', 'system'),
-    ('Research Scientist', 'Quận 9, TP.HCM', 40000000, 1, 'SENIOR', 'Nghiên cứu AI/ML. Yêu cầu PhD hoặc 5+ năm kinh nghiệm research, có publication tại conference quốc tế.', DATE_ADD(NOW(), INTERVAL -14 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY), true, 11, NOW(), NOW(), 'system', 'system'),
+    ('Computer Vision Engineer', 'District 9, Ho Chi Minh City', 35000000, 2, 'SENIOR', 'Computer vision research and development. Requires a Master''s or PhD and experience with OpenCV and deep learning.', DATE_ADD(NOW(), INTERVAL -7 DAY), DATE_ADD(NOW(), INTERVAL 50 DAY), true, 11, NOW(), NOW(), 'system', 'system'),
+    ('Research Scientist', 'District 9, Ho Chi Minh City', 40000000, 1, 'SENIOR', 'AI/ML research. Requires a PhD or 5+ years of research experience with publications at international conferences.', DATE_ADD(NOW(), INTERVAL -14 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY), true, 11, NOW(), NOW(), 'system', 'system'),
     
     -- Entry level positions
-    ('Junior Java Developer', 'Bình Thạnh, TP.HCM', 10000000, 8, 'FRESHER', 'Fresher/Junior Java developer. Yêu cầu tốt nghiệp IT, hiểu OOP, Java core. Training 2 tháng.', DATE_ADD(NOW(), INTERVAL -2 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 12, NOW(), NOW(), 'system', 'system'),
-    ('Frontend Intern', 'Quận 1, TP.HCM', 5000000, 10, 'INTERN', 'Thực tập Frontend 3-6 tháng. Yêu cầu sinh viên năm 3-4, biết HTML/CSS/JavaScript cơ bản.', DATE_ADD(NOW(), INTERVAL -1 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 13, NOW(), NOW(), 'system', 'system'),
-    ('Junior QA Tester', 'Quận 12, TP.HCM', 8000000, 5, 'FRESHER', 'Manual tester fresher. Yêu cầu tốt nghiệp IT hoặc liên quan, có mindset test, tiếng Anh đọc hiểu.', DATE_ADD(NOW(), INTERVAL -3 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 14, NOW(), NOW(), 'system', 'system'),
-    ('Junior PHP Developer', 'Quận 7, TP.HCM', 9000000, 6, 'FRESHER', 'Fresher PHP developer. Yêu cầu biết PHP cơ bản, MySQL, có project cá nhân là lợi thế.', DATE_ADD(NOW(), INTERVAL -5 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 15, NOW(), NOW(), 'system', 'system'),
-    ('Business Analyst Fresher', 'Quận 1, TP.HCM', 10000000, 4, 'FRESHER', 'BA fresher cho dự án fintech. Yêu cầu tiếng Anh tốt, tư duy logic, giao tiếp tốt.', DATE_ADD(NOW(), INTERVAL -4 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 18, NOW(), NOW(), 'system', 'system')
+    ('Junior Java Developer', 'Bình Thạnh, Ho Chi Minh City', 10000000, 8, 'FRESHER', 'Fresher/junior Java developer. Requires an IT degree, OOP and core Java. Two months of training provided.', DATE_ADD(NOW(), INTERVAL -2 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 12, NOW(), NOW(), 'system', 'system'),
+    ('Frontend Intern', 'District 1, Ho Chi Minh City', 5000000, 10, 'INTERN', '3-6 month frontend internship for 3rd-4th year students with basic HTML/CSS/JavaScript.', DATE_ADD(NOW(), INTERVAL -1 DAY), DATE_ADD(NOW(), INTERVAL 45 DAY), true, 13, NOW(), NOW(), 'system', 'system'),
+    ('Junior QA Tester', 'District 12, Ho Chi Minh City', 8000000, 5, 'FRESHER', 'Fresher manual tester. Requires an IT or related degree, a testing mindset and reading English.', DATE_ADD(NOW(), INTERVAL -3 DAY), DATE_ADD(NOW(), INTERVAL 35 DAY), true, 14, NOW(), NOW(), 'system', 'system'),
+    ('Junior PHP Developer', 'District 7, Ho Chi Minh City', 9000000, 6, 'FRESHER', 'Fresher PHP developer. Requires basic PHP and MySQL; personal projects are a plus.', DATE_ADD(NOW(), INTERVAL -5 DAY), DATE_ADD(NOW(), INTERVAL 40 DAY), true, 15, NOW(), NOW(), 'system', 'system'),
+    ('Business Analyst Fresher', 'District 1, Ho Chi Minh City', 10000000, 4, 'FRESHER', 'Fresher business analyst for fintech projects. Requires good English, logical thinking and communication skills.', DATE_ADD(NOW(), INTERVAL -4 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), true, 18, NOW(), NOW(), 'system', 'system')
 ON DUPLICATE KEY UPDATE
     updated_at = NOW();
 -- =====================================================

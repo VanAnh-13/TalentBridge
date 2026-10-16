@@ -8,6 +8,6 @@ import java.time.Instant;
 @Data
 public class ConfirmRequest {
 
-    @NotNull(message = "Phải chọn một khung giờ")
+    @NotNull(message = "Choose a time slot")
     private Instant slot;
 }

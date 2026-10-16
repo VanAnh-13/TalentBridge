@@ -19,10 +19,10 @@ public class DeletePermission {
 
     public Permission execute(Long id) {
         Permission permission = permissions.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy quyền hạn này"));
+                .orElseThrow(() -> new NotFoundException("Permission not found"));
 
         if (Role.ADMIN_ESSENTIALS.contains(permission.authority()))
-            throw new ForbiddenException("Không thể xóa quyền hạn mà chức vụ ADMIN cần để quản trị hệ thống");
+            throw new ForbiddenException("This permission cannot be deleted: the ADMIN role needs it to administer the system");
 
         permissions.delete(permission);
         return permission;

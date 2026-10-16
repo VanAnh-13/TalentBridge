@@ -119,6 +119,6 @@ class NotificationApiTest {
     @DisplayName("'only if offline' is stored for someone who is not connected")
     void offlineIsStored() {
         long me = ids.incrementAndGet();
-        assertTrue(receive.execute(UUID.randomUUID().toString(), me, "CHAT_MESSAGE", "Tin nhắn mới", "hi", "/chat", true).isPresent());
+        assertTrue(receive.execute(UUID.randomUUID().toString(), me, "CHAT_MESSAGE", "New message", "hi", "/chat", true).isPresent());
     }
 }

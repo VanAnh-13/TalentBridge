@@ -30,18 +30,18 @@ public class InterviewCalendar {
     private final Clock clock;
 
     public String icsOf(Long id) {
-        Interview interview = interviews.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy buổi phỏng vấn"));
+        Interview interview = interviews.findById(id).orElseThrow(() -> new NotFoundException("Interview not found"));
         Accounts.Account me = context.caller();
         boolean candidate = me.id().equals(interview.getCandidateId());
         boolean company = me.companyId() != null && me.companyId().equals(interview.getCompanyId());
         if (!candidate && !company)
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         if (interview.getStatus() != InterviewStatus.CONFIRMED)
-            throw new BusinessRuleViolationException("Chỉ buổi phỏng vấn đã xác nhận mới có lịch");
+            throw new BusinessRuleViolationException("Only a confirmed interview has a calendar entry");
 
         Applications.Application application = context.application(interview.getResumeId());
-        return render(interview, "Phỏng vấn " + application.jobName() + " - " + application.companyName(),
-                "Phỏng vấn vị trí " + application.jobName() + " tại " + application.companyName()
+        return render(interview, "Interview: " + application.jobName() + " - " + application.companyName(),
+                "Interview for " + application.jobName() + " at " + application.companyName()
                         + (interview.getNote() == null ? "" : "\n" + interview.getNote()));
     }
 

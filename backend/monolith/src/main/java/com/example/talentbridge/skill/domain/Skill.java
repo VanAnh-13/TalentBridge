@@ -35,7 +35,7 @@ public class Skill {
 
     private static String requireName(String name) {
         if (name == null || name.isBlank())
-            throw new InvalidRequestException("Tên kỹ năng không được để trống");
+            throw new InvalidRequestException("Skill name is required");
         return name;
     }
 

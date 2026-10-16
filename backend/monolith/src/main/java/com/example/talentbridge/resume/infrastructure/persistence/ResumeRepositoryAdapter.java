@@ -32,7 +32,7 @@ public class ResumeRepositoryAdapter implements ResumeRepository {
     public ResumeDetails save(Resume resume) {
         ResumeJpaEntity entity = resume.getId() == null
                 ? new ResumeJpaEntity()
-                : jpa.findById(resume.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                : jpa.findById(resume.getId()).orElseThrow(() -> new NotFoundException("Resume not found"));
 
         entity.setEmail(resume.getEmail());
         entity.setStatus(resume.getStatus());
@@ -103,7 +103,7 @@ public class ResumeRepositoryAdapter implements ResumeRepository {
     @Override
     public void delete(Resume resume) {
         ResumeJpaEntity entity = jpa.findById(resume.getId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                .orElseThrow(() -> new NotFoundException("Resume not found"));
         // detach from the owners first so the cascade from User / Job cannot bring the row back
         entity.setUser(null);
         entity.setJob(null);

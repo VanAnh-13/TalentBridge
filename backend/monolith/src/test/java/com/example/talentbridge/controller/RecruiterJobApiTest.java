@@ -106,9 +106,9 @@ class RecruiterJobApiTest {
     void createErrors() throws Exception {
         call(post("/jobs/company"), tokenA, job("x", companyA, true, skill1, 999999)).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value("ENTITY_NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Kỹ năng không tồn tại"));
+                .andExpect(jsonPath("$.message").value("Skill does not exist"));
         call(post("/jobs/company"), tokenNoCompany, job("x", companyA, true, skill1)).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy công ty người dùng"));
+                .andExpect(jsonPath("$.message").value("The user's company was not found"));
         call(post("/jobs/company"), tokenA, job("x", companyA, true, skill1).replace("\"salary\":1500", "\"salary\":-1"))
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.errorCode").value("VALIDATION_ERROR"));
     }
@@ -130,7 +130,7 @@ class RecruiterJobApiTest {
         call(get("/jobs/" + jobA), null, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(jobA)).andExpect(jsonPath("$.data.description").value("desc"));
         call(get("/jobs/999999"), null, null).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy công việc"));
+                .andExpect(jsonPath("$.message").value("Job not found"));
         call(get("/jobs/companies/" + companyA), null, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()").value(1))
                 .andExpect(jsonPath("$.data[0].id").value(jobA))
@@ -162,7 +162,7 @@ class RecruiterJobApiTest {
                 .andExpect(jsonPath("$.data.company.id").value(companyB))
                 .andExpect(jsonPath("$.data.skills[*].id", contains((int) skill1)));
         call(put("/jobs/" + jobA), adminToken, job("x", 999999L, true, skill1)).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Công ty không tồn tại"));
+                .andExpect(jsonPath("$.message").value("Company does not exist"));
     }
 
     @Test @Order(7) @DisplayName("admin creates a job for any company; unknown company -> 404")
@@ -170,7 +170,7 @@ class RecruiterJobApiTest {
         long j = id(call(post("/jobs"), adminToken, job("Admin made " + sfx, companyA, true, skill1)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.company.id").value(companyA)));
         call(post("/jobs"), adminToken, job("x", 999999L, true, skill1)).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Công ty không tồn tại"));
+                .andExpect(jsonPath("$.message").value("Company does not exist"));
         call(delete("/jobs/" + j), adminToken, null).andExpect(status().isOk());
     }
 

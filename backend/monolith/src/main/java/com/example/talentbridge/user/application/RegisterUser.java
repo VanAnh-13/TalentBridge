@@ -24,13 +24,13 @@ public class RegisterUser {
     /** Self registration: the account gets the built-in role named {@code roleName} (USER or RECRUITER). */
     public UserDetails execute(UserData data, String roleName) {
         if (users.existsByEmail(data.email()))
-            throw new AlreadyExistsException("Email đã tồn tại");
+            throw new AlreadyExistsException("Email already exists");
 
         User user = User.create(data.email(), data.name(), hasher.hash(data.password()),
                 data.dob(), data.address(), data.gender());
 
         Long roleId = roles.idOfName(roleName)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy chức vụ USER, đăng ký thất bại"));
+                .orElseThrow(() -> new NotFoundException("Role USER not found, registration failed"));
         user.assignRole(roleId);
 
         return users.save(user);

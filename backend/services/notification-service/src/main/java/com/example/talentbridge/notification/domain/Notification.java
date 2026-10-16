@@ -19,9 +19,9 @@ public class Notification {
     private Notification(Long id, Long userId, String type, String title, String body, String link,
                          boolean read, Instant createdAt) {
         this.id = id;
-        this.userId = require(userId, "Người nhận không được để trống");
-        this.type = requireText(type, "Loại thông báo không được để trống");
-        this.title = requireText(title, "Tiêu đề không được để trống");
+        this.userId = require(userId, "Recipient is required");
+        this.type = requireText(type, "Notification type is required");
+        this.title = requireText(title, "Title is required");
         this.body = body;
         this.link = link;
         this.read = read;

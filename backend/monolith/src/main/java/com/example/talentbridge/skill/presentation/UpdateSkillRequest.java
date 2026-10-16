@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class UpdateSkillRequest {
 
-    @NotNull(message = "Mã kỹ năng không được để trống")
+    @NotNull(message = "Skill id is required")
     private Long id;
 
-    @NotBlank(message = "Tên kỹ năng không được để trống")
+    @NotBlank(message = "Skill name is required")
     private String name;
 }

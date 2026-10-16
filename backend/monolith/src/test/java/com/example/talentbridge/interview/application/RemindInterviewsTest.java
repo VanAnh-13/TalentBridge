@@ -73,7 +73,7 @@ class RemindInterviewsTest {
         assertEquals(1, job.run());
         assertEquals(2, sent.size());
         assertTrue(sent.get(0).startsWith("4:") && sent.get(1).startsWith("3:"), "candidate then recruiter");
-        assertTrue(sent.get(0).contains("Java Dev") && sent.get(0).contains("sau 24 giờ"));
+        assertTrue(sent.get(0).contains("Java Dev") && sent.get(0).contains("in 24 hours"));
         assertTrue(i.isReminded24h());
         assertEquals(0, job.run(), "idempotent");
         assertEquals(2, sent.size());
@@ -86,7 +86,7 @@ class RemindInterviewsTest {
         assertEquals(1, at(START.minus(Duration.ofHours(23))).run());
         assertEquals(1, at(START.minus(Duration.ofMinutes(50))).run());
         assertEquals(4, sent.size());
-        assertTrue(sent.get(2).contains("sau 1 giờ"));
+        assertTrue(sent.get(2).contains("in 1 hour"));
         assertTrue(i.isReminded1h());
         assertEquals(0, at(START.minus(Duration.ofMinutes(30))).run());
     }

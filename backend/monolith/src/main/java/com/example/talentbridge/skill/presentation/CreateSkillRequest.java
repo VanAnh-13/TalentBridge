@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class CreateSkillRequest {
 
-    @NotBlank(message = "Tên kỹ năng không được để trống")
+    @NotBlank(message = "Skill name is required")
     private String name;
 }

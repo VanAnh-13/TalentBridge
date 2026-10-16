@@ -19,7 +19,7 @@ public class DeleteRole {
 
     public Role execute(Long id) {
         Role role = roles.findById(id)
-                .orElseThrow(() -> new NotFoundException("Chức vụ không tồn tại"));
+                .orElseThrow(() -> new NotFoundException("Role does not exist"));
 
         role.assertDeletable();
 

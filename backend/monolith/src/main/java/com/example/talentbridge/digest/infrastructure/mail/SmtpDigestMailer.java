@@ -39,11 +39,11 @@ public class SmtpDigestMailer implements DigestMailer {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(sender);
             helper.setTo(digest.recipient());
-            helper.setSubject("🔥 Cơ hội việc làm mới dành cho bạn!");
+            helper.setSubject("🔥 New job opportunities for you!");
             helper.setText(html, true);
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new IllegalStateException("Không thể gửi email: " + e.getMessage(), e);
+            throw new IllegalStateException("The email could not be sent: " + e.getMessage(), e);
         }
     }
 }

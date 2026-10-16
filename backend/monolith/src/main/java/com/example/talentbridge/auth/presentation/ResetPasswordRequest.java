@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class ResetPasswordRequest {
 
-    @NotBlank(message = "Token không được để trống")
+    @NotBlank(message = "Token is required")
     private String token;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự")
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "The password must have at least 8 characters")
     private String password;
 
-    @NotBlank(message = "Xác nhận mật khẩu không được để trống")
+    @NotBlank(message = "Password confirmation is required")
     private String confirmPassword;
 }

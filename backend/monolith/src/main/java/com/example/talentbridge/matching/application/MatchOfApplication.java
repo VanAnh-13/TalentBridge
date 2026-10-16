@@ -30,7 +30,7 @@ public class MatchOfApplication {
     public void recompute(Long resumeId) {
         access.applicationFor(resumeId);
         if (!matcher.available())
-            throw new ServiceUnavailableException("Chức năng chấm điểm AI chưa được bật");
+            throw new ServiceUnavailableException("AI scoring is not enabled");
         queue.enqueue(resumeId);
     }
 }

@@ -20,15 +20,15 @@ public class UpdatePermission {
 
     public Permission execute(Long id, String name, String apiPath, String method, String module) {
         Permission permission = permissions.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy quyền hạn này"));
+                .orElseThrow(() -> new NotFoundException("Permission not found"));
 
         if (permissions.existsByApiPathAndMethodAndIdNot(apiPath, method, id))
-            throw new AlreadyExistsException("Quyền hạn này đã tồn tại");
+            throw new AlreadyExistsException("This permission already exists");
 
         boolean essential = Role.ADMIN_ESSENTIALS.contains(permission.authority());
         permission.redefine(name, apiPath, method, module);
         if (essential && !Role.ADMIN_ESSENTIALS.contains(permission.authority()))
-            throw new ForbiddenException("Không thể đổi phương thức/đường dẫn của quyền hạn mà chức vụ ADMIN cần để quản trị hệ thống");
+            throw new ForbiddenException("The method/path of this permission cannot change: the ADMIN role needs it to administer the system");
 
         return permissions.save(permission);
     }

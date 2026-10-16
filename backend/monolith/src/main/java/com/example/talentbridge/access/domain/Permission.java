@@ -37,10 +37,10 @@ public class Permission {
     }
 
     private void define(String name, String apiPath, String method, String module) {
-        this.name = requireText(name, "Tên không được để trống");
-        this.apiPath = requireText(apiPath, "Đường dẫn không được để trống");
-        this.method = requireText(method, "Phương thức không được để trống");
-        this.module = requireText(module, "Module không được để trống");
+        this.name = requireText(name, "Name is required");
+        this.apiPath = requireText(apiPath, "API path is required");
+        this.method = requireText(method, "HTTP method is required");
+        this.module = requireText(module, "Module is required");
     }
 
     private static String requireText(String value, String message) {

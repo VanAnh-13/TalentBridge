@@ -19,11 +19,11 @@ public class DeleteSkill {
 
     public Skill execute(Long id) {
         Skill skill = skills.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy kỹ năng"));
+                .orElseThrow(() -> new NotFoundException("Skill not found"));
 
         long jobs = usage.jobsRequiring(id);
         if (jobs > 0)
-            throw new BusinessRuleViolationException("Không thể xóa kỹ năng đang được " + jobs + " công việc yêu cầu");
+            throw new BusinessRuleViolationException("This skill cannot be deleted: it is required by " + jobs + " job(s)");
 
         usage.detachFromSubscribers(id);
         skills.delete(skill);

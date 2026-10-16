@@ -24,7 +24,7 @@ public class UpdateUser {
     /** An administrator edits an account. A company / role id of -1 clears the link; null leaves it unchanged. */
     public UserDetails execute(Long id, UserData data) {
         User user = users.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         user.updateProfile(data.name(), data.dob(), data.address(), data.gender());
 
@@ -32,7 +32,7 @@ public class UpdateUser {
             if (data.companyId() == -1) user.leaveCompany();
             else {
                 if (!companies.exists(data.companyId()))
-                    throw new NotFoundException("Không tìm thấy công ty");
+                    throw new NotFoundException("Company not found");
                 user.joinCompany(data.companyId());
             }
         }
@@ -42,7 +42,7 @@ public class UpdateUser {
                 user.clearRole();
             } else {
                 if (!roles.exists(data.roleId()))
-                    throw new NotFoundException("Không tìm thấy chức vụ");
+                    throw new NotFoundException("Role not found");
                 if (!data.roleId().equals(user.getRoleId()))
                     lastAdminGuard.assertNotLastAdmin(user);
                 user.assignRole(data.roleId());

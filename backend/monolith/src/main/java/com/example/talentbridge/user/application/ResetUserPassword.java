@@ -18,7 +18,7 @@ public class ResetUserPassword {
     private final PasswordHasher hasher;
 
     public void execute(Long userId, String newPassword) {
-        User user = users.findById(userId).orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+        User user = users.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         user.changePasswordHash(hasher.hash(newPassword));
         users.save(user);
     }

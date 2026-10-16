@@ -30,14 +30,14 @@ public class OpenConversation {
     public Conversation forApplication(Long resumeId) {
         Accounts.Account me = access.caller();
         Applications.Application application = applications.find(resumeId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy hồ sơ ứng tuyển"));
+                .orElseThrow(() -> new NotFoundException("Application not found"));
 
         boolean candidate = me.id().equals(application.candidateId());
         boolean company = me.companyId() != null && me.companyId().equals(application.companyId());
         if (!candidate && !company)
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         if (application.companyId() == null)
-            throw new NotFoundException("Hồ sơ này chưa gắn với công ty nào");
+            throw new NotFoundException("This application is not linked to any company");
 
         return chat.findConversationByResume(resumeId).orElseGet(() ->
                 chat.save(Conversation.open(resumeId, application.companyId(), application.candidateId(), Instant.now(clock))));

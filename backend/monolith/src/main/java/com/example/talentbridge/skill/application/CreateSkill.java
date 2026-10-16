@@ -16,7 +16,7 @@ public class CreateSkill {
 
     public Skill execute(String name) {
         if (skills.existsByName(name))
-            throw new AlreadyExistsException("Kỹ năng này đã tồn tại");
+            throw new AlreadyExistsException("This skill already exists");
 
         return skills.save(Skill.create(name));
     }

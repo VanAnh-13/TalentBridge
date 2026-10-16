@@ -10,7 +10,7 @@
     </parent>
     <artifactId>talentbridge-monolith</artifactId>
     <name>TalentBridge monolith</name>
-    <description>Demo ứng dụng Spring Boot cho nền tảng kết nối nhà tuyển dụng và ứng viên TalentBridge</description>
+    <description>TalentBridge monolith: the Spring Boot application that connects recruiters and candidates (being split into services)</description>
     <url/>
     <licenses>
         <license/>

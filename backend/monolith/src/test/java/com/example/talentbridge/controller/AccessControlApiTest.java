@@ -103,7 +103,7 @@ class AccessControlApiTest {
         admin(put("/permissions/" + permId2), perm("Perm Two Renamed " + suffix, "/test-" + suffix + "/two", "POST"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.name").value("Perm Two Renamed " + suffix));
         admin(put("/permissions/999999"), perm("x", "/x", "GET"))
-                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Không tìm thấy quyền hạn này"));
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Permission not found"));
     }
 
     // ------------------------------------------------------------------ roles
@@ -120,7 +120,7 @@ class AccessControlApiTest {
         roleId = idOf(r);
 
         admin(post("/roles"), role("OTHER_" + suffix, "d", true, 999999))
-                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Quyền hạn không tồn tại"));
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Permission does not exist"));
         admin(post("/roles"), role("CUSTOM_" + suffix, "dup", true, permId1)).andExpect(status().isConflict());
         admin(post("/roles"), "{\"name\":\"\",\"description\":\"\"}").andExpect(status().isBadRequest());
     }
@@ -151,7 +151,7 @@ class AccessControlApiTest {
                 .andExpect(jsonPath("$.data.permissions[*].id", contains((int) permId1)));
 
         admin(put("/roles/999999"), role("X", "d", true)).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Chức vụ không tồn tại"));
+                .andExpect(jsonPath("$.message").value("Role does not exist"));
     }
 
     @Test @Order(7) @DisplayName("role: ADMIN/USER cannot be renamed (silently) nor deleted (403)")
@@ -162,13 +162,13 @@ class AccessControlApiTest {
                 .andReturn().getResponse().getContentAsString()).get("data").get("content").get(0).get("permissions");
         long[] ids = new long[current.size()];
         for (int i = 0; i < ids.length; i++) ids[i] = current.get(i).get("id").asLong();
-        admin(put("/roles/" + adminRoleId), role("HACKED", "Quyền quản trị hệ thống", true, ids))
+        admin(put("/roles/" + adminRoleId), role("HACKED", "System administration", true, ids))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.name").value("ADMIN"))
                 .andExpect(jsonPath("$.data.permissions.length()").value(ids.length));
         admin(delete("/roles/" + adminRoleId), null)
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errorCode").value("ACCESS_DENIED"))
-                .andExpect(jsonPath("$.message").value("Không thể xóa chức vụ mặc định"));
+                .andExpect(jsonPath("$.message").value("Built-in roles cannot be deleted"));
         long userRoleId = roleRepository.findByName("USER").orElseThrow().getId();
         admin(delete("/roles/" + userRoleId), null).andExpect(status().isForbidden());
     }
@@ -178,7 +178,7 @@ class AccessControlApiTest {
         long recruiterRoleId = roleRepository.findByName("RECRUITER").orElseThrow().getId();
         admin(delete("/roles/" + recruiterRoleId), null)
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("Không thể xóa chức vụ mặc định"));
+                .andExpect(jsonPath("$.message").value("Built-in roles cannot be deleted"));
         org.junit.jupiter.api.Assertions.assertTrue(roleRepository.findByName("RECRUITER").isPresent());
     }
 

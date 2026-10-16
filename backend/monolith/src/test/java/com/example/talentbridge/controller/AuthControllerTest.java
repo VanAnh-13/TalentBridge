@@ -37,7 +37,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(1)
-    @DisplayName("AUTH_01: Đăng ký user mới với thông tin hợp lệ")
+    @DisplayName("AUTH_01: register a new user with valid details")
     void testRegisterWithValidData() throws Exception {
         RegisterRequest request = new RegisterRequest();
         request.setEmail(testEmail);
@@ -54,7 +54,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("AUTH_02: Đăng ký user với email đã tồn tại")
+    @DisplayName("AUTH_02: register with an email that already exists")
     void testRegisterWithDuplicateEmail() throws Exception {
         RegisterRequest request = new RegisterRequest();
         request.setEmail(testEmail);
@@ -65,12 +65,12 @@ public class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message", containsString("đã tồn tại")));
+                .andExpect(jsonPath("$.message", containsString("already exists")));
     }
 
     @Test
     @Order(3)
-    @DisplayName("AUTH_03: Đăng nhập với thông tin đúng")
+    @DisplayName("AUTH_03: log in with correct credentials")
     void testLoginWithValidCredentials() throws Exception {
         LoginRequest request = new LoginRequest();
         request.setEmail(testEmail);
@@ -94,7 +94,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(4)
-    @DisplayName("AUTH_04: Đăng nhập với mật khẩu sai")
+    @DisplayName("AUTH_04: log in with a wrong password")
     void testLoginWithWrongPassword() throws Exception {
         LoginRequest request = new LoginRequest();
         request.setEmail(testEmail);
@@ -110,7 +110,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("AUTH_05: Đăng nhập với email không tồn tại")
+    @DisplayName("AUTH_05: log in with an unknown email")
     void testLoginWithNonExistentEmail() throws Exception {
         LoginRequest request = new LoginRequest();
         request.setEmail("nonexistent@test.com");
@@ -126,7 +126,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(6)
-    @DisplayName("AUTH_09: Truy cập API với JWT token hợp lệ")
+    @DisplayName("AUTH_09: call the API with a valid JWT")
     void testAccessWithValidToken() throws Exception {
         mockMvc.perform(get("/auth/me")
                 .header("Authorization", "Bearer " + accessToken))
@@ -136,7 +136,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(7)
-    @DisplayName("AUTH_10: Truy cập API với JWT token không hợp lệ")
+    @DisplayName("AUTH_10: call the API with an invalid JWT")
     void testAccessWithInvalidToken() throws Exception {
         mockMvc.perform(get("/auth/me")
                 .header("Authorization", "Bearer invalid_token"))
@@ -145,7 +145,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(8)
-    @DisplayName("AUTH_11: Truy cập API không có quyền")
+    @DisplayName("AUTH_11: call the API without permission")
     void testAccessWithoutPermission() throws Exception {
         // Try to access admin endpoint without admin role
         // Authenticated but lacking the permission -> 403 (401 is reserved for missing/invalid credentials)
@@ -157,7 +157,7 @@ public class AuthControllerTest {
 
     @Test
     @Order(9)
-    @DisplayName("AUTH_08: Logout và invalidate token")
+    @DisplayName("AUTH_08: log out and invalidate the token")
     void testLogout() throws Exception {
         mockMvc.perform(post("/auth/logout")
                 .cookie(new org.springframework.mock.web.MockCookie("refresh_token", refreshToken)))

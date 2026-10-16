@@ -21,7 +21,7 @@ public class FilterSpecifications {
         try {
             parsed = converter.convert(filter.value());
         } catch (RuntimeException ex) {
-            throw new InvalidRequestException("Bộ lọc không hợp lệ: " + ex.getMessage());
+            throw new InvalidRequestException("Invalid filter: " + ex.getMessage());
         }
         // A well-formed filter can still name a field the entity does not have; that only shows when the
         // query is built. Report it as a bad request instead of letting it surface as a 500 (or, for an
@@ -30,7 +30,7 @@ public class FilterSpecifications {
             try {
                 return parsed.toPredicate(root, query, builder);
             } catch (IllegalArgumentException ex) {
-                throw new InvalidRequestException("Bộ lọc không hợp lệ: " + ex.getMessage());
+                throw new InvalidRequestException("Invalid filter: " + ex.getMessage());
             }
         };
     }

@@ -27,12 +27,12 @@ public class ListCompanyMembers {
     /** The people working for the caller's company, flagging its owner. */
     public List<CompanyMember> execute() {
         MemberDirectory.Member me = members.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (me.companyId() == null)
-            throw new NotFoundException("Người dùng không có công ty");
+            throw new NotFoundException("The user has no company");
 
         Company company = companies.findById(me.companyId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty người dùng"));
+                .orElseThrow(() -> new NotFoundException("The user's company was not found"));
 
         return members.findByCompanyId(company.getId()).stream()
                 .map(m -> new CompanyMember(m.id(), m.name(), m.email(), company.isOwnedBy(m.id())))

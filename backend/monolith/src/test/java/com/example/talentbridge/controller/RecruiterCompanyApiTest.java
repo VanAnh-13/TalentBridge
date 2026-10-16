@@ -63,9 +63,9 @@ class RecruiterCompanyApiTest {
     @Test @Order(1) @DisplayName("no company yet: /me and /me/users -> 404")
     void noCompanyYet() throws Exception {
         json(get("/companies/me"), tokenA, null).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy công ty người dùng"));
+                .andExpect(jsonPath("$.message").value("The user's company was not found"));
         json(get("/companies/me/users"), tokenA, null).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Người dùng không có công ty"));
+                .andExpect(jsonPath("$.message").value("The user has no company"));
     }
 
     @Test @Order(2) @DisplayName("create own company (201); second one -> 409; duplicate name -> 409")
@@ -78,9 +78,9 @@ class RecruiterCompanyApiTest {
         companyId = objectMapper.readTree(res).get("data").get("id").asLong();
 
         company(HttpMethod.POST, "/companies/me", tokenA, companyName + " 2", "d", "a", false)
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Người dùng đã có công ty"));
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("The user already has a company"));
         company(HttpMethod.POST, "/companies/me", tokenB, companyName.toUpperCase(), "d", "a", false)
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Tên công ty đã tồn tại"));
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("A company with this name already exists"));
         company(HttpMethod.POST, "/companies/me", tokenB, "", "d", "a", false).andExpect(status().isBadRequest());
     }
 
@@ -114,10 +114,10 @@ class RecruiterCompanyApiTest {
     @Test @Order(5) @DisplayName("add a member: unknown / already has company -> 404, success -> 200")
     void addMember() throws Exception {
         json(post("/companies/me/users"), tokenA, "{\"email\":\"nobody-" + sfx + "@test.com\"}").andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy người dùng cần thêm"));
+                .andExpect(jsonPath("$.message").value("The user to add was not found"));
         json(post("/companies/me/users"), tokenA, "{\"email\":\"" + emailB + "\"}").andExpect(status().isOk());
         json(post("/companies/me/users"), tokenA, "{\"email\":\"" + emailB + "\"}").andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Người dùng cần thêm đã có công ty"));
+                .andExpect(jsonPath("$.message").value("The user to add already belongs to a company"));
         json(post("/companies/me/users"), tokenA, "{}").andExpect(status().isBadRequest());
 
         json(get("/companies/me/users"), tokenB, null).andExpect(status().isOk())
@@ -132,9 +132,9 @@ class RecruiterCompanyApiTest {
                 .andExpect(jsonPath("$.errorCode").value("ACCESS_DENIED"));
         json(put("/companies/me/users"), tokenA, "{\"email\":\"" + emailB + "\"}").andExpect(status().isOk());
         json(put("/companies/me/users"), tokenA, "{\"email\":\"" + emailB + "\"}").andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Người dùng cần loại bỏ không có công ty"));
+                .andExpect(jsonPath("$.message").value("The user to remove has no company"));
         json(put("/companies/me/users"), tokenA, "{\"email\":\"nobody-" + sfx + "@test.com\"}").andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy người dùng cần loại bỏ"));
+                .andExpect(jsonPath("$.message").value("The user to remove was not found"));
         json(get("/companies/me/users"), tokenB, null).andExpect(status().isNotFound());
     }
 

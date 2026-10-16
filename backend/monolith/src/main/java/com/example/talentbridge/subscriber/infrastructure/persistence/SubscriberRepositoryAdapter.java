@@ -24,7 +24,7 @@ public class SubscriberRepositoryAdapter implements SubscriberRepository {
     public Subscriber save(Subscriber subscriber) {
         SubscriberJpaEntity entity = subscriber.getId() == null
                 ? new SubscriberJpaEntity(subscriber.getEmail())
-                : jpa.findById(subscriber.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy đăng ký người dùng này"));
+                : jpa.findById(subscriber.getId()).orElseThrow(() -> new NotFoundException("Subscription not found for this user"));
 
         List<SkillJpaEntity> skills = new ArrayList<>();
         for (SubscribedSkill skill : subscriber.getSkills())
@@ -47,7 +47,7 @@ public class SubscriberRepositoryAdapter implements SubscriberRepository {
     @Override
     public void delete(Subscriber subscriber) {
         SubscriberJpaEntity entity = jpa.findById(subscriber.getId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy đăng ký người dùng này"));
+                .orElseThrow(() -> new NotFoundException("Subscription not found for this user"));
         entity.setSkills(null);
         jpa.delete(entity);
     }

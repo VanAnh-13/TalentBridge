@@ -28,25 +28,25 @@ public class UpdateCompany {
     /** An administrator edits any company. */
     public Company execute(Long id, String name, String description, String address, FileUpload logo) {
         Company company = companies.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty"));
+                .orElseThrow(() -> new NotFoundException("Company not found"));
         return apply(company, name, description, address, logo);
     }
 
     /** A recruiter edits the company they belong to. */
     public Company executeForCurrentUser(String name, String description, String address, FileUpload logo) {
         MemberDirectory.Member member = members.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (member.companyId() == null)
-            throw new NotFoundException("Không tìm thấy công ty người dùng");
+            throw new NotFoundException("The user's company was not found");
 
         Company company = companies.findById(member.companyId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty người dùng"));
+                .orElseThrow(() -> new NotFoundException("The user's company was not found"));
         return apply(company, name, description, address, logo);
     }
 
     private Company apply(Company company, String name, String description, String address, FileUpload logo) {
         if (companies.existsByNameIgnoreCaseAndIdNot(name, company.getId()))
-            throw new AlreadyExistsException("Tên công ty đã tồn tại");
+            throw new AlreadyExistsException("A company with this name already exists");
 
         company.update(name, description, address);
 

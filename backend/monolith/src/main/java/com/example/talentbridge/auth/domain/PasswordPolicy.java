@@ -18,11 +18,11 @@ public final class PasswordPolicy {
     public static List<String> violations(String password) {
         List<String> errors = new ArrayList<>();
         if (password == null || password.length() < MIN_LENGTH)
-            errors.add("Mật khẩu phải có ít nhất 8 ký tự");
+            errors.add("The password must have at least 8 characters");
         if (password == null || !UPPERCASE.matcher(password).find())
-            errors.add("Mật khẩu phải có ít nhất 1 chữ hoa");
+            errors.add("The password must contain at least one uppercase letter");
         if (password == null || !NUMBER.matcher(password).find())
-            errors.add("Mật khẩu phải có ít nhất 1 số");
+            errors.add("The password must contain at least one digit");
         return errors;
     }
 

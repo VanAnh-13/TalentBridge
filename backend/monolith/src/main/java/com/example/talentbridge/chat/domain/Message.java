@@ -24,10 +24,10 @@ public class Message {
 
     public static Message write(Long conversationId, Long senderId, String text, Instant now) {
         if (text == null || text.isBlank())
-            throw new InvalidRequestException("Tin nhắn không được để trống");
+            throw new InvalidRequestException("Message text is required");
         String trimmed = text.strip();
         if (trimmed.length() > MAX_LENGTH)
-            throw new InvalidRequestException("Tin nhắn tối đa " + MAX_LENGTH + " ký tự");
+            throw new InvalidRequestException("A message can have at most " + MAX_LENGTH + " characters");
         return new Message(null, conversationId, senderId, trimmed, now);
     }
 

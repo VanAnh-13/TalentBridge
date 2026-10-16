@@ -19,11 +19,11 @@ public class GetUser {
     private final CurrentUser currentUser;
 
     public UserDetails execute(Long id) {
-        return users.findDetailsById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+        return users.findDetailsById(id).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public UserDetails executeForCurrentUser() {
         return users.findDetailsByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 }

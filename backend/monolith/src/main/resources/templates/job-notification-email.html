@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công việc phù hợp cho bạn</title>
+    <title>Jobs that match you</title>
     <style>
         /* Reset styles */
         * {
@@ -329,7 +329,7 @@
 
         /* Scroll hint for better UX */
         .skills-section::after {
-            content: "← Vuốt để xem thêm →";
+            content: "← Swipe to see more →";
             display: block;
             text-align: center;
             font-size: 10px;
@@ -443,8 +443,8 @@
 <div class="email-container">
     <!-- Header -->
     <div class="header">
-        <h1>🔥 Cơ Hội Việc Làm Hot</h1>
-        <p>Những công việc tuyệt vời đang chờ đợi bạn!</p>
+        <h1>🔥 Hot Job Opportunities</h1>
+        <p>Great jobs are waiting for you!</p>
     </div>
 
     <!-- Content -->
@@ -454,39 +454,39 @@
             <div class="job-header">
                 <div class="job-title" th:text="${job.name}">[HN] Business Analyst</div>
                 <div class="company-name"
-                     th:text="${job.company != null ? job.company.name : 'Công ty không xác định'}">Giao Hàng Tiết Kiệm
+                     th:text="${job.company != null ? job.company.name : 'Unknown company'}">Acme Logistics
                 </div>
             </div>
             <div class="job-body">
                 <div class="job-details">
                     <span class="job-detail"
-                          th:text="${job.salary != null ? ('💰 ' + #numbers.formatDecimal(job.salary, 0, 0) + ' VNĐ') : '💰 Thỏa thuận'}">💰 700 VNĐ</span>
+                          th:text="${job.salary != null ? ('💰 ' + #numbers.formatDecimal(job.salary, 0, 0) + ' VND') : '💰 Negotiable'}">💰 20,000,000 VND</span>
                     <span class="job-detail"
-                          th:text="${job.company != null and job.company.location != null ? ('📍 ' + job.company.location) : '📍 Địa điểm linh hoạt'}">📍 Ha Noi</span>
+                          th:text="${job.company != null and job.company.location != null ? ('📍 ' + job.company.location) : '📍 Flexible location'}">📍 Hanoi</span>
                     <span th:if="${job.skills != null and !job.skills.isEmpty()}"
                           class="job-detail"
-                          th:text="${'🛠️ ' + job.skills.size() + ' kỹ năng yêu cầu'}">🛠️ 5 kỹ năng yêu cầu</span>
+                          th:text="${'🛠️ ' + job.skills.size() + ' required skills'}">🛠️ 5 required skills</span>
                 </div>
 
                 <!-- Skills Section with Horizontal Scroll -->
                 <div th:if="${job.skills != null and !job.skills.isEmpty()}" class="skills-section">
-                    <h4>🔧 Kỹ năng yêu cầu:</h4>
+                    <h4>🔧 Required skills:</h4>
                     <div class="skills-container">
                         <span th:each="skill : ${job.skills}" class="skill-tag" th:text="${skill.name}">SQL</span>
                     </div>
                 </div>
 
-                <a href="#" class="apply-button" th:href="${job.applyUrl}">🎯 Ứng Tuyển Ngay</a>
+                <a href="#" class="apply-button" th:href="${job.applyUrl}">🎯 Apply Now</a>
             </div>
         </div>
 
         <!-- CTA Section -->
         <div class="cta-section">
-            <h3>🌟 Khám Phá Thêm Cơ Hội!</h3>
-            <p>Còn hàng ngàn việc làm hấp dẫn khác đang chờ đợi bạn trên TalentBridge</p>
+            <h3>🌟 Discover More Opportunities!</h3>
+            <p>Thousands more great jobs are waiting for you on TalentBridge</p>
             <a href="https://talentbridge.com" class="cta-button"
                th:href="${homePageUrl ?: 'https://talentbridge.com'}">
-                🏠 Tới Ngay Trang Chủ TalentBridge
+                🏠 Go to TalentBridge
             </a>
         </div>
     </div>
@@ -494,7 +494,7 @@
     <!-- Footer -->
     <div class="footer">
         <p><strong>TalentBridge Vietnam</strong></p>
-        <p>Kết nối tài năng - Tạo cơ hội - Thành công cùng nhau</p>
+        <p>Connecting talent - Creating opportunities - Succeeding together</p>
     </div>
 </div>
 </body>

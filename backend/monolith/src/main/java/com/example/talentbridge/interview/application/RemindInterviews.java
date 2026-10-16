@@ -32,13 +32,13 @@ public class RemindInterviews {
         for (Interview interview : interviews.findConfirmedStartingBetween(now, now.plus(Duration.ofHours(24)))) {
             boolean withinHour = !interview.getConfirmedSlot().isAfter(now.plus(Duration.ofHours(1)));
             if (withinHour && !interview.isReminded1h()) {
-                remind(interview, "1 giờ nữa");
+                remind(interview, "1 hour");
                 interview.markReminded24h();
                 interview.markReminded1h();
                 interviews.save(interview);
                 sent++;
             } else if (!withinHour && !interview.isReminded24h()) {
-                remind(interview, "24 giờ nữa");
+                remind(interview, "24 hours");
                 interview.markReminded24h();
                 interviews.save(interview);
                 sent++;
@@ -50,9 +50,9 @@ public class RemindInterviews {
 
     private void remind(Interview interview, String lead) {
         String job = applications.find(interview.getResumeId()).map(Applications.Application::jobName).orElse("");
-        String text = "Buổi phỏng vấn vị trí " + job + " sẽ diễn ra sau " + lead.replace(" nữa", "") + " ("
+        String text = "The interview for " + job + " starts in " + lead + " ("
                 + InterviewContext.when(interview.getConfirmedSlot()) + ").";
-        notifier.notify(interview.getCandidateId(), "INTERVIEW_REMINDER", "Nhắc lịch phỏng vấn", text, "/user/interviews");
-        notifier.notify(interview.getRecruiterId(), "INTERVIEW_REMINDER", "Nhắc lịch phỏng vấn", text, "/recruiter/interviews");
+        notifier.notify(interview.getCandidateId(), "INTERVIEW_REMINDER", "Interview reminder", text, "/user/interviews");
+        notifier.notify(interview.getRecruiterId(), "INTERVIEW_REMINDER", "Interview reminder", text, "/recruiter/interviews");
     }
 }

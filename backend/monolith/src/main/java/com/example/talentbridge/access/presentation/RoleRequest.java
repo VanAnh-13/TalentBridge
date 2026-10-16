@@ -14,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 public class RoleRequest {
 
-    @NotBlank(message = "Tên chức vụ không được để trống")
+    @NotBlank(message = "Role name is required")
     private String name;
 
-    @NotBlank(message = "Mô tả không được để trống")
+    @NotBlank(message = "Description is required")
     private String description;
 
     private boolean active;
 
-    @NotNull(message = "Danh sách quyền hạn không được để trống")
+    @NotNull(message = "Permissions are required")
     @Valid
     private List<PermissionId> permissions;
 
@@ -30,7 +30,7 @@ public class RoleRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PermissionId {
-        @NotNull(message = "ID quyền hạn không được để trống")
+        @NotNull(message = "Permission id is required")
         private Long id;
     }
 

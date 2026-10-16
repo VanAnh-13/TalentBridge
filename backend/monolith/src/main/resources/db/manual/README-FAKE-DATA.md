@@ -1,105 +1,97 @@
-# Hướng dẫn Insert Dữ liệu Giả lập (Fake Data)
+# Loading sample (fake) data
 
-## Tổng quan
-Đã tạo **130+ bản ghi dữ liệu giả lập** thực tế cho hệ thống TalentBridge:
+These scripts are **not** run by Flyway; load them by hand into a development database. They add 130+ realistic
+records for TalentBridge:
 
-- **25 Kỹ năng** (Skills): Java, React, Python, Docker, v.v...
-- **20 Công ty** (Companies): FPT, VNG, Grab, Shopee, Tiki, MoMo, v.v...
-- **30 Người dùng** (Users): 10 Recruiter + 20 Job Seeker
-- **25 Việc làm** (Jobs): Từ Fresher đến Senior, đa dạng vị trí IT
-- **30 Hồ sơ ứng tuyển** (Resumes): Các trạng thái PENDING, REVIEWING, APPROVED, REJECTED
+- **25 skills**: Java, React, Python, Docker, ...
+- **20 companies**: FPT, VNG, Grab, Shopee, Tiki, MoMo, ...
+- **30 users**: 10 recruiters and 20 job seekers
+- **25 jobs**: from fresher to senior, across IT roles
+- **30 applications (resumes)**: in the states PENDING, REVIEWING, APPROVED and REJECTED
 
-## Cách chạy
+People, street and district names are real-world Vietnamese names and are kept as they are.
 
-### Option 1: Chạy từng file riêng lẻ
+## How to run
+
+### Option 1: one part at a time
 ```bash
-# Kết nối MySQL
-mysql -u root -p talentbridge_db
+# connect to MariaDB/MySQL
+mysql -u root -p talentbridge
 
-# Chạy từng phần
-source /path/to/fake-data-part1.sql;  # Skills & Companies
-source /path/to/fake-data-part2.sql;  # Users
-source /path/to/fake-data-part3.sql;  # Jobs  
-source /path/to/fake-data-part4.sql;  # Job-Skills & Resumes
+# then run each part
+source /path/to/fake-data-part1.sql;  # skills & companies
+source /path/to/fake-data-part2.sql;  # users
+source /path/to/fake-data-part3.sql;  # jobs
+source /path/to/fake-data-part4.sql;  # job skills & applications
 ```
 
-### Option 2: Chạy file master
+### Option 2: the master file
 ```bash
-mysql -u root -p talentbridge_db < insert-fake-data.sql
+mysql -u root -p talentbridge < insert-fake-data.sql
 ```
 
-### Option 3: Chạy trực tiếp trong Spring Boot
-Đặt các file `.sql` trong thư mục `src/main/resources/` và Spring Boot sẽ tự động chạy khi khởi động.
+## Accounts
 
-## Thông tin đăng nhập
+Every sample user has the password `password123`.
 
-### Admin
-- Email: `admin@talentbridge.vn`
-- Password: `password123`
+| Role | Email |
+|------|-------|
+| Admin | `admin@talentbridge.vn` |
+| Recruiter | `hr.fpt@fpt.com.vn` |
+| Job seeker | `nguyenvan@gmail.com` |
 
-### Recruiter (Nhà tuyển dụng)
-- Email: `hr.fpt@fpt.com.vn`
-- Password: `password123`
+## What the data contains
 
-### Job Seeker (Người tìm việc)
-- Email: `nguyenvan@gmail.com`
-- Password: `password123`
+### Notable companies
+- **FPT Software**: Vietnam's largest software company
+- **VNG Corporation**: owner of Zalo and ZaloPay
+- **Grab, Shopee, Tiki**: big tech companies
+- **MoMo**: Vietnam's number one e-wallet
+- **VinAI**: AI research institute
 
-**Lưu ý**: Tất cả users đều dùng password: `password123`
+### Jobs
+- **Level**: INTERN, FRESHER, MIDDLE (2-4 years), SENIOR (5+ years)
+- **Salary**: 5 to 40 million VND
+- **Roles**: backend, frontend, full-stack, DevOps, AI/ML, mobile
+- **Technologies**: Java, Python, JavaScript, React, Node.js, .NET, PHP
 
-## Dữ liệu đặc biệt
+### Application states
+- **PENDING**: waiting for review
+- **REVIEWING**: being reviewed
+- **APPROVED**: accepted
+- **REJECTED**: rejected
 
-### Công ty nổi bật
-- **FPT Software**: Công ty phần mềm lớn nhất VN
-- **VNG Corporation**: Chủ sở hữu Zalo, ZaloPay
-- **Grab, Shopee, Tiki**: Big tech companies
-- **MoMo**: Ví điện tử số 1 VN
-- **VinAI**: Viện nghiên cứu AI
-
-### Việc làm đa dạng
-- **Level**: ENTRY (Fresher), MIDDLE (2-4 năm), SENIOR (5+ năm)
-- **Lương**: 5tr - 40tr VNĐ
-- **Vị trí**: Backend, Frontend, Full-stack, DevOps, AI/ML, Mobile
-- **Công nghệ**: Java, Python, JavaScript, React, Node.js, .NET, PHP
-
-### Trạng thái hồ sơ
-- **PENDING**: Chờ xem xét
-- **REVIEWING**: Đang xem xét
-- **APPROVED**: Đã chấp nhận
-- **REJECTED**: Từ chối
-
-## Kiểm tra dữ liệu
+## Checking the data
 
 ```sql
--- Đếm số lượng bản ghi
+-- count the records
 SELECT 'Skills' AS Table_Name, COUNT(*) AS Count FROM skills
 UNION ALL
 SELECT 'Companies', COUNT(*) FROM companies
-UNION ALL  
+UNION ALL
 SELECT 'Users', COUNT(*) FROM users
 UNION ALL
 SELECT 'Jobs', COUNT(*) FROM jobs
 UNION ALL
 SELECT 'Resumes', COUNT(*) FROM resumes;
 
--- Xem danh sách công ty
+-- some companies
 SELECT id, name, address FROM companies LIMIT 10;
 
--- Xem việc làm đang tuyển
-SELECT j.name, c.name as company, j.salary, j.level 
-FROM jobs j 
-JOIN companies c ON j.company_id = c.id 
-WHERE j.active = true 
+-- open jobs
+SELECT j.name, c.name AS company, j.salary, j.level
+FROM jobs j
+JOIN companies c ON j.company_id = c.id
+WHERE j.active = true
 LIMIT 10;
 
--- Xem thống kê hồ sơ theo trạng thái
-SELECT status, COUNT(*) as count 
-FROM resumes 
+-- applications by state
+SELECT status, COUNT(*) AS count
+FROM resumes
 GROUP BY status;
 ```
 
-## Lưu ý
-- Dữ liệu được thiết kế phù hợp thị trường IT Việt Nam
-- Các công ty và việc làm dựa trên thực tế
-- Mức lương theo khảo sát thị trường 2024-2025
-- Skills phổ biến trong ngành IT hiện tại
+## Notes
+- The data is modelled on the Vietnamese IT job market (companies and jobs based on real ones).
+- Salaries follow 2024-2025 market surveys.
+- Skills are the ones most common in the industry today.

@@ -16,6 +16,6 @@ public class GetSkill {
 
     public Skill execute(Long id) {
         return skills.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy kỹ năng"));
+                .orElseThrow(() -> new NotFoundException("Skill not found"));
     }
 }

@@ -38,19 +38,19 @@ public class SubmitResume {
      */
     public ResumeDetails execute(String email, Long userId, Long jobId, FileUpload pdf) {
         UserDirectory.User user = users.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (!user.email().equals(email))
-            throw new NotFoundException("Truy cập bị từ chối");
+            throw new NotFoundException("Access denied");
         if (!user.email().equals(currentUser.email()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
 
         if (!jobs.exists(jobId))
-            throw new NotFoundException("Không tìm thấy công việc");
+            throw new NotFoundException("Job not found");
         if (resumes.existsByUserIdAndJobId(user.id(), jobId))
-            throw new AlreadyExistsException("Người dùng đã nộp resume cho công việc này");
+            throw new AlreadyExistsException("The user has already applied for this job");
         if (pdf == null || pdf.isEmpty())
-            throw new NotFoundException("Không tìm thấy tệp pdf");
+            throw new NotFoundException("PDF file not found");
 
         ResumeDetails saved = resumes.save(Resume.submit(email, user.id(), jobId));
         Resume resume = saved.resume();

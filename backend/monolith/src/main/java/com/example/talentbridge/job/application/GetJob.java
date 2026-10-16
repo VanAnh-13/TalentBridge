@@ -15,6 +15,6 @@ public class GetJob {
     private final JobRepository jobs;
 
     public JobDetails execute(Long id) {
-        return jobs.findDetailsById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy công việc"));
+        return jobs.findDetailsById(id).orElseThrow(() -> new NotFoundException("Job not found"));
     }
 }

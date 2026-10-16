@@ -93,11 +93,11 @@ class UserApiTest {
     @Test @Order(2) @DisplayName("create: duplicate email -> 409, unknown company/role -> 404, invalid -> 400")
     void createErrors() throws Exception {
         call(post("/users"), adminToken, "{\"name\":\"x\",\"email\":\"" + email + "\",\"password\":\"p\"}")
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Email đã tồn tại"));
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Email already exists"));
         call(post("/users"), adminToken, "{\"name\":\"x\",\"email\":\"c-" + email + "\",\"password\":\"p\",\"company\":{\"id\":999999}}")
-                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Không tìm thấy công ty"));
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Company not found"));
         call(post("/users"), adminToken, "{\"name\":\"x\",\"email\":\"r-" + email + "\",\"password\":\"p\",\"role\":{\"id\":999999}}")
-                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Không tìm thấy chức vụ"));
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Role not found"));
         call(post("/users"), adminToken, "{\"name\":\"\",\"email\":\"not-an-email\",\"password\":\"\"}")
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.errorCode").value("VALIDATION_ERROR"));
     }
@@ -114,7 +114,7 @@ class UserApiTest {
         call(get("/users/" + userId), adminToken, null).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.email").value(email));
         call(get("/users/999999"), adminToken, null).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy người dùng"));
+                .andExpect(jsonPath("$.message").value("User not found"));
     }
 
     @Test @Order(4) @DisplayName("admin update: fields replaced, company/role -1 clears, unknown -> 404")
@@ -134,7 +134,7 @@ class UserApiTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.role.id").value(roleId));
         call(put("/users"), adminToken, "{\"id\":999999,\"name\":\"R\"}").andExpect(status().isNotFound());
         call(put("/users"), adminToken, "{\"id\":" + userId + ",\"company\":{\"id\":999999}}").andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy công ty"));
+                .andExpect(jsonPath("$.message").value("Company not found"));
         call(put("/users"), adminToken, "{\"name\":\"no id\"}").andExpect(status().isBadRequest());
     }
 
@@ -149,7 +149,7 @@ class UserApiTest {
         call(post("/users/me/update-profile"), token, "{\"name\":\"\"}").andExpect(status().isBadRequest());
 
         call(post("/users/me/update-password"), token, "{\"oldPassword\":\"wrong\",\"newPassword\":\"Newpassw0rd!\"}")
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Mật khẩu hiện tại không chính xác"));
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("The current password is incorrect"));
         call(post("/users/me/update-password"), token, "{\"oldPassword\":\"" + password + "\",\"newPassword\":\"Newpassw0rd!\"}")
                 .andExpect(status().isOk());
         org.junit.jupiter.api.Assertions.assertTrue(login(email, "Newpassw0rd!").contains("accessToken"));

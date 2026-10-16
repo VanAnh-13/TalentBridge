@@ -17,7 +17,7 @@ public class CreatePermission {
 
     public Permission execute(String name, String apiPath, String method, String module) {
         if (permissions.existsByApiPathAndMethod(apiPath, method))
-            throw new AlreadyExistsException("Quyền hạn này đã tồn tại");
+            throw new AlreadyExistsException("This permission already exists");
 
         return permissions.save(Permission.create(name, apiPath, method, module));
     }

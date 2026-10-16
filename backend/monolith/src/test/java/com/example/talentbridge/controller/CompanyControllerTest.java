@@ -47,7 +47,7 @@ public class CompanyControllerTest {
 
     @Test
     @Order(1)
-    @DisplayName("COMPANY_01: Tạo công ty mới với đầy đủ thông tin")
+    @DisplayName("COMPANY_01: create a company with complete details")
     void testCreateCompanyWithFullInfo() throws Exception {
         CompanyRequest companyDto = new CompanyRequest();
         companyDto.setName(companyName);
@@ -83,7 +83,7 @@ public class CompanyControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("COMPANY_02: Tạo công ty với tên trùng lặp")
+    @DisplayName("COMPANY_02: create a company with a duplicate name")
     void testCreateCompanyWithDuplicateName() throws Exception {
         CompanyRequest companyDto = new CompanyRequest();
         companyDto.setName(companyName.toUpperCase()); // same name, different case
@@ -101,12 +101,12 @@ public class CompanyControllerTest {
                 .file(companyData)
                 .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message", containsString("đã tồn tại")));
+                .andExpect(jsonPath("$.message", containsString("already exists")));
     }
 
     @Test
     @Order(3)
-    @DisplayName("COMPANY_03: Lấy danh sách công ty với filter")
+    @DisplayName("COMPANY_03: list companies with a filter")
     void testGetCompaniesWithFilter() throws Exception {
         mockMvc.perform(get("/companies")
                 .param("filter", "name~'*Test*'")
@@ -119,7 +119,7 @@ public class CompanyControllerTest {
 
     @Test
     @Order(4)
-    @DisplayName("COMPANY_04: Lấy chi tiết công ty theo ID")
+    @DisplayName("COMPANY_04: get a company by id")
     void testGetCompanyById() throws Exception {
         mockMvc.perform(get("/companies/" + companyId))
                 .andExpect(status().isOk())
@@ -129,7 +129,7 @@ public class CompanyControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("COMPANY_05: Cập nhật thông tin công ty")
+    @DisplayName("COMPANY_05: update a company")
     void testUpdateCompany() throws Exception {
         CompanyRequest updateDto = new CompanyRequest();
         updateDto.setName(companyName + " Updated");
@@ -157,7 +157,7 @@ public class CompanyControllerTest {
 
     @Test
     @Order(6)
-    @DisplayName("COMPANY_10: Lấy danh sách công ty kèm số lượng job")
+    @DisplayName("COMPANY_10: list companies with their job counts")
     void testGetCompaniesWithJobCount() throws Exception {
         mockMvc.perform(get("/companies/with-jobs-count")
                 .param("page", "0")
@@ -169,7 +169,7 @@ public class CompanyControllerTest {
 
     @Test
     @Order(7)
-    @DisplayName("COMPANY_09: Xóa công ty còn job đang tuyển -> bị từ chối (expect fail)")
+    @DisplayName("COMPANY_09: deleting a company with open jobs is refused (expected failure)")
     void testDeleteCompanyWithActiveJobs() throws Exception {
         com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity skill = new com.example.talentbridge.skill.infrastructure.persistence.SkillJpaEntity();
         skill.setName("skill-" + System.nanoTime());

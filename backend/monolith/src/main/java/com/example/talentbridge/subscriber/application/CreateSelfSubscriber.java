@@ -24,7 +24,7 @@ public class CreateSelfSubscriber {
         String email = currentUser.email();
 
         if (subscribers.findByEmail(email).isPresent())
-            throw new AlreadyExistsException("Người dùng này đã đăng ký rồi");
+            throw new AlreadyExistsException("This user is already subscribed");
 
         return subscribers.save(Subscriber.create(email, skillCatalog.findExisting(skillIds)));
     }

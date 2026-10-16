@@ -156,7 +156,7 @@ class InterviewApiTest {
                     .andExpect(header().string("Content-Type", containsString("text/calendar")))
                     .andExpect(header().string("Content-Disposition", containsString("interview-" + interviewId + ".ics")))
                     .andExpect(content().string(containsString("BEGIN:VEVENT")))
-                    .andExpect(content().string(containsString("SUMMARY:Phỏng vấn Iv Dev " + sfx)));
+                    .andExpect(content().string(containsString("SUMMARY:Interview: Iv Dev " + sfx)));
         }
         call(get("/interviews/" + interviewId + "/calendar.ics"), otherCandidate, null).andExpect(status().isForbidden());
         call(get("/interviews/" + interviewId + "/calendar.ics"), outsider, null).andExpect(status().isForbidden());

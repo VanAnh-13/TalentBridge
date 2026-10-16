@@ -27,7 +27,7 @@ public class RefreshSession {
         String email = tokenReader.subjectOf(refreshToken);
 
         UserAccount account = getUserAccount.find(email)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         Long userId = account.user().getId();
 
         if (!refreshTokens.isValid(refreshToken, userId))

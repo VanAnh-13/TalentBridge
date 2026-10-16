@@ -30,8 +30,8 @@ public class RespondToInterview {
         interview.confirm(slot, Instant.now(clock));
         Interview saved = interviews.save(interview);
 
-        notifier.notify(saved.getRecruiterId(), "INTERVIEW_CONFIRMED", "Ứng viên đã xác nhận phỏng vấn",
-                me.name() + " xác nhận phỏng vấn lúc " + InterviewContext.when(slot) + " cho vị trí "
+        notifier.notify(saved.getRecruiterId(), "INTERVIEW_CONFIRMED", "Interview confirmed by the candidate",
+                me.name() + " confirmed the interview at " + InterviewContext.when(slot) + " for "
                         + context.application(saved.getResumeId()).jobName(), "/recruiter/interviews");
         return saved;
     }
@@ -43,13 +43,13 @@ public class RespondToInterview {
         interview.decline();
         Interview saved = interviews.save(interview);
 
-        notifier.notify(saved.getRecruiterId(), "INTERVIEW_DECLINED", "Ứng viên từ chối phỏng vấn",
-                me.name() + " đã từ chối buổi phỏng vấn cho vị trí "
+        notifier.notify(saved.getRecruiterId(), "INTERVIEW_DECLINED", "Interview declined by the candidate",
+                me.name() + " declined the interview for "
                         + context.application(saved.getResumeId()).jobName(), "/recruiter/interviews");
         return saved;
     }
 
     private Interview load(Long id) {
-        return interviews.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy buổi phỏng vấn"));
+        return interviews.findById(id).orElseThrow(() -> new NotFoundException("Interview not found"));
     }
 }

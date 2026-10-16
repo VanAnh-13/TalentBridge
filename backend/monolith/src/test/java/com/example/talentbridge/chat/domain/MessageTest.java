@@ -15,8 +15,8 @@ class MessageTest {
     @Test
     @DisplayName("text is trimmed and kept")
     void write() {
-        Message m = Message.write(1L, 2L, "  xin chào \n", NOW);
-        assertEquals("xin chào", m.getText());
+        Message m = Message.write(1L, 2L, "  hello \n", NOW);
+        assertEquals("hello", m.getText());
         assertEquals(2L, m.getSenderId());
         assertEquals(NOW, m.getSentAt());
         assertNull(m.getId());

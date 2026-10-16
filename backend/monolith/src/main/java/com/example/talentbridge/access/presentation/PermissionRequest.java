@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @Data
 public class PermissionRequest {
 
-    @NotBlank(message = "Tên không được để trống")
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Đường dẫn không được để trống")
+    @NotBlank(message = "API path is required")
     private String apiPath;
 
-    @NotBlank(message = "Phương thức không được để trống")
+    @NotBlank(message = "HTTP method is required")
     private String method;
 
-    @NotBlank(message = "Module không được để trống")
+    @NotBlank(message = "Module is required")
     private String module;
 }

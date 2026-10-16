@@ -64,13 +64,13 @@ public class SmtpResetMailer implements ResetMailer {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(mailFrom);
             helper.setTo(email);
-            helper.setSubject("🔐 Đặt lại mật khẩu TalentBridge");
+            helper.setSubject("🔐 Reset your TalentBridge password");
             helper.setText(html, true);
             mailSender.send(message);
             log.info("Password reset email sent to: {}", email);
         } catch (MessagingException e) {
             log.error("Failed to send password reset email to: {}", email, e);
-            throw new IllegalStateException("Không thể gửi email. Vui lòng thử lại sau");
+            throw new IllegalStateException("The email could not be sent. Please try again later");
         }
     }
 }

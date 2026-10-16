@@ -30,7 +30,7 @@ public class InterviewRepositoryAdapter implements InterviewRepository {
     public Interview save(Interview i) {
         InterviewJpaEntity e = i.getId() == null
                 ? new InterviewJpaEntity()
-                : jpa.findById(i.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy buổi phỏng vấn"));
+                : jpa.findById(i.getId()).orElseThrow(() -> new NotFoundException("Interview not found"));
         if (i.getId() == null) {
             e.setResumeId(i.getResumeId());
             e.setCompanyId(i.getCompanyId());

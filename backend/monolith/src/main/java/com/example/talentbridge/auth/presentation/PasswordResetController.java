@@ -19,7 +19,7 @@ public class PasswordResetController {
     private final PasswordReset passwordReset;
 
     @PostMapping("/forgot-password")
-    @ApiMessage(value = "Yêu cầu đặt lại mật khẩu đã được gửi")
+    @ApiMessage(value = "Password reset request sent")
     @Operation(summary = "Request password reset email")
     @SecurityRequirements()
     public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
@@ -29,7 +29,7 @@ public class PasswordResetController {
     }
 
     @GetMapping("/reset-password/verify")
-    @ApiMessage(value = "Xác thực token đặt lại mật khẩu")
+    @ApiMessage(value = "Verify a password reset token")
     @Operation(summary = "Verify password reset token")
     @SecurityRequirements()
     public ResponseEntity<TokenCheckResponse> verifyResetToken(@RequestParam String token) {
@@ -37,7 +37,7 @@ public class PasswordResetController {
     }
 
     @PostMapping("/reset-password")
-    @ApiMessage(value = "Đặt lại mật khẩu thành công")
+    @ApiMessage(value = "Password reset successfully")
     @Operation(summary = "Reset password with token")
     @SecurityRequirements()
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {

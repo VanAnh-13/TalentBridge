@@ -30,7 +30,7 @@ public class RoleRepositoryAdapter implements RoleRepository {
     public Role save(Role role) {
         RoleJpaEntity entity = role.getId() == null
                 ? new RoleJpaEntity()
-                : jpa.findById(role.getId()).orElseThrow(() -> new NotFoundException("Chức vụ không tồn tại"));
+                : jpa.findById(role.getId()).orElseThrow(() -> new NotFoundException("Role does not exist"));
 
         entity.setName(role.getName());
         entity.setDescription(role.getDescription());
@@ -69,7 +69,7 @@ public class RoleRepositoryAdapter implements RoleRepository {
     @Override
     public void delete(Role role) {
         RoleJpaEntity entity = jpa.findById(role.getId())
-                .orElseThrow(() -> new NotFoundException("Chức vụ không tồn tại"));
+                .orElseThrow(() -> new NotFoundException("Role does not exist"));
         if (entity.getPermissions() != null)
             entity.getPermissions().clear();
         jpa.delete(entity);

@@ -59,7 +59,7 @@ class RealtimeTest {
         long me = ids.incrementAndGet();
         StompSession session = StompClient.connect(port, TestTokens.token(me, TestTokens.INBOX));
         BlockingQueue<Map<String, Object>> received = StompClient.listen(session, "/user/queue/notifications");
-        assertTrue(receive.execute(UUID.randomUUID().toString(), me, "CHAT_MESSAGE", "Tin nhắn mới", "hi", "/chat", true).isEmpty());
+        assertTrue(receive.execute(UUID.randomUUID().toString(), me, "CHAT_MESSAGE", "New message", "hi", "/chat", true).isEmpty());
         assertNull(received.poll(1, TimeUnit.SECONDS));
         session.disconnect();
     }
@@ -69,10 +69,10 @@ class RealtimeTest {
         long me = ids.incrementAndGet();
         StompSession session = StompClient.connect(port, TestTokens.token(me, TestTokens.INBOX));
         BlockingQueue<Map<String, Object>> chat = StompClient.listen(session, "/user/queue/chat");
-        pushToUser.execute(me, "chat", Map.of("conversationId", 7, "text", "xin chào"));
+        pushToUser.execute(me, "chat", Map.of("conversationId", 7, "text", "hello"));
         Map<String, Object> message = chat.poll(10, TimeUnit.SECONDS);
         assertNotNull(message);
-        assertEquals("xin chào", message.get("text"));
+        assertEquals("hello", message.get("text"));
         assertThrows(InvalidRequestException.class, () -> pushToUser.execute(me, "../topic", Map.of()));
         session.disconnect();
     }

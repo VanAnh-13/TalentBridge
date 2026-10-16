@@ -24,13 +24,13 @@ public class CreateRole {
 
     public Role execute(String name, String description, List<Long> permissionIds) {
         if (roles.existsByName(name))
-            throw new AlreadyExistsException("Chức vụ đã tồn tại");
+            throw new AlreadyExistsException("Role already exists");
 
         List<Permission> found = List.of();
         if (permissionIds != null) {
             found = permissions.findAllById(new HashSet<>(permissionIds));
             if (found.size() != permissionIds.size())
-                throw new NotFoundException("Quyền hạn không tồn tại");
+                throw new NotFoundException("Permission does not exist");
         }
 
         return roles.save(Role.create(name, description, found));

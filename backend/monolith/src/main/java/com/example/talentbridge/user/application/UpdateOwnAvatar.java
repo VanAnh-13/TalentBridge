@@ -23,7 +23,7 @@ public class UpdateOwnAvatar {
 
     public void execute(FileUpload avatar) {
         User user = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (avatar != null && !avatar.isEmpty())
             user.changeAvatar(storage.uploadFile(avatar, "avatar", user.getId().toString(), true));

@@ -50,6 +50,9 @@ class FlywayMigrationTest {
             assertEquals(79, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'ADMIN'"));
             assertEquals(41, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'RECRUITER'"));
             assertEquals(32, count(c, "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id WHERE r.name = 'USER'"));
+            // V12: the built-in roles are described in English
+            assertEquals(1, count(c, "SELECT COUNT(*) FROM roles WHERE name = 'ADMIN' AND description = 'System administration'"));
+            assertEquals(1, count(c, "SELECT COUNT(*) FROM roles WHERE name = 'USER' AND description = 'Candidate - applies for jobs'"));
             assertEquals(0, count(c, "SELECT COUNT(*) FROM users"), "no default users may be seeded");
 
             String holders = "SELECT COUNT(*) FROM roles_permissions rp JOIN roles r ON r.id = rp.role_id "

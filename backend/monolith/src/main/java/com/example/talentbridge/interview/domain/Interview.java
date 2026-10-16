@@ -77,11 +77,11 @@ public class Interview {
     /** The candidate picks one of the proposed slots. */
     public void confirm(Instant slot, Instant now) {
         if (status != InterviewStatus.PROPOSED)
-            throw new BusinessRuleViolationException("Buổi phỏng vấn không còn chờ xác nhận");
+            throw new BusinessRuleViolationException("The interview is no longer waiting for an answer");
         if (slot == null || !proposedSlots.contains(slot))
-            throw new InvalidRequestException("Khung giờ không nằm trong các lựa chọn của nhà tuyển dụng");
+            throw new InvalidRequestException("The time slot is not one of the recruiter's options");
         if (!slot.isAfter(now))
-            throw new BusinessRuleViolationException("Khung giờ này đã qua");
+            throw new BusinessRuleViolationException("This time slot is in the past");
         confirmedSlot = slot;
         status = InterviewStatus.CONFIRMED;
         reminded24h = false;
@@ -91,7 +91,7 @@ public class Interview {
     /** The candidate turns the interview down, before or after confirming. */
     public void decline() {
         if (!isActive())
-            throw new BusinessRuleViolationException("Buổi phỏng vấn đã kết thúc");
+            throw new BusinessRuleViolationException("The interview is already closed");
         confirmedSlot = null;
         status = InterviewStatus.DECLINED;
     }
@@ -99,7 +99,7 @@ public class Interview {
     /** The recruiter calls it off. */
     public void cancel() {
         if (!isActive())
-            throw new BusinessRuleViolationException("Buổi phỏng vấn đã kết thúc");
+            throw new BusinessRuleViolationException("The interview is already closed");
         status = InterviewStatus.CANCELLED;
     }
 
@@ -107,7 +107,7 @@ public class Interview {
     public void reschedule(InterviewMode newMode, String newLocation, String newNote, int newDurationMinutes,
                            List<Instant> slots, Instant now) {
         if (status == InterviewStatus.CANCELLED)
-            throw new BusinessRuleViolationException("Buổi phỏng vấn đã bị hủy");
+            throw new BusinessRuleViolationException("Interview cancelled");
         define(newMode, newLocation, newNote, newDurationMinutes);
         proposedSlots = validSlots(slots, now);
         confirmedSlot = null;
@@ -131,17 +131,17 @@ public class Interview {
 
     private void define(InterviewMode newMode, String newLocation, String newNote, int newDurationMinutes) {
         if (newMode == null)
-            throw new InvalidRequestException("Hình thức phỏng vấn không được để trống");
+            throw new InvalidRequestException("Interview mode is required");
         if (newLocation == null || newLocation.isBlank())
             throw new InvalidRequestException(newMode == InterviewMode.ONLINE
-                    ? "Liên kết phòng họp không được để trống" : "Địa điểm phỏng vấn không được để trống");
+                    ? "A meeting link is required" : "An interview location is required");
         if (newLocation.length() > 500)
-            throw new InvalidRequestException("Địa điểm/liên kết tối đa 500 ký tự");
+            throw new InvalidRequestException("The location/link can have at most 500 characters");
         if (newNote != null && newNote.length() > 1000)
-            throw new InvalidRequestException("Ghi chú tối đa 1000 ký tự");
+            throw new InvalidRequestException("The note can have at most 1000 characters");
         if (newDurationMinutes < MIN_DURATION_MINUTES || newDurationMinutes > MAX_DURATION_MINUTES)
-            throw new InvalidRequestException("Thời lượng phải từ " + MIN_DURATION_MINUTES + " đến "
-                    + MAX_DURATION_MINUTES + " phút");
+            throw new InvalidRequestException("The duration must be between " + MIN_DURATION_MINUTES + " and "
+                    + MAX_DURATION_MINUTES + " minutes");
         this.mode = newMode;
         this.location = newLocation.trim();
         this.note = newNote == null || newNote.isBlank() ? null : newNote.trim();
@@ -150,12 +150,12 @@ public class Interview {
 
     private static List<Instant> validSlots(List<Instant> slots, Instant now) {
         if (slots == null || slots.isEmpty())
-            throw new InvalidRequestException("Phải đề xuất ít nhất một khung giờ");
+            throw new InvalidRequestException("Propose at least one time slot");
         List<Instant> distinct = slots.stream().distinct().sorted().toList();
         if (distinct.size() > MAX_SLOTS)
-            throw new InvalidRequestException("Chỉ được đề xuất tối đa " + MAX_SLOTS + " khung giờ");
+            throw new InvalidRequestException("You can propose at most " + MAX_SLOTS + " time slots");
         if (distinct.stream().anyMatch(slot -> !slot.isAfter(now)))
-            throw new InvalidRequestException("Các khung giờ phải ở trong tương lai");
+            throw new InvalidRequestException("Time slots must be in the future");
         return distinct;
     }
 

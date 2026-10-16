@@ -21,17 +21,17 @@ public class GetCompany {
 
     public Company execute(Long id) {
         return companies.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty"));
+                .orElseThrow(() -> new NotFoundException("Company not found"));
     }
 
     /** The company the caller belongs to. */
     public Company executeForCurrentUser() {
         MemberDirectory.Member member = members.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (member.companyId() == null)
-            throw new NotFoundException("Không tìm thấy công ty người dùng");
+            throw new NotFoundException("The user's company was not found");
 
         return companies.findById(member.companyId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty người dùng"));
+                .orElseThrow(() -> new NotFoundException("The user's company was not found"));
     }
 }

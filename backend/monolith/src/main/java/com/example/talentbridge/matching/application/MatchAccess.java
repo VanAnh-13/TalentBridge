@@ -21,14 +21,14 @@ class MatchAccess {
 
     Accounts.Account caller() {
         return accounts.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     /** The application, provided the caller is an admin or works for the company that received it. */
     Applications.Application applicationFor(Long resumeId) {
         Accounts.Account me = caller();
         Applications.Application application = applications.find(resumeId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy hồ sơ ứng tuyển"));
+                .orElseThrow(() -> new NotFoundException("Application not found"));
         requireCompany(me, application.companyId());
         return application;
     }
@@ -36,7 +36,7 @@ class MatchAccess {
     /** The job, provided the caller is an admin or works for the company that owns it. */
     Jobs.Job jobFor(Long jobId) {
         Accounts.Account me = caller();
-        Jobs.Job job = jobs.find(jobId).orElseThrow(() -> new NotFoundException("Không tìm thấy công việc"));
+        Jobs.Job job = jobs.find(jobId).orElseThrow(() -> new NotFoundException("Job not found"));
         requireCompany(me, job.companyId());
         return job;
     }
@@ -44,6 +44,6 @@ class MatchAccess {
     private static void requireCompany(Accounts.Account me, Long companyId) {
         if (me.admin()) return;
         if (me.companyId() == null || !me.companyId().equals(companyId))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
     }
 }

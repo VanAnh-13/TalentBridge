@@ -48,7 +48,7 @@ public class LocalFileStorage implements FileStorage {
     public String uploadFile(FileUpload file, String folder, String fileName, boolean getUrl) {
         try {
             if (file == null || file.isEmpty()) {
-                throw new StorageException("Tệp không được rỗng hoặc null");
+                throw new StorageException("The file must not be empty");
             }
 
             // Create folder path
@@ -72,7 +72,7 @@ public class LocalFileStorage implements FileStorage {
             }
         } catch (IOException e) {
             log.error("Error uploading file locally: {}", e.getMessage());
-            throw new StorageException("Lỗi khi upload file locally: " + e.getMessage());
+            throw new StorageException("Could not store the file locally: " + e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class LocalFileStorage implements FileStorage {
     public String uploadFile(FileUpload file, String key, boolean getUrl) {
         try {
             if (file == null || file.isEmpty()) {
-                throw new StorageException("Tệp không được rỗng hoặc null");
+                throw new StorageException("The file must not be empty");
             }
 
             // Parse folder and filename from key
@@ -107,7 +107,7 @@ public class LocalFileStorage implements FileStorage {
             }
         } catch (IOException e) {
             log.error("Error uploading file locally: {}", e.getMessage());
-            throw new StorageException("Lỗi khi upload file locally: " + e.getMessage());
+            throw new StorageException("Could not store the file locally: " + e.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class LocalFileStorage implements FileStorage {
         try {
             return Files.readAllBytes(Paths.get(UPLOAD_DIR, key));
         } catch (IOException e) {
-            throw new StorageException("Không đọc được tệp: " + key);
+            throw new StorageException("Could not read the file: " + key);
         }
     }
 
@@ -155,7 +155,7 @@ public class LocalFileStorage implements FileStorage {
             deleteFileByKey(key);
         } catch (Exception e) {
             log.error("Error deleting file by URL: {}", e.getMessage());
-            throw new StorageException("Lỗi khi xóa file: " + e.getMessage());
+            throw new StorageException("Could not delete the file: " + e.getMessage());
         }
     }
 
@@ -175,7 +175,7 @@ public class LocalFileStorage implements FileStorage {
             }
         } catch (IOException e) {
             log.error("Error deleting file: {}", e.getMessage());
-            throw new StorageException("Lỗi khi xóa file: " + e.getMessage());
+            throw new StorageException("Could not delete the file: " + e.getMessage());
         }
     }
 }

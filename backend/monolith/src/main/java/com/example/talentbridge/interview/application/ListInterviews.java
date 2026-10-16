@@ -31,7 +31,7 @@ public class ListInterviews {
     public PageResult<InterviewView> forMyCompany(PageQuery page) {
         Accounts.Account me = context.caller();
         if (me.companyId() == null)
-            throw new NotFoundException("Không tìm thấy công ty người dùng");
+            throw new NotFoundException("The user's company was not found");
         return interviews.findByCompany(me.companyId(), page).map(this::view);
     }
 

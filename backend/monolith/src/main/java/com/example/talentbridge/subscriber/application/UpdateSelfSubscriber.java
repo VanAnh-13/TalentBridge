@@ -22,7 +22,7 @@ public class UpdateSelfSubscriber {
 
     public Subscriber execute(List<Long> skillIds) {
         Subscriber subscriber = subscribers.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy đăng ký người dùng này"));
+                .orElseThrow(() -> new NotFoundException("Subscription not found for this user"));
 
         subscriber.changeSkills(skillCatalog.findExisting(skillIds));
         return subscribers.save(subscriber);

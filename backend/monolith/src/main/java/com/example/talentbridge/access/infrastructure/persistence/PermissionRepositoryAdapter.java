@@ -27,7 +27,7 @@ public class PermissionRepositoryAdapter implements PermissionRepository {
     public Permission save(Permission permission) {
         PermissionJpaEntity entity = permission.getId() == null
                 ? new PermissionJpaEntity()
-                : jpa.findById(permission.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy quyền hạn này"));
+                : jpa.findById(permission.getId()).orElseThrow(() -> new NotFoundException("Permission not found"));
 
         entity.setName(permission.getName());
         entity.setApiPath(permission.getApiPath());
@@ -72,7 +72,7 @@ public class PermissionRepositoryAdapter implements PermissionRepository {
     @Override
     public void delete(Permission permission) {
         PermissionJpaEntity entity = jpa.findById(permission.getId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy quyền hạn này"));
+                .orElseThrow(() -> new NotFoundException("Permission not found"));
 
         if (entity.getRoles() != null)
             entity.getRoles().forEach(role -> {

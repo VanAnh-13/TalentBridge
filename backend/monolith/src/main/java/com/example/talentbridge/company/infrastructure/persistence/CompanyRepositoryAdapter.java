@@ -27,7 +27,7 @@ public class CompanyRepositoryAdapter implements CompanyRepository {
     public Company save(Company company) {
         CompanyJpaEntity entity = company.getId() == null
                 ? new CompanyJpaEntity()
-                : jpa.findById(company.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy công ty"));
+                : jpa.findById(company.getId()).orElseThrow(() -> new NotFoundException("Company not found"));
 
         entity.setName(company.getName());
         entity.setDescription(company.getDescription());
@@ -77,7 +77,7 @@ public class CompanyRepositoryAdapter implements CompanyRepository {
     @Override
     public void delete(Company company) {
         CompanyJpaEntity entity = jpa.findById(company.getId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty"));
+                .orElseThrow(() -> new NotFoundException("Company not found"));
         // the owner column must not point at a user while the company row goes away
         entity.setOwner(null);
         jpa.delete(entity);          // cascades to the logo row

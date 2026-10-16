@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 @Data
 public class ResumeRequest {
 
-    @NotBlank(message = "Email người dùng không được để trống")
+    @NotBlank(message = "User email is required")
     @Email(
-            message = "Định dạng email không hợp lệ",
+            message = "Invalid email format",
             regexp = "^[\\w\\-.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$"
     )
     private String email;
 
     /** Accepted for compatibility; the server decides the initial status (always PENDING). */
-    @NotNull(message = "Trạng thái hồ sơ không được để trống")
+    @NotNull(message = "Resume status is required")
     private ResumeStatus status;
 
-    @NotNull(message = "Người dùng không được để trống")
+    @NotNull(message = "User is required")
     private User user;
 
-    @NotNull(message = "Công việc không được để trống")
+    @NotNull(message = "Job is required")
     private Job job;
 
     @AllArgsConstructor

@@ -19,7 +19,7 @@ class JobSkills {
     List<Long> requireAllExisting(List<Long> ids) {
         Set<Long> existing = skillCatalog.existingIds(ids);
         if (existing.size() != ids.size())
-            throw new NotFoundException("Kỹ năng không tồn tại");
+            throw new NotFoundException("Skill does not exist");
         return ids;
     }
 

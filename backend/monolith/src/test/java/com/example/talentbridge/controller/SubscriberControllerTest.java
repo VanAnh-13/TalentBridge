@@ -70,14 +70,14 @@ class SubscriberControllerTest {
         as(get("/subscribers/me"), null).andExpect(status().isOk()).andExpect(jsonPath("$.data").doesNotExist());
         as(put("/subscribers/me"), skills(skillA)).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value("ENTITY_NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Không tìm thấy đăng ký người dùng này"));
+                .andExpect(jsonPath("$.message").value("Subscription not found for this user"));
         as(delete("/subscribers/me"), null).andExpect(status().isNotFound());
     }
 
     @Test @Order(2) @DisplayName("validation: at least one skill")
     void validation() throws Exception {
         as(post("/subscribers/me"), "{\"skills\":[]}").andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containsString("Phải có ít nhất 1 kỹ năng")));
+                .andExpect(jsonPath("$.message", containsString("At least one skill is required")));
         as(post("/subscribers/me"), "{}").andExpect(status().isBadRequest());
     }
 
@@ -95,7 +95,7 @@ class SubscriberControllerTest {
     void subscribeTwice() throws Exception {
         as(post("/subscribers/me"), skills(skillA)).andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("ENTITY_ALREADY_EXISTS"))
-                .andExpect(jsonPath("$.message").value("Người dùng này đã đăng ký rồi"));
+                .andExpect(jsonPath("$.message").value("This user is already subscribed"));
     }
 
     @Test @Order(5) @DisplayName("get own subscription")

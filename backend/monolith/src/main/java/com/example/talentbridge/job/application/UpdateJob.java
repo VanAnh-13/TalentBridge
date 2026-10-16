@@ -29,7 +29,7 @@ public class UpdateJob {
 
         if (data.companyId() != null && !Objects.equals(data.companyId(), job.getCompanyId())) {
             if (!companies.exists(data.companyId()))
-                throw new NotFoundException("Công ty không tồn tại");
+                throw new NotFoundException("Company does not exist");
             job.assignTo(data.companyId());
         }
 
@@ -42,13 +42,13 @@ public class UpdateJob {
         apply(job, data);
 
         if (!job.belongsTo(recruiterScope.companyId()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
 
         return save(job, data);
     }
 
     private Job find(Long id) {
-        return jobs.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy công việc"));
+        return jobs.findById(id).orElseThrow(() -> new NotFoundException("Job not found"));
     }
 
     private void apply(Job job, JobData d) {

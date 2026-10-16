@@ -14,17 +14,17 @@ import java.time.LocalDate;
 @Data
 public class RegisterRequest {
 
-    @NotBlank(message = "Tên người dùng không được để trống")
+    @NotBlank(message = "User name is required")
     private String name;
 
-    @NotBlank(message = "Email người dùng không được để trống")
+    @NotBlank(message = "User email is required")
     @Email(
-            message = "Định dạng email không hợp lệ",
+            message = "Invalid email format",
             regexp = "^[\\w\\-.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$"
     )
     private String email;
 
-    @NotBlank(message = "Mật khẩu người dùng không được để trống")
+    @NotBlank(message = "Password is required")
     private String password;
 
     private LocalDate dob;

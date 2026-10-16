@@ -25,7 +25,7 @@ public class CreateJob {
 
         if (data.companyId() != null) {
             if (!companies.exists(data.companyId()))
-                throw new NotFoundException("Công ty không tồn tại");
+                throw new NotFoundException("Company does not exist");
             job.assignTo(data.companyId());
         }
 

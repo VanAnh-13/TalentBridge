@@ -31,7 +31,7 @@ public class SendJobDigest {
     /** Sends one digest on request. */
     public void toSubscriber(String email) {
         Subscribers.Subscription subscription = subscribers.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         deliver(subscription);
     }
 

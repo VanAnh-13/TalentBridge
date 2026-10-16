@@ -25,10 +25,10 @@ public class UpdateRole {
     /** {@code permissionIds == null} leaves the permissions as they are; otherwise they are replaced. */
     public Role execute(Long id, String name, String description, boolean active, List<Long> permissionIds) {
         Role role = roles.findById(id)
-                .orElseThrow(() -> new NotFoundException("Chức vụ không tồn tại"));
+                .orElseThrow(() -> new NotFoundException("Role does not exist"));
 
         if (!role.isBuiltIn() && roles.existsByNameAndIdNot(name, id))
-            throw new AlreadyExistsException("Chức vụ đã tồn tại");
+            throw new AlreadyExistsException("Role already exists");
 
         role.update(name, description, active);
 

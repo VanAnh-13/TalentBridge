@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Data
 public class UserUpdateRequest {
 
-    @NotNull(message = "ID Không được để trống")
+    @NotNull(message = "Id is required")
     private Long id;
 
     private String name;

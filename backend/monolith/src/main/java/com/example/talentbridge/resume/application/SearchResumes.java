@@ -32,9 +32,9 @@ public class SearchResumes {
     /** The resumes sent to the caller's company (recruiters). */
     public PageResult<ResumeView> executeForCurrentUserCompany(FilterExpression filter, PageQuery page) {
         UserDirectory.User user = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (user.companyId() == null)
-            throw new NotFoundException("Không tìm thấy công ty người dùng");
+            throw new NotFoundException("The user's company was not found");
 
         return resumes.searchByCompany(user.companyId(), filter, page).map(files::view);
     }

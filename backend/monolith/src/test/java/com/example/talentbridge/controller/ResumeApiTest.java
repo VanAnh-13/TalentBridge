@@ -110,13 +110,13 @@ class ResumeApiTest {
         resume1 = id(r);
 
         apply(c1, emailC1, userC1, job1, true).andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Người dùng đã nộp resume cho công việc này"));
+                .andExpect(jsonPath("$.message").value("The user has already applied for this job"));
         apply(c1, emailC1, userC1, 999999, true).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy công việc"));
+                .andExpect(jsonPath("$.message").value("Job not found"));
         apply(c1, "someone-else@test.com", userC1, job2, true).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Truy cập bị từ chối"));
+                .andExpect(jsonPath("$.message").value("Access denied"));
         apply(c1, emailC1, 999999, job2, true).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy người dùng"));
+                .andExpect(jsonPath("$.message").value("User not found"));
         apply(c1, emailC1, userC1, job2, false).andExpect(status().is4xxClientError());
         // the failed attempts above must not have created resumes
         call(get("/resumes/me"), c1, null).andExpect(jsonPath("$.data.totalElements").value(1));
@@ -148,11 +148,11 @@ class ResumeApiTest {
                 .andExpect(jsonPath("$.data.jobName").value("Dev 1 " + sfx))
                 .andExpect(jsonPath("$.data.companyName").value("ResCoA " + sfx));
         replaceFile(c2, resume1).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy resume"));
+                .andExpect(jsonPath("$.message").value("Resume not found"));
         mockMvc.perform(multipart(HttpMethod.PUT, "/resumes/me/file/" + resume1)
                         .file(new MockMultipartFile("pdfFile", "empty.pdf", "application/pdf", new byte[0]))
                         .header("Authorization", "Bearer " + c1))
-                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("Không tìm thấy tệp pdf"));
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.message").value("PDF file not found"));
     }
 
     @Test @Order(4) @DisplayName("recruiters only see resumes sent to their own company")
@@ -177,7 +177,7 @@ class ResumeApiTest {
         call(put("/resumes/status"), adminToken, "{\"id\":" + resume1 + ",\"status\":\"APPROVED\"}").andExpect(status().isOk());
         call(get("/resumes/me"), c1, null).andExpect(jsonPath("$.data.content[0].status").value("APPROVED"));
         call(put("/resumes/status"), adminToken, "{\"id\":999999,\"status\":\"APPROVED\"}").andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy resume"));
+                .andExpect(jsonPath("$.message").value("Resume not found"));
         call(put("/resumes/company/status"), recA, "{\"id\":999999,\"status\":\"APPROVED\"}").andExpect(status().isNotFound());
     }
 
@@ -187,7 +187,7 @@ class ResumeApiTest {
                 .andExpect(jsonPath("$.data.id").value(resume1))
                 .andExpect(jsonPath("$.data.jobName").value("Dev 1 " + sfx));
         call(delete("/resumes/me/jobs/" + job1), c1, null).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Không tìm thấy resume"));
+                .andExpect(jsonPath("$.message").value("Resume not found"));
         call(get("/resumes/me"), c1, null).andExpect(jsonPath("$.data.content").isEmpty());
         // can apply again afterwards
         apply(c1, emailC1, userC1, job1, true).andExpect(status().isCreated());

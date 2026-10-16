@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class UpdateResumeStatusRequest {
 
-    @NotNull(message = "ID hồ sơ không được để trống")
+    @NotNull(message = "Resume id is required")
     private Long id;
 
-    @NotNull(message = "Trạng thái hồ sơ không được để trống")
+    @NotNull(message = "Resume status is required")
     private ResumeStatus status;
 }

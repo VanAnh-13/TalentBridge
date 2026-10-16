@@ -26,19 +26,19 @@ public class CreateUser {
     /** An administrator creates an account; email and password are trimmed. */
     public UserDetails execute(UserData data) {
         if (users.existsByEmail(data.email()))
-            throw new AlreadyExistsException("Email đã tồn tại");
+            throw new AlreadyExistsException("Email already exists");
 
         User user = User.create(data.email().trim(), data.name(), hasher.hash(data.password().trim()),
                 data.dob(), data.address(), data.gender());
 
         if (data.companyId() != null) {
             if (!companies.exists(data.companyId()))
-                throw new NotFoundException("Không tìm thấy công ty");
+                throw new NotFoundException("Company not found");
             user.joinCompany(data.companyId());
         }
         if (data.roleId() != null) {
             if (!roles.exists(data.roleId()))
-                throw new NotFoundException("Không tìm thấy chức vụ");
+                throw new NotFoundException("Role not found");
             user.assignRole(data.roleId());
         }
 

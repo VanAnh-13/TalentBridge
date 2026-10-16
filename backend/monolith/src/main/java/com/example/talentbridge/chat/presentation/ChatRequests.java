@@ -11,8 +11,8 @@ public final class ChatRequests {
 
     @Data
     public static class SendMessage {
-        @NotBlank(message = "Tin nhắn không được để trống")
-        @Size(max = 2000, message = "Tin nhắn tối đa 2000 ký tự")
+        @NotBlank(message = "Message text is required")
+        @Size(max = 2000, message = "A message can have at most 2000 characters")
         private String text;
     }
 }

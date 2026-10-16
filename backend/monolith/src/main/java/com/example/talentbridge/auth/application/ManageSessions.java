@@ -27,7 +27,7 @@ public class ManageSessions {
     /** The open sessions of the owner of the refresh token, flagging the one that token belongs to. */
     public List<SessionInfo> list(String refreshToken) {
         UserDirectory.UserSummary user = users.findByEmail(tokenReader.subjectOf(refreshToken))
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         return refreshTokens.sessionsOf(user.id(), refreshToken);
     }
 
@@ -37,9 +37,9 @@ public class ManageSessions {
         String sessionUserId = part[3];
 
         UserDirectory.UserSummary me = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (!me.id().toString().equalsIgnoreCase(sessionUserId))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
 
         refreshTokens.deleteBySessionId(sessionId);
     }

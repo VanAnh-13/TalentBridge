@@ -15,41 +15,41 @@ import java.util.List;
 @NoArgsConstructor
 public class JobRequest {
 
-    @NotBlank(message = "Tên công việc không được để trống")
+    @NotBlank(message = "Job title is required")
     private String name;
 
-    @NotBlank(message = "Địa điểm làm việc không được để trống")
+    @NotBlank(message = "Location is required")
     private String location;
 
-    @NotNull(message = "Mức lương không được để trống")
-    @PositiveOrZero(message = "Mức lương phải lớn hơn hoặc bằng 0")
+    @NotNull(message = "Salary is required")
+    @PositiveOrZero(message = "Salary must be greater than or equal to 0")
     private Double salary;
 
-    @NotNull(message = "Số lượng tuyển không được để trống")
-    @Positive(message = "Số lượng tuyển phải lớn hơn 0")
+    @NotNull(message = "Number of openings is required")
+    @Positive(message = "Number of openings must be greater than 0")
     private Integer quantity;
 
-    @NotNull(message = "Cấp bậc không được để trống")
+    @NotNull(message = "Level is required")
     private Level level;
 
-    @NotBlank(message = "Mô tả công việc không được để trống")
+    @NotBlank(message = "Job description is required")
     private String description;
 
-    @NotNull(message = "Ngày bắt đầu không được để trống")
+    @NotNull(message = "Start date is required")
     private Instant startDate;
 
-    @NotNull(message = "Ngày kết thúc không được để trống")
+    @NotNull(message = "End date is required")
     private Instant endDate;
 
-    @NotNull(message = "Trạng thái không được để trống")
+    @NotNull(message = "Status is required")
     private Boolean active;
 
-    @NotNull(message = "Công ty không được để trống")
+    @NotNull(message = "Company is required")
     @Valid
     private CompanyId company;
 
-    @NotNull(message = "Danh sách kỹ năng không được để trống")
-    @Size(min = 1, message = "Phải có ít nhất 1 kỹ năng")
+    @NotNull(message = "Skills are required")
+    @Size(min = 1, message = "At least one skill is required")
     @Valid
     private List<SkillId> skills;
 
@@ -57,7 +57,7 @@ public class JobRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CompanyId {
-        @NotNull(message = "ID công ty không được để trống")
+        @NotNull(message = "Company id is required")
         private Long id;
     }
 
@@ -65,7 +65,7 @@ public class JobRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SkillId {
-        @NotNull(message = "ID kỹ năng không được để trống")
+        @NotNull(message = "Skill id is required")
         private Long id;
     }
 

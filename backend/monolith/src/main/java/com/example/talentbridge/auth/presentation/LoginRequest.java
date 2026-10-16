@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @Data
 public class LoginRequest {
 
-    @NotBlank(message = "Email người dùng không được để trống")
+    @NotBlank(message = "User email is required")
     @Email(
-            message = "Định dạng email không hợp lệ",
+            message = "Invalid email format",
             regexp = "^[\\w\\-.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$"
     )
     private String email;
 
-    @NotBlank(message = "Mật khẩu người dùng không được để trống")
+    @NotBlank(message = "Password is required")
     private String password;
 
-    @NotNull(message = "Thông tin phiên không được để trống")
+    @NotNull(message = "Session details are required")
     private SessionMetaRequest sessionMetaRequest;
 }

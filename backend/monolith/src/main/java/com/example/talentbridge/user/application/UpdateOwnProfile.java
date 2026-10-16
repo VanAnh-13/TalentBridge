@@ -23,7 +23,7 @@ public class UpdateOwnProfile {
 
     public UserDetails execute(String name, LocalDate dob, String address, Gender gender) {
         User user = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         user.updateProfile(name, dob, address, gender);
         return users.save(user);

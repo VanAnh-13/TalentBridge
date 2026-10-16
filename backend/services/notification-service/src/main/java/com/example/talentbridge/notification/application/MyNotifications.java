@@ -31,7 +31,7 @@ public class MyNotifications {
 
     public void markRead(Long id) {
         if (!notifications.markRead(id, me()))
-            throw new NotFoundException("Không tìm thấy thông báo");
+            throw new NotFoundException("Notification not found");
     }
 
     public int markAllRead() {
@@ -40,7 +40,7 @@ public class MyNotifications {
 
     private Long me() {
         Long id = currentUser.id();
-        if (id == null) throw new NotFoundException("Không tìm thấy người dùng");
+        if (id == null) throw new NotFoundException("User not found");
         return id;
     }
 }

@@ -32,7 +32,8 @@ import java.util.stream.Collectors;
 @Component
 public class ClaudeCvMatcher implements CvMatcher {
 
-    static final String SYSTEM = """
+    /** {@code %s} is the language of the summary ({@code app.matching.summary-language}). */
+    static final String SYSTEM_TEMPLATE = """
             You are a careful technical recruiter. You compare one candidate's CV (the attached PDF) with one job \
             posting and report how well the candidate fits it.
 
@@ -43,7 +44,7 @@ public class ClaudeCvMatcher implements CvMatcher {
             - score is an integer from 0 to 100: 0-39 poor fit, 40-69 partial fit, 70-89 good fit, 90-100 excellent fit.
             - matchedSkills: required skills of the job that the CV demonstrates. missingSkills: required skills it does not.
             - Use the job's skill names exactly as given for those two lists.
-            - summary: 2-4 sentences in Vietnamese for the recruiter, naming the strongest evidence and the biggest gap.
+            - summary: 2-4 sentences in %s for the recruiter, naming the strongest evidence and the biggest gap.
             """;
 
     /** What the model must answer. */
@@ -51,25 +52,35 @@ public class ClaudeCvMatcher implements CvMatcher {
             @JsonPropertyDescription("Overall fit from 0 to 100") int score,
             @JsonPropertyDescription("Required job skills that the CV demonstrates") List<String> matchedSkills,
             @JsonPropertyDescription("Required job skills that the CV does not demonstrate") List<String> missingSkills,
-            @JsonPropertyDescription("2-4 sentence assessment in Vietnamese") String summary) {
+            @JsonPropertyDescription("2-4 sentence assessment for the recruiter") String summary) {
     }
 
     private final String apiKey;
     private final String model;
     private final String baseUrl;
+    private final String systemPrompt;
     private volatile AnthropicClient client;
 
     public ClaudeCvMatcher(@Value("${app.matching.api-key:}") String apiKey,
                            @Value("${app.matching.model:claude-opus-5-5}") String model,
-                           @Value("${app.matching.base-url:}") String baseUrl) {
+                           @Value("${app.matching.base-url:}") String baseUrl,
+                           @Value("${app.matching.summary-language:English}") String summaryLanguage) {
         this.apiKey = apiKey == null ? "" : apiKey.strip();
         this.model = model;
         this.baseUrl = baseUrl == null ? "" : baseUrl.strip();
+        String language = summaryLanguage == null ? "" : summaryLanguage.strip();
+        if (!language.matches("[\\p{L} ]{2,30}"))
+            throw new IllegalStateException("app.matching.summary-language must be a language name, e.g. English");
+        this.systemPrompt = SYSTEM_TEMPLATE.formatted(language);
     }
 
     @Override
     public boolean available() {
         return !apiKey.isEmpty();
+    }
+
+    String systemPrompt() {
+        return systemPrompt;
     }
 
     @Override
@@ -79,12 +90,12 @@ public class ClaudeCvMatcher implements CvMatcher {
 
     @Override
     public Verdict assess(Posting job, byte[] cvPdf) {
-        if (!available()) throw new ServiceUnavailableException("Chức năng chấm điểm AI chưa được bật");
+        if (!available()) throw new ServiceUnavailableException("AI scoring is not enabled");
         try {
             StructuredMessageCreateParams<Assessment> request = MessageCreateParams.builder()
                     .model(model)
                     .maxTokens(16000L)
-                    .system(SYSTEM)
+                    .system(systemPrompt)
                     .outputConfig(Assessment.class)
                     .addUserMessageOfBlockParams(List.of(
                             ContentBlockParam.ofDocument(DocumentBlockParam.builder()
@@ -97,17 +108,17 @@ public class ClaudeCvMatcher implements CvMatcher {
 
             StructuredMessage<Assessment> response = client().messages().create(request);
             if (response.stopReason().filter(StopReason.REFUSAL::equals).isPresent())
-                throw new ServiceUnavailableException("Mô hình từ chối đánh giá hồ sơ này");
+                throw new ServiceUnavailableException("The model declined to assess this CV");
 
             Assessment a = response.content().stream()
                     .flatMap(block -> block.text().stream()).map(t -> t.text()).findFirst()
-                    .orElseThrow(() -> new ServiceUnavailableException("Mô hình không trả về kết quả"));
+                    .orElseThrow(() -> new ServiceUnavailableException("The model returned no result"));
             return new Verdict(a.score(), a.matchedSkills(), a.missingSkills(), a.summary(), model);
         } catch (ServiceUnavailableException ex) {
             throw ex;
         } catch (RuntimeException ex) {
             log.warn("Claude request failed: {}", ex.getMessage());
-            throw new ServiceUnavailableException("Không gọi được dịch vụ chấm điểm AI");
+            throw new ServiceUnavailableException("The AI scoring service could not be reached");
         }
     }
 

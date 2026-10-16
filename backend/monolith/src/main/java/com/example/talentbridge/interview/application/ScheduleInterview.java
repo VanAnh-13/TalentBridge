@@ -33,17 +33,17 @@ public class ScheduleInterview {
         Applications.Application application = context.application(resumeId);
 
         if (recruiter.companyId() == null || !recruiter.companyId().equals(application.companyId()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         if (interviews.existsActiveForResume(resumeId))
             throw new BusinessRuleViolationException(
-                    "Hồ sơ này đã có một buổi phỏng vấn đang diễn ra. Hãy dời lịch hoặc hủy buổi đó");
+                    "This application already has an interview in progress. Reschedule or cancel that one");
 
         Interview saved = interviews.save(Interview.propose(resumeId, application.companyId(), recruiter.id(),
                 application.candidateId(), mode, location, note, durationMinutes, slots, Instant.now(clock)));
 
-        notifier.notify(saved.getCandidateId(), "INTERVIEW_PROPOSED", "Lời mời phỏng vấn",
-                application.companyName() + " mời bạn phỏng vấn vị trí " + application.jobName()
-                        + ". Hãy chọn một khung giờ phù hợp.", "/user/interviews");
+        notifier.notify(saved.getCandidateId(), "INTERVIEW_PROPOSED", "Interview invitation",
+                application.companyName() + " invites you to interview for " + application.jobName()
+                        + ". Please choose a time that suits you.", "/user/interviews");
         return saved;
     }
 }

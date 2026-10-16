@@ -22,17 +22,17 @@ public class AddCompanyMember {
     /** Any member of a company can bring in a user who has no company yet. */
     public void execute(String emailToAdd) {
         MemberDirectory.Member me = members.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (me.companyId() == null)
-            throw new NotFoundException("Người dùng không có công ty");
+            throw new NotFoundException("The user has no company");
 
         Company company = companies.findById(me.companyId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty người dùng"));
+                .orElseThrow(() -> new NotFoundException("The user's company was not found"));
 
         MemberDirectory.Member recruiter = members.findByEmail(emailToAdd)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng cần thêm"));
+                .orElseThrow(() -> new NotFoundException("The user to add was not found"));
         if (recruiter.companyId() != null)
-            throw new NotFoundException("Người dùng cần thêm đã có công ty");
+            throw new NotFoundException("The user to add already belongs to a company");
 
         members.assignToCompany(recruiter.id(), company.getId());
     }

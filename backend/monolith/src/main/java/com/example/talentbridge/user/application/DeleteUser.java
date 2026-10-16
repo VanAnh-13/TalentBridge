@@ -25,7 +25,7 @@ public class DeleteUser {
 
     public UserDetails execute(Long id) {
         UserDetails details = users.findDetailsById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         lastAdminGuard.assertNotLastAdmin(details.user());
         ownedCompanies.releaseOwnedBy(id);

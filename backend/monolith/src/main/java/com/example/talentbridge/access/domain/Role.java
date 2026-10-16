@@ -35,8 +35,8 @@ public class Role {
     private Role(Long id, String name, String description, boolean active, List<Permission> permissions,
                  Instant createdAt, Instant updatedAt) {
         this.id = id;
-        this.name = requireText(name, "Tên chức vụ không được để trống");
-        this.description = requireText(description, "Mô tả không được để trống");
+        this.name = requireText(name, "Role name is required");
+        this.description = requireText(description, "Description is required");
         this.active = active;
         this.permissions = unique(permissions);
         this.createdAt = createdAt;
@@ -60,8 +60,8 @@ public class Role {
     /** Built-in roles keep their name; description and active flag can always change. */
     public void update(String newName, String newDescription, boolean newActive) {
         if (!isBuiltIn())
-            this.name = requireText(newName, "Tên chức vụ không được để trống");
-        this.description = requireText(newDescription, "Mô tả không được để trống");
+            this.name = requireText(newName, "Role name is required");
+        this.description = requireText(newDescription, "Description is required");
         this.active = newActive;
     }
 
@@ -72,7 +72,7 @@ public class Role {
             replacement.forEach(p -> granted.add(p.authority()));
             List<String> missing = ADMIN_ESSENTIALS.stream().filter(a -> !granted.contains(a)).sorted().toList();
             if (!missing.isEmpty())
-                throw new InvalidRequestException("Chức vụ ADMIN phải giữ các quyền: " + String.join(", ", missing));
+                throw new InvalidRequestException("The ADMIN role must keep these permissions: " + String.join(", ", missing));
         }
         this.permissions = replacement;
     }
@@ -83,7 +83,7 @@ public class Role {
 
     public void assertDeletable() {
         if (isBuiltIn())
-            throw new ForbiddenException("Không thể xóa chức vụ mặc định");
+            throw new ForbiddenException("Built-in roles cannot be deleted");
     }
 
     private static List<Permission> unique(List<Permission> permissions) {

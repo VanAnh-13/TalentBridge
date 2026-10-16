@@ -29,14 +29,14 @@ class InterviewCalendarTest {
         Interview i = Interview.restore(7L, 1L, 2L, 3L, 4L, InterviewMode.ONLINE, "https://meet.example/x?a=1,2", null, 90,
                 List.of(slot), slot, com.example.talentbridge.interview.domain.InterviewStatus.CONFIRMED, false, false, created);
 
-        String ics = new InterviewCalendar(null, null, Clock.fixed(created, ZoneOffset.UTC)).render(i, "Phỏng vấn, Java", "mô tả");
+        String ics = new InterviewCalendar(null, null, Clock.fixed(created, ZoneOffset.UTC)).render(i, "Interview, Java", "description");
 
         assertTrue(ics.startsWith("BEGIN:VCALENDAR\r\n"));
         assertTrue(ics.endsWith("END:VCALENDAR\r\n"));
         assertTrue(ics.contains("UID:interview-7@talentbridge\r\n"));
         assertTrue(ics.contains("DTSTART:20300310T090000Z\r\n"));
         assertTrue(ics.contains("DTEND:20300310T103000Z\r\n"));
-        assertTrue(ics.contains("SUMMARY:Phỏng vấn\\, Java\r\n"));
+        assertTrue(ics.contains("SUMMARY:Interview\\, Java\r\n"));
         assertTrue(ics.contains("LOCATION:https://meet.example/x?a=1\\,2\r\n"));
     }
 }

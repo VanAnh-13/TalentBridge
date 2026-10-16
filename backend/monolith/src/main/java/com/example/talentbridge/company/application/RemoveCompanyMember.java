@@ -25,21 +25,21 @@ public class RemoveCompanyMember {
     /** Only the owner of a company can remove one of its members. */
     public void execute(String emailToRemove) {
         MemberDirectory.Member me = members.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (me.companyId() == null)
-            throw new NotFoundException("Người dùng không có công ty");
+            throw new NotFoundException("The user has no company");
 
         Company company = companies.findById(me.companyId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công ty người dùng"));
+                .orElseThrow(() -> new NotFoundException("The user's company was not found"));
         if (!company.isOwnedBy(me.id()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
 
         MemberDirectory.Member recruiter = members.findByEmail(emailToRemove)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng cần loại bỏ"));
+                .orElseThrow(() -> new NotFoundException("The user to remove was not found"));
         if (recruiter.companyId() == null)
-            throw new NotFoundException("Người dùng cần loại bỏ không có công ty");
+            throw new NotFoundException("The user to remove has no company");
         if (!Objects.equals(recruiter.companyId(), company.getId()))
-            throw new NotFoundException("Người dùng này thuộc công ty khác");
+            throw new NotFoundException("This user belongs to another company");
 
         members.removeFromCompany(recruiter.id());
     }

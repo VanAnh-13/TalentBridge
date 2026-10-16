@@ -28,15 +28,15 @@ public class GetResumeFileLink {
      */
     public String execute(Long id) {
         ResumeDetails details = resumes.findDetailsById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                .orElseThrow(() -> new NotFoundException("Resume not found"));
 
         UserDirectory.User reader = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         boolean owner = details.resume().isOwnedBy(reader.id());
         boolean sameCompany = reader.companyId() != null && reader.companyId().equals(details.companyId());
         if (!reader.admin() && !owner && !sameCompany)
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
 
         return files.linkTo(details.resume().getFileKey());
     }

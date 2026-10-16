@@ -28,12 +28,12 @@ public class DeleteJob {
         Long companyId = recruiterScope.companyId();
         JobDetails details = find(id);
         if (!details.job().belongsTo(companyId))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         return delete(details);
     }
 
     private JobDetails find(Long id) {
-        return jobs.findDetailsById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy công việc"));
+        return jobs.findDetailsById(id).orElseThrow(() -> new NotFoundException("Job not found"));
     }
 
     private JobDetails delete(JobDetails details) {

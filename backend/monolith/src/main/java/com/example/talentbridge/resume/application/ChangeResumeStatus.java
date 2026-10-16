@@ -27,21 +27,21 @@ public class ChangeResumeStatus {
     /** An administrator moves any application forward. */
     public ResumeDetails execute(Long id, ResumeStatus status) {
         ResumeDetails details = resumes.findDetailsById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                .orElseThrow(() -> new NotFoundException("Resume not found"));
         return change(details, status);
     }
 
     /** A recruiter moves the applications sent to their own company. */
     public ResumeDetails executeForCurrentUserCompany(Long id, ResumeStatus status) {
         UserDirectory.User user = users.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         if (user.companyId() == null)
-            throw new NotFoundException("Không tìm thấy công ty người dùng");
+            throw new NotFoundException("The user's company was not found");
 
         ResumeDetails details = resumes.findDetailsById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                .orElseThrow(() -> new NotFoundException("Resume not found"));
         if (!user.companyId().equals(details.companyId()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
 
         return change(details, status);
     }

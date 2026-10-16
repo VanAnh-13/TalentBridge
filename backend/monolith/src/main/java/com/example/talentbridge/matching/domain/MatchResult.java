@@ -37,7 +37,7 @@ public class MatchResult {
     public static MatchResult assess(Long resumeId, Long jobId, Long candidateId, int score, List<String> matchedSkills,
                                      List<String> missingSkills, String summary, String model, Instant now) {
         if (resumeId == null || jobId == null || candidateId == null)
-            throw new InvalidRequestException("Thiếu thông tin hồ sơ ứng tuyển");
+            throw new InvalidRequestException("Application details are missing");
         String text = summary == null ? "" : summary.strip();
         if (text.length() > MAX_SUMMARY) text = text.substring(0, MAX_SUMMARY - 1) + "…";
         return new MatchResult(resumeId, jobId, candidateId, Math.max(0, Math.min(100, score)),

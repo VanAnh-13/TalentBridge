@@ -24,7 +24,7 @@ public class User {
     private User(Long id, String email, String name, String passwordHash, LocalDate dob, String address, Gender gender,
                  String logoUrl, Long companyId, Long roleId, Instant createdAt, Instant updatedAt) {
         this.id = id;
-        this.email = requireText(email, "Email người dùng không được để trống");
+        this.email = requireText(email, "User email is required");
         this.name = name;
         this.passwordHash = passwordHash;
         this.dob = dob;
@@ -55,7 +55,7 @@ public class User {
     }
 
     public void changePasswordHash(String newHash) {
-        this.passwordHash = requireText(newHash, "Mật khẩu người dùng không được để trống");
+        this.passwordHash = requireText(newHash, "Password is required");
     }
 
     public void changeAvatar(String url) {

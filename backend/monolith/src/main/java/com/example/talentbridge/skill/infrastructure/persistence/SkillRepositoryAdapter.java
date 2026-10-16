@@ -26,7 +26,7 @@ public class SkillRepositoryAdapter implements SkillRepository {
         // Load the managed entity on update so relations the domain does not model (jobs, subscribers) are kept.
         SkillJpaEntity entity = skill.getId() == null
                 ? new SkillJpaEntity()
-                : jpa.findById(skill.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy kỹ năng"));
+                : jpa.findById(skill.getId()).orElseThrow(() -> new NotFoundException("Skill not found"));
 
         entity.setName(skill.getName());
         return toDomain(jpa.saveAndFlush(entity));

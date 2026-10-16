@@ -18,7 +18,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 class InterviewContext {
 
-    private static final DateTimeFormatter WHEN = DateTimeFormatter.ofPattern("HH:mm 'ngày' dd/MM/yyyy")
+    private static final DateTimeFormatter WHEN = DateTimeFormatter.ofPattern("HH:mm 'on' dd/MM/yyyy")
             .withZone(ZoneId.of("Asia/Ho_Chi_Minh"));
 
     private final Accounts accounts;
@@ -27,18 +27,18 @@ class InterviewContext {
 
     Accounts.Account caller() {
         return accounts.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     Applications.Application application(Long resumeId) {
-        return applications.find(resumeId).orElseThrow(() -> new NotFoundException("Không tìm thấy hồ sơ ứng tuyển"));
+        return applications.find(resumeId).orElseThrow(() -> new NotFoundException("Application not found"));
     }
 
     /** The candidate of the interview, nobody else. */
     Accounts.Account callerAsCandidateOf(Interview interview) {
         Accounts.Account me = caller();
         if (!me.id().equals(interview.getCandidateId()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         return me;
     }
 
@@ -46,7 +46,7 @@ class InterviewContext {
     Accounts.Account callerAsCompanyMemberOf(Interview interview) {
         Accounts.Account me = caller();
         if (me.companyId() == null || !me.companyId().equals(interview.getCompanyId()))
-            throw new ForbiddenException("Không có quyền truy cập");
+            throw new ForbiddenException("Access denied");
         return me;
     }
 

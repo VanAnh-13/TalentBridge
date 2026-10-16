@@ -23,7 +23,7 @@ public class WithdrawResume {
     /** The caller withdraws their application to a job; its file is deleted too. */
     public ResumeDetails execute(Long jobId) {
         ResumeDetails details = resumes.findDetailsByUserEmailAndJobId(currentUser.email(), jobId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                .orElseThrow(() -> new NotFoundException("Resume not found"));
 
         storage.deleteFileByKey(details.resume().getFileKey());
         resumes.delete(details.resume());

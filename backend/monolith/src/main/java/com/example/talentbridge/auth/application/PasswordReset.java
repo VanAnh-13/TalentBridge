@@ -33,10 +33,10 @@ public class PasswordReset {
 
     /** Outcome of checking a reset link. */
     public record TokenCheck(boolean valid, String message, String errorCode) {
-        static TokenCheck ok() { return new TokenCheck(true, "Token hợp lệ", null); }
-        static TokenCheck notFound() { return new TokenCheck(false, "Liên kết không hợp lệ", "TOKEN_INVALID"); }
-        static TokenCheck used() { return new TokenCheck(false, "Liên kết đã được sử dụng", "TOKEN_USED"); }
-        static TokenCheck expired() { return new TokenCheck(false, "Liên kết đã hết hạn. Vui lòng yêu cầu liên kết mới", "TOKEN_EXPIRED"); }
+        static TokenCheck ok() { return new TokenCheck(true, "Token is valid", null); }
+        static TokenCheck notFound() { return new TokenCheck(false, "Invalid link", "TOKEN_INVALID"); }
+        static TokenCheck used() { return new TokenCheck(false, "This link has already been used", "TOKEN_USED"); }
+        static TokenCheck expired() { return new TokenCheck(false, "This link has expired. Please request a new one", "TOKEN_EXPIRED"); }
     }
 
     /** Sends a reset link. Never reveals whether the email belongs to an account, nor rate limiting. */
@@ -68,14 +68,14 @@ public class PasswordReset {
         if (!violations.isEmpty())
             throw new InvalidRequestException(String.join(", ", violations));
         if (!PasswordPolicy.confirms(newPassword, confirmation))
-            throw new InvalidRequestException("Mật khẩu xác nhận không khớp");
+            throw new InvalidRequestException("The password confirmation does not match");
 
         PasswordResetToken token = tokens.findByTokenHash(ResetTokens.hash(rawToken))
-                .orElseThrow(() -> new InvalidRequestException("Liên kết không hợp lệ"));
+                .orElseThrow(() -> new InvalidRequestException("Invalid link"));
         if (token.isUsed())
-            throw new InvalidRequestException("Liên kết đã được sử dụng");
+            throw new InvalidRequestException("This link has already been used");
         if (token.isExpired(Instant.now()))
-            throw new InvalidRequestException("Liên kết đã hết hạn. Vui lòng yêu cầu liên kết mới");
+            throw new InvalidRequestException("This link has expired. Please request a new one");
 
         resetUserPassword.execute(token.getUserId(), newPassword);
         tokens.invalidateAllFor(token.getUserId());

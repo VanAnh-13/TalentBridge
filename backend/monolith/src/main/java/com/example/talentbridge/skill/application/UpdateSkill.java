@@ -17,10 +17,10 @@ public class UpdateSkill {
 
     public Skill execute(Long id, String name) {
         Skill skill = skills.findById(id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy kỹ năng"));
+                .orElseThrow(() -> new NotFoundException("Skill not found"));
 
         if (skills.existsByNameAndIdNot(name, id))
-            throw new AlreadyExistsException("Kỹ năng này đã tồn tại");
+            throw new AlreadyExistsException("This skill already exists");
 
         skill.rename(name);
         return skills.save(skill);

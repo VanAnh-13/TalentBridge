@@ -21,6 +21,6 @@ class LastAdminGuard {
         if (adminRole == null || !adminRole.equals(user.getRoleId()))
             return;
         if (users.findByRoleId(adminRole).size() <= 1)
-            throw new BusinessRuleViolationException("Không thể xóa hoặc hạ quyền quản trị viên cuối cùng");
+            throw new BusinessRuleViolationException("The last administrator cannot be deleted or demoted");
     }
 }

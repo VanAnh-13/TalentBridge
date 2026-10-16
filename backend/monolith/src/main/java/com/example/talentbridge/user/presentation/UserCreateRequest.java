@@ -16,17 +16,17 @@ import java.time.LocalDate;
 @Data
 public class UserCreateRequest {
 
-    @NotBlank(message = "Tên người dùng không được để trống")
+    @NotBlank(message = "User name is required")
     private String name;
 
-    @NotBlank(message = "Email người dùng không được để trống")
+    @NotBlank(message = "User email is required")
     @Email(
-            message = "Định dạng email không hợp lệ",
+            message = "Invalid email format",
             regexp = "^[\\w\\-.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$"
     )
     private String email;
 
-    @NotBlank(message = "Mật khẩu người dùng không được để trống")
+    @NotBlank(message = "Password is required")
     private String password;
 
     private LocalDate dob;
@@ -39,7 +39,7 @@ public class UserCreateRequest {
     @NoArgsConstructor
     @Data
     public static class CompanyId {
-        @NotNull(message = "Công ty không được để trống")
+        @NotNull(message = "Company is required")
         private Long id;
     }
 
@@ -47,7 +47,7 @@ public class UserCreateRequest {
     @NoArgsConstructor
     @Data
     public static class RoleId {
-        @NotNull(message = "Chức vụ không được để trống")
+        @NotNull(message = "Role is required")
         private Long id;
     }
 

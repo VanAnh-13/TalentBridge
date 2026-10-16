@@ -32,7 +32,7 @@ public class JobRepositoryAdapter implements JobRepository {
     public JobDetails save(Job job) {
         JobJpaEntity entity = job.getId() == null
                 ? new JobJpaEntity()
-                : jpa.findById(job.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy công việc"));
+                : jpa.findById(job.getId()).orElseThrow(() -> new NotFoundException("Job not found"));
 
         entity.setName(job.getName());
         entity.setLocation(job.getLocation());
@@ -113,7 +113,7 @@ public class JobRepositoryAdapter implements JobRepository {
     @Override
     public void delete(Job job) {
         JobJpaEntity entity = jpa.findById(job.getId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy công việc"));
+                .orElseThrow(() -> new NotFoundException("Job not found"));
         if (entity.getSkills() != null)
             entity.getSkills().clear();
         jpa.saveAndFlush(entity);

@@ -80,7 +80,7 @@ class KafkaListenersTest {
     void notificationFromEvent() throws Exception {
         long user = 9001;
         EventEnvelope event = EventCodec.wrap(NotificationRequested.TYPE, 1,
-                new NotificationRequested(user, "APPLICATION_SUBMITTED", "Có ứng viên mới", "a@b.com", "/recruiter/resumes", false),
+                new NotificationRequested(user, "APPLICATION_SUBMITTED", "New applicant", "a@b.com", "/recruiter/resumes", false),
                 Instant.now());
         send(Topics.NOTIFICATIONS, user, "this is not an event");             // skipped, does not block the partition
         send(Topics.NOTIFICATIONS, user, EventCodec.write(event));

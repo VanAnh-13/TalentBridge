@@ -26,8 +26,8 @@ public class EventApplicationNotifier implements ApplicationNotifier {
             if (application.companyId() == null) return;
             String job = application.job() == null ? "" : application.job().name();
             for (UserDirectory.UserSummary member : users.findByCompanyId(application.companyId()))
-                outbox.requestNotification(member.id(), "APPLICATION_SUBMITTED", "Có ứng viên mới ứng tuyển",
-                        application.user().email() + " vừa ứng tuyển vị trí " + job, "/recruiter/resumes", false);
+                outbox.requestNotification(member.id(), "APPLICATION_SUBMITTED", "New application received",
+                        application.user().email() + " just applied for " + job, "/recruiter/resumes", false);
         } catch (RuntimeException ex) {
             log.warn("Could not notify the company about application {}: {}", application.resume().getId(), ex.getMessage());
         }
@@ -37,8 +37,8 @@ public class EventApplicationNotifier implements ApplicationNotifier {
     public void statusChanged(ResumeDetails application) {
         try {
             String job = application.job() == null ? "" : application.job().name();
-            outbox.requestNotification(application.user().id(), "APPLICATION_STATUS_CHANGED", "Hồ sơ ứng tuyển được cập nhật",
-                    "Hồ sơ của bạn cho vị trí " + job + " chuyển sang trạng thái " + application.resume().getStatus(),
+            outbox.requestNotification(application.user().id(), "APPLICATION_STATUS_CHANGED", "Application updated",
+                    "Your application for " + job + " is now " + application.resume().getStatus(),
                     "/user/resumes", false);
         } catch (RuntimeException ex) {
             log.warn("Could not notify the candidate about application {}: {}", application.resume().getId(), ex.getMessage());

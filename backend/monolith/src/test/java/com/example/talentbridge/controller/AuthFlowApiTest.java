@@ -79,7 +79,7 @@ class AuthFlowApiTest {
         call(post("/auth/register"), null, "{\"email\":\"r-" + email + "\",\"password\":\"" + password + "\",\"name\":\"R\",\"recruiter\":true}")
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.role").value("RECRUITER"));
         call(post("/auth/register"), null, "{\"email\":\"" + email + "\",\"password\":\"x\",\"name\":\"Dup\"}")
-                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Email đã tồn tại"));
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.message").value("Email already exists"));
         call(post("/auth/register"), null, "{\"email\":\"bad\",\"password\":\"\",\"name\":\"\"}")
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.errorCode").value("VALIDATION_ERROR"));
     }

@@ -55,7 +55,7 @@ public class JobControllerTest {
 
     @Test
     @Order(1)
-    @DisplayName("JOB_01: Tạo job mới với thông tin hợp lệ")
+    @DisplayName("JOB_01: create a job with valid details")
     void testCreateJobWithValidData() throws Exception {
         JobRequest jobDto = new JobRequest();
         jobDto.setName("Software Engineer Position");
@@ -94,7 +94,7 @@ public class JobControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("JOB_02: Tạo job với salary âm (expect fail)")
+    @DisplayName("JOB_02: create a job with a negative salary (expected failure)")
     void testCreateJobWithNegativeSalary() throws Exception {
         JobRequest jobDto = new JobRequest();
         jobDto.setName("Invalid Job");
@@ -120,12 +120,12 @@ public class JobControllerTest {
                 .content(objectMapper.writeValueAsString(jobDto))
                 .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containsString("phải lớn hơn hoặc bằng 0")));
+                .andExpect(jsonPath("$.message", containsString("must be greater than or equal to 0")));
     }
 
     @Test
     @Order(3)
-    @DisplayName("JOB_03: Lấy danh sách job với filter theo level")
+    @DisplayName("JOB_03: list jobs filtered by level")
     void testGetJobsWithLevelFilter() throws Exception {
         mockMvc.perform(get("/jobs")
                 .param("filter", "level:'MIDDLE'")
@@ -138,7 +138,7 @@ public class JobControllerTest {
 
     @Test
     @Order(4)
-    @DisplayName("JOB_04: Lấy danh sách job theo công ty")
+    @DisplayName("JOB_04: list the jobs of a company")
     void testGetJobsByCompany() throws Exception {
         mockMvc.perform(get("/jobs/companies/" + companyId))
                 .andExpect(status().isOk())
@@ -147,7 +147,7 @@ public class JobControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("JOB_05: Cập nhật thông tin job")
+    @DisplayName("JOB_05: update a job")
     void testUpdateJob() throws Exception {
         JobRequest updateDto = new JobRequest();
         updateDto.setName("Updated Software Engineer Position");
@@ -179,7 +179,7 @@ public class JobControllerTest {
 
     @Test
     @Order(6)
-    @DisplayName("JOB_06: Đóng/mở job tuyển dụng")
+    @DisplayName("JOB_06: close / reopen a job")
     void testToggleJobStatus() throws Exception {
         // First, deactivate the job
         JobRequest updateDto = new JobRequest();
@@ -211,7 +211,7 @@ public class JobControllerTest {
 
     @Test
     @Order(7)
-    @DisplayName("JOB_09: Tìm kiếm job theo skills")
+    @DisplayName("JOB_09: search jobs by skills")
     void testSearchJobsBySkills() throws Exception {
         mockMvc.perform(get("/jobs")
                 .param("filter", "skills.id:" + skillId)
@@ -223,7 +223,7 @@ public class JobControllerTest {
 
     @Test
     @Order(8)
-    @DisplayName("JOB_10: Lấy job với phân trang và sorting")
+    @DisplayName("JOB_10: list jobs with paging and sorting")
     void testGetJobsWithPaginationAndSorting() throws Exception {
         mockMvc.perform(get("/jobs")
                 .param("page", "0")

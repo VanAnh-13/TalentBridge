@@ -22,6 +22,6 @@ public class GetUserAccount {
     }
 
     public UserAccount execute(String email) {
-        return find(email).orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+        return find(email).orElseThrow(() -> new NotFoundException("User not found"));
     }
 }

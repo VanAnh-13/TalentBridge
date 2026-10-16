@@ -18,7 +18,7 @@ public class DeleteSelfSubscriber {
 
     public void execute() {
         Subscriber subscriber = subscribers.findByEmail(currentUser.email())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy đăng ký người dùng này"));
+                .orElseThrow(() -> new NotFoundException("Subscription not found for this user"));
 
         subscribers.delete(subscriber);
     }

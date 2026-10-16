@@ -29,7 +29,7 @@ public class GcsFileStorage implements FileStorage {
     public String uploadFile(FileUpload file, String folder, String fileName, boolean getUrl) {
         try {
             if (file == null || file.isEmpty())
-                throw new StorageException("Tệp logo không được rỗng hoặc null");
+                throw new StorageException("The logo file must not be empty");
 
             String key = String.format("%s/%s", folder, fileName);
 
@@ -44,7 +44,7 @@ public class GcsFileStorage implements FileStorage {
                 return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
             else return key;
         } catch (Exception e) {
-            throw new StorageException("Lỗi khi upload file lên GCS: " + e.getMessage());
+            throw new StorageException("Could not upload the file to GCS: " + e.getMessage());
         }
     }
 
@@ -52,7 +52,7 @@ public class GcsFileStorage implements FileStorage {
     public String uploadFile(FileUpload file, String key, boolean getUrl) {
         try {
             if (file == null || file.isEmpty())
-                throw new StorageException("Tệp logo không được rỗng hoặc null");
+                throw new StorageException("The logo file must not be empty");
 
             BlobId blobId = BlobId.of(gcsBucketName, key);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
@@ -65,7 +65,7 @@ public class GcsFileStorage implements FileStorage {
                 return String.format("https://storage.googleapis.com/%s/%s", gcsBucketName, key);
             else return key;
         } catch (Exception e) {
-            throw new StorageException("Lỗi khi upload file lên GCS: " + e.getMessage());
+            throw new StorageException("Could not upload the file to GCS: " + e.getMessage());
         }
     }
 
@@ -87,7 +87,7 @@ public class GcsFileStorage implements FileStorage {
             
             return signedUrl.toString();
         } catch (Exception e) {
-            throw new StorageException("Lỗi khi tạo presigned URL: " + e.getMessage());
+            throw new StorageException("Could not create a signed URL: " + e.getMessage());
         }
     }
 
@@ -95,12 +95,12 @@ public class GcsFileStorage implements FileStorage {
     public byte[] read(String key) {
         try {
             byte[] content = storage.readAllBytes(BlobId.of(gcsBucketName, key));
-            if (content == null) throw new StorageException("Không đọc được tệp: " + key);
+            if (content == null) throw new StorageException("Could not read the file: " + key);
             return content;
         } catch (StorageException e) {
             throw e;
         } catch (Exception e) {
-            throw new StorageException("Lỗi khi đọc file từ GCS: " + e.getMessage());
+            throw new StorageException("Could not read the file from GCS: " + e.getMessage());
         }
     }
 
@@ -117,7 +117,7 @@ public class GcsFileStorage implements FileStorage {
             storage.delete(blobId);
 
         } catch (Exception e) {
-            throw new StorageException("Lỗi khi xóa file khỏi GCS: " + e.getMessage());
+            throw new StorageException("Could not delete the file from GCS: " + e.getMessage());
         }
     }
 
@@ -132,14 +132,14 @@ public class GcsFileStorage implements FileStorage {
             storage.delete(blobId);
 
         } catch (Exception e) {
-            throw new StorageException("Lỗi khi xóa file khỏi GCS: " + e.getMessage());
+            throw new StorageException("Could not delete the file from GCS: " + e.getMessage());
         }
     }
 
     private String extractObjectKeyFromUrl(String url) {
         String base = String.format("https://storage.googleapis.com/%s/", gcsBucketName);
         if (!url.startsWith(base)) {
-            throw new StorageException("URL không hợp lệ hoặc không thuộc bucket hiện tại");
+            throw new StorageException("The URL is invalid or does not belong to the configured bucket");
         }
         return url.substring(base.length());
     }

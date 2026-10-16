@@ -26,10 +26,10 @@ public class ReplaceResumeFile {
     /** The caller uploads a new CV file for one of their applications. */
     public ResumeDetails execute(Long id, FileUpload pdf) {
         ResumeDetails details = resumes.findDetailsByUserEmailAndId(currentUser.email(), id)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy resume"));
+                .orElseThrow(() -> new NotFoundException("Resume not found"));
 
         if (pdf == null || pdf.isEmpty())
-            throw new NotFoundException("Không tìm thấy tệp pdf");
+            throw new NotFoundException("PDF file not found");
 
         Resume resume = details.resume();
         String newKey = ResumeFiles.keyOf(resume.getEmail(), resume.getId(), resume.nextVersion());

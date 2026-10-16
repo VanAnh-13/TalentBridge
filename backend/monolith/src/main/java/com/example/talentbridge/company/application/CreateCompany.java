@@ -37,14 +37,14 @@ public class CreateCompany {
 
     private Company create(String name, String description, String address, FileUpload logo, boolean forCurrentUser) {
         if (companies.existsByNameIgnoreCase(name))
-            throw new AlreadyExistsException("Tên công ty đã tồn tại");
+            throw new AlreadyExistsException("A company with this name already exists");
 
         MemberDirectory.Member owner = null;
         if (forCurrentUser) {
             owner = members.findByEmail(currentUser.email())
-                    .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                    .orElseThrow(() -> new NotFoundException("User not found"));
             if (owner.companyId() != null)
-                throw new AlreadyExistsException("Người dùng đã có công ty");
+                throw new AlreadyExistsException("The user already has a company");
         }
 
         Company company = companies.save(Company.create(name, description, address));

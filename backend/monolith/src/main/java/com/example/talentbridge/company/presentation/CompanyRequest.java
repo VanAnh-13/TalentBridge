@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class CompanyRequest {
 
-    @NotBlank(message = "Tên công ty không được để trống")
+    @NotBlank(message = "Company name is required")
     private String name;
 
-    @NotBlank(message = "Mô tả không được để trống")
+    @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Địa chỉ không được để trống")
+    @NotBlank(message = "Address is required")
     private String address;
 }

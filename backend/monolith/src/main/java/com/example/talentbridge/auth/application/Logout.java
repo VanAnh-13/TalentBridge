@@ -23,7 +23,7 @@ public class Logout {
         if (refreshToken == null) return;
 
         UserDirectory.UserSummary user = users.findByEmail(tokenReader.subjectOf(refreshToken))
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         refreshTokens.delete(refreshToken, user.id());
     }
 }

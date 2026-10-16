@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class SelfPasswordRequest {
 
-    @NotBlank(message = "Mật khẩu hiện tại không được để trống")
+    @NotBlank(message = "Current password is required")
     private String oldPassword;
 
-    @NotBlank(message = "Mật khẩu mới không được để trống")
+    @NotBlank(message = "New password is required")
     private String newPassword;
 }

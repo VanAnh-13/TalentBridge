@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class MemberRequest {
 
-    @NotBlank(message = "Email không được để trống")
+    @NotBlank(message = "Email is required")
     private String email;
 }

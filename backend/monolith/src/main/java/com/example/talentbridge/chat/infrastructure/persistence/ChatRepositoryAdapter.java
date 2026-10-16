@@ -29,7 +29,7 @@ public class ChatRepositoryAdapter implements ChatRepository {
     public Conversation save(Conversation c) {
         ConversationJpaEntity e = c.getId() == null
                 ? new ConversationJpaEntity()
-                : conversations.findById(c.getId()).orElseThrow(() -> new NotFoundException("Không tìm thấy cuộc trò chuyện"));
+                : conversations.findById(c.getId()).orElseThrow(() -> new NotFoundException("Conversation not found"));
         if (c.getId() == null) {
             e.setResumeId(c.getResumeId());
             e.setCompanyId(c.getCompanyId());
