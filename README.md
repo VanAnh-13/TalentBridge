@@ -1,291 +1,222 @@
-# 🚀 TalentBridge - Hệ thống Tuyển dụng IT
+# 🚀 TalentBridge - IT Recruitment Platform
 
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-green.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-18.3-blue.svg)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-green.svg)](https://spring.io/projects/spring-cloud)
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](#-license)
 
-## 📋 Giới thiệu
+## 📋 About
 
-TalentBridge là một nền tảng tuyển dụng IT chuyên nghiệp, kết nối nhà tuyển dụng với ứng viên IT tài năng. Hệ thống được xây dựng với công nghệ hiện đại, bảo mật cao và giao diện thân thiện.
+TalentBridge is an IT recruitment platform that connects employers with IT candidates: companies post jobs,
+candidates apply with their CV, recruiters review applications, schedule interviews and chat with candidates.
+The interface is available in **English** (default) and **Vietnamese** (EN/VI switch in the header).
 
-**Demo Live**: 
+**Live demo** (deployed from the earlier single-service version):
 - 🌐 Frontend: https://talentbridge-frontend-273039906673.asia-southeast1.run.app
 - 🔧 Backend API: https://talentbridge-273039906673.asia-southeast1.run.app
 
-## ▶️ Chạy toàn bộ hệ thống (Docker)
+## ▶️ Run the whole system (Docker)
 
 ```bash
-cp .env.example .env            # điền JWT_PRIVATE_KEY:  openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 -w0
+cp .env.example .env            # fill JWT_PRIVATE_KEY:  openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 -w0
 docker compose up --build       # web http://localhost:3000, API (gateway) http://localhost:8080, Eureka :8761
 ```
 
-Compose chạy: MariaDB (mỗi service một database), Redis, Kafka, Eureka, config server, API gateway, monolith,
-notification-service và frontend. Trình duyệt chỉ gọi gateway.
+Compose runs MariaDB (one database per service), Redis, Kafka, Eureka, the config server, the API gateway, the
+monolith, the notification service and the frontend. The browser only talks to the gateway.
 
-Đặt `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` trong `.env` để tạo quản trị viên đầu tiên.
-CI (`.github/workflows/ci.yml`) chạy test backend, test migration trên MariaDB, lint kiến trúc + build frontend và build image.
-Kiến trúc: xem [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Set `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` in `.env` to create the first administrator.
+Every setting of an installation (addresses, CORS origins, time zone, mail, storage, AI matching) is an environment
+variable documented in [`.env.example`](.env.example); nothing installation specific is written in the code.
 
-## ✨ Tính năng chính
+CI (`.github/workflows/ci.yml`) runs the backend tests, a migration test on MariaDB, the frontend architecture lint and
+build, and builds the images. Architecture: see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-### Dành cho Ứng viên
-- 🔍 Tìm kiếm việc làm theo kỹ năng, vị trí, mức lương
-- 📝 Quản lý hồ sơ và CV online
-- 📨 Ứng tuyển nhanh chóng
-- 🔔 Nhận thông báo việc làm phù hợp qua email
+## ✨ Features
 
-### Dành cho Nhà tuyển dụng
-- 📢 Đăng tin tuyển dụng
-- 👥 Quản lý ứng viên và CV
-- 📊 Thống kê và báo cáo tuyển dụng
-- 🏢 Quản lý thông tin công ty
+### For candidates
+- 🔍 Search jobs by keyword, location, level and skills
+- 📝 Manage a profile and apply with a PDF CV
+- 🔔 Job alerts for followed skills (e-mail digest) and in-app notifications in real time
+- 📅 Answer interview invitations and add them to a calendar (.ics)
+- 💬 Chat with the recruiter of each application
 
-### Dành cho Admin
-- 👤 Quản lý người dùng và phân quyền
-- 🏢 Quản lý công ty
-- 💼 Quản lý công việc
-- 📈 Dashboard thống kê hệ thống
+### For recruiters
+- 📢 Post and manage job offers for their company, manage company members
+- 👥 Review applications, change their status
+- ✨ AI CV-job matching: candidates ranked by how well their CV fits the job (Claude API, optional)
+- 📅 Propose interview slots, reschedule or cancel
 
-## 🛠 Công nghệ sử dụng
+### For administrators
+- 👤 Users, roles and permissions (`METHOD /path` permissions, editable at run time)
+- 🏢 Companies, 💼 jobs, 🛠️ skills, 📄 applications
+- 📈 Admin dashboard
 
-### Backend
-- **Java 21** & **Spring Boot 3.5.5**
-- **Spring Security** & **JWT** - Xác thực và phân quyền
-- **Spring Data JPA** & **Hibernate** - ORM
-- **MySQL 8.0** - Database chính
-- **Redis** - Caching và session
-- **Google Cloud Storage** - Lưu trữ file
-- **Spring Boot Mail** - Gửi email
+## 🛠 Tech stack
 
-### Frontend
-- **React 18.3** & **TypeScript 5.6**
-- **Vite** - Build tool
-- **TailwindCSS** - Styling
-- **Shadcn/ui** - Component library
-- **React Router v6** - Routing
-- **Axios** - HTTP client
-- **React Query** - State management
-- **React Hook Form** & **Zod** - Form validation
+### Backend (`backend/`, Maven multi-module)
+- **Java 21**, **Spring Boot 3.5.5**, **Spring Cloud 2025.0.0** (Gateway, Eureka, Config Server)
+- **Spring Security** with **RS256 JWT** (public keys at `/.well-known/jwks.json`)
+- **Spring Data JPA**, **Flyway** migrations, **MariaDB** (H2 in development)
+- **Kafka** events through a transactional outbox, **Redis** (refresh tokens, cache)
+- **STOMP over WebSocket** for live notifications and chat
+- **Claude API** (Anthropic Java SDK) for CV-job matching, **Google Cloud Storage** or local disk for files
+- **Spring Mail** + Thymeleaf e-mails
 
-### DevOps & Cloud
-- **Google Cloud Platform**
-  - Cloud Run - Hosting
-  - Cloud SQL - Database
-  - Cloud Storage - File storage
-  - Artifact Registry - Docker images
-- **Docker** - Containerization
-- **GitHub Actions** - CI/CD
+### Frontend (`frontend/`)
+- **React 19**, **TypeScript 5.8**, **Vite 6**, **React Router 7**, **Redux Toolkit**
+- **Tailwind CSS 4** and **shadcn/ui**, **Axios**, **@stomp/stompjs**
+- **i18next** / **react-i18next**: English and Vietnamese, with type-checked message keys
+- Clean Architecture per feature, enforced by ESLint import rules
 
-## 📁 Cấu trúc dự án
+### DevOps
+- **Docker** / **Docker Compose**, **GitHub Actions**
+- Google Cloud (Cloud Run, Cloud SQL, Cloud Storage, Artifact Registry) scripts for the monolith in `backend/monolith`
+
+## 📁 Project structure
 
 ```
-do_an_chuyen_nganh/
+TalentBridge/
 ├── backend/                      # Maven multi-module build (parent pom.xml, one Dockerfile for every module)
 │   ├── monolith/                 # Spring Boot app being split up (strangler fig), Clean Architecture modules
-│   ├── libs/                     # code shared by the deployables (added as services are extracted)
+│   ├── libs/                     # code shared by the deployables (common-lib, security-lib, event-contracts)
 │   ├── platform/                 # discovery, config and gateway servers
-│   └── services/                 # services extracted from the monolith
-├── frontend/                     # React + Vite (Clean Architecture per feature)
-├── docs/ARCHITECTURE.md          # layers, rules, invariants, real time, AI matching
+│   └── services/                 # services extracted from the monolith (notification-service)
+├── frontend/                     # React + Vite (Clean Architecture per feature, i18n catalogues per feature)
+├── infra/                        # database initialisation for docker compose
+├── docs/ARCHITECTURE.md          # layers, rules, invariants, events, real time, AI matching, languages
 ├── docker-compose.yml            # the whole stack for local use
 └── .github/workflows/ci.yml
 ```
 
-## 🚀 Cài đặt và Chạy
+## 🚀 Development setup
 
-### Yêu cầu hệ thống
-- Java 21+
-- Node.js 18+
-- MySQL 8.0+
-- Redis (optional)
-- Maven 3.8+
+### Requirements
+- Java 21+ (Maven comes with the `mvnw` wrapper)
+- Node.js 20+
+- Docker, for the full stack (MariaDB, Redis and Kafka are only needed there)
 
 ### Backend
 
 ```bash
-# Clone repository
-git clone https://github.com/VanAnh-13/do_an_chuyen_nganh.git
-cd do_an_chuyen_nganh/backend
-
-# Copy environment variables
-cp .env.example .env
-
-# Cấu hình database trong .env
-DB_NAME=talentbridge
-DB_USER=root
-DB_PASSWORD=yourpassword
-
-# Build và chạy với Maven (from backend/)
-mvn clean install
-mvn -pl monolith spring-boot:run
-
-# Hoặc chạy với Docker
-docker-compose up -d
+cd backend
+./mvnw clean install -DskipTests
+./mvnw -pl monolith spring-boot:run      # http://localhost:8080, in-memory H2 database, throw-away signing key
 ```
 
-Backend sẽ chạy tại: http://localhost:8080
+The development profile creates an administrator (`dev-admin@talentbridge.com` / `Admin@123456`, see
+`application.properties`) and logs password-reset links instead of e-mailing them. The platform servers and the
+notification service are off in this mode; use docker compose for the whole system.
 
 ### Frontend
 
 ```bash
 cd frontend
-
-# Cài đặt dependencies
 npm install
-
-# Copy environment variables
-cp .env.example .env
-
-# Cấu hình API URL trong .env
-VITE_API_URL=http://localhost:8080
-
-# Chạy development server
-npm run dev
+cp .env.example .env      # VITE_API_URL=http://localhost:8080 (the gateway, or the monolith in a plain local run)
+npm run dev               # http://localhost:3000
 ```
-
-Frontend sẽ chạy tại: http://localhost:5173
 
 ## 📊 Database
 
-### Khởi tạo Database
+The schema and reference data are created by **Flyway** on start-up
+(`backend/monolith/src/main/resources/db/migration`); applied migrations are never edited, changes go into a new one.
 
-```sql
--- Tạo database
-CREATE DATABASE talentbridge;
+Sample data (companies, jobs, users, applications) can be loaded by hand into a development database, see
+[`db/manual/README-FAKE-DATA.md`](backend/monolith/src/main/resources/db/manual/README-FAKE-DATA.md). Its accounts all
+use the password `password123`:
 
--- Import schema và data mẫu
--- The schema and reference data are created by Flyway on start-up (backend/monolith/src/main/resources/db/migration)
-```
+| Role | Email |
+|------|-------|
+| Admin | admin@talentbridge.vn |
+| Recruiter | hr.fpt@fpt.com.vn |
+| Candidate | nguyenvan@gmail.com |
 
-### Tài khoản test
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@talentbridge.vn | password123 |
-| Recruiter | hr.fpt@fpt.com.vn | password123 |
-| User | nguyenvan@gmail.com | password123 |
-
-## 🐳 Docker Deployment
-
-### Build và chạy với Docker Compose
+## 🐳 Docker images
 
 ```bash
-# Development environment
-docker-compose up -d
-
-# Production environment
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Build Docker images riêng
-
-```bash
-# Backend (any module: MODULE=monolith, platform/api-gateway, ...)
+# Backend (any module: MODULE=monolith, platform/api-gateway, services/notification-service, ...)
 docker build -t talentbridge-backend --build-arg MODULE=monolith backend
+
+# Frontend (the API address is baked into the bundle)
+docker build -t talentbridge-frontend --build-arg API_BASE_URL=http://localhost:8080 frontend
+```
+
+## ☁️ Google Cloud deployment
+
+The scripts in `backend/monolith` deploy the monolith to Cloud Run. They read every installation-specific value
+(project, region, bucket, CORS origins, web app address, signing key) from the environment, see
+`backend/monolith/gcp-env.sh`:
+
+```bash
+gcloud auth login
+export PROJECT_ID=my-project ALLOWED_ORIGINS=https://app.example.com FRONTEND_URL=https://app.example.com
+export JWT_PRIVATE_KEY="$(openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 -w0)"
+backend/monolith/deploy-gcp.sh            # Cloud SQL + Memorystore + Cloud Run
 
 # Frontend
 cd frontend
-docker build -t talentbridge-frontend .
-```
-
-## ☁️ Google Cloud Deployment
-
-### Deploy lên Cloud Run
-
-```bash
-# Login GCP
-gcloud auth login
-gcloud config set project YOUR_PROJECT_ID
-
-# Deploy backend (legacy single-image script, see backend/monolith)
-cd backend/monolith
-gcloud builds submit --config cloudbuild.yaml
-
-# Deploy frontend
-cd frontend
-gcloud builds submit --config cloudbuild.yaml
+gcloud builds submit --config cloudbuild.yaml --substitutions=_API_BASE_URL=https://api.example.com
 ```
 
 ## 🧪 Testing
 
-### Backend Tests
-
 ```bash
+# Backend: unit, API and architecture tests on H2 (the MariaDB migration test runs in CI)
 cd backend
-mvn verify
+./mvnw verify
 
-# Run với coverage
-mvn test jacoco:report
-```
-
-### Frontend Tests
-
-```bash
+# Frontend: architecture lint, type check and production build
 cd frontend
-
-# Unit tests
-npm run test
-
-# E2E tests với Cypress
-npm run cypress:open
+npm run lint
+npm run build
 ```
 
-## 📝 API Documentation
+End-to-end Cypress specs live in `frontend/cypress/e2e` (`run-frontend-tests.sh` installs Cypress and runs them
+against `npm run dev`).
 
-API documentation có sẵn tại: http://localhost:8080/swagger-ui.html
+## 📝 API documentation
 
-### Các endpoint chính:
+Swagger UI: http://localhost:8080/swagger-ui/index.html (monolith; OpenAPI JSON at `/v3/api-docs`). Main endpoints (no prefix, e.g. `POST /auth/login`):
 
-#### Authentication
-- `POST /api/v1/auth/login` - Đăng nhập
-- `POST /api/v1/auth/register` - Đăng ký
-- `POST /api/v1/auth/refresh` - Refresh token
-- `POST /api/v1/auth/logout` - Đăng xuất
+| Area | Endpoints |
+|------|-----------|
+| Authentication | `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh-token`, `POST /auth/logout`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `GET /auth/sessions` |
+| Companies | `GET /companies`, `GET /companies/{id}`, `POST /companies`, `PUT /companies/{id}`, `GET /companies/me/users` |
+| Jobs and skills | `GET /jobs`, `GET /jobs/{id}`, `POST /jobs`, `PUT /jobs/{id}`, `GET /skills` |
+| Applications | `GET /resumes`, `POST /resumes`, `GET /resumes/me`, `PUT /resumes/status` |
+| Interviews | `POST /interviews`, `GET /interviews/me`, `PUT /interviews/{id}/confirm`, `PUT /interviews/{id}/reschedule`, `GET /interviews/{id}/calendar.ics` |
+| Matching | `GET /matching/jobs/{jobId}/candidates`, `GET /matching/me/recommendations` |
+| Chat | `GET /chats`, `GET /chats/{id}/messages`, `POST /chats/{id}/messages` |
+| Notifications (notification-service) | `GET /notifications`, `GET /notifications/unread-count`, `POST /notifications/read-all`, WebSocket `/ws` |
 
-#### Companies
-- `GET /companies` - Danh sách công ty
-- `GET /companies/{id}` - Chi tiết công ty
-- `POST /companies` - Tạo công ty mới
-- `PUT /companies/{id}` - Cập nhật công ty
+## 👥 Team
 
-#### Jobs
-- `GET /jobs` - Danh sách việc làm
-- `GET /jobs/{id}` - Chi tiết việc làm
-- `POST /jobs` - Đăng tin tuyển dụng
-- `PUT /jobs/{id}` - Cập nhật tin tuyển dụng
+**Team 15** - University of Information Technology
 
-#### Resumes
-- `GET /resumes` - Danh sách CV
-- `POST /resumes/upload` - Upload CV
-- `POST /resumes/apply` - Ứng tuyển
-
-## 👥 Team Development
-
-**Nhóm 15** - Đại học Công nghệ Thông tin
-
-### Thành viên:
+### Members
 - **Lê Văn Anh** - Team Lead & Backend Developer
-- **[Thành viên 2]** - Frontend Developer
-- **[Thành viên 3]** - UI/UX Designer
-- **[Thành viên 4]** - Database & DevOps
+- **[Member 2]** - Frontend Developer
+- **[Member 3]** - UI/UX Designer
+- **[Member 4]** - Database & DevOps
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is released under the MIT License.
 
-## 📞 Liên hệ
+## 📞 Contact
 
 - Email: levananh13062004@gmail.com
 - GitHub: [@VanAnh-13](https://github.com/VanAnh-13)
 
-## 🙏 Lời cảm ơn
+## 🙏 Acknowledgements
 
-- Giảng viên hướng dẫn: [Tên giảng viên]
-- Khoa Công nghệ Thông tin - Đại học [Tên trường]
-- Cộng đồng Spring Boot và React
+- Supervisor: [Supervisor name]
+- Faculty of Information Technology - [University name]
+- The Spring Boot and React communities
 
 ---
 
-⭐ **Nếu thấy hữu ích, hãy cho project một Star nhé!** ⭐
+⭐ **If you find this project useful, please give it a star!** ⭐

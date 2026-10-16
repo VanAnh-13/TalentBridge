@@ -59,7 +59,7 @@ src
 │   ├── domain/                 Page, PageQuery, ApiError/errorMessage, filter builders (contains, allOf)
 │   ├── infrastructure/http/    axios client (token refresh), `api` helper that unwraps the response envelope
 │   └── presentation/           ui/ (shadcn), components/, hooks/, format helpers
-└── features/<name>/            access, auth, company, job, resume, skill, subscriber, user
+└── features/<name>/            access, auth, chat, company, interview, job, matching, notification, resume, skill, subscriber, user
     ├── domain/                 entities and value types (plain TypeScript)
     ├── application/            ports.ts (repository interfaces) + <name>UseCases.ts (createXUseCases(repository))
     ├── infrastructure/         Http<Name>Repository: the only code that knows URLs, multipart and wire quirks
@@ -83,6 +83,21 @@ Dependency rule (enforced by `no-restricted-imports` blocks generated per layer 
 * Features are isolated: another feature is reached through `@/features/<name>` (UI, presentation only) or its
   `domain` types, never through its application/infrastructure/presentation files.
 * Adding a feature = a new folder with the four layers; the ESLint config discovers it automatically.
+
+### Languages (i18n)
+The interface is in English by default and in Vietnamese on request (the EN/VI switch in every header; the choice is
+kept in `localStorage` under `talentbridge.language` and sets `<html lang>`). It uses i18next + react-i18next:
+* **Catalogues**: one namespace per feature in `features/<name>/presentation/i18n.ts` (exported by the feature's
+  `index.ts`), `common` (`shared/presentation/i18n/common.ts`: buttons, field names, statuses, levels) and `app`
+  (`app/i18n/app.ts`: layouts and home page), all registered in `app/i18n/resources.ts`.
+* **Type safety**: keys and interpolation values of `t()` are checked against the English catalogue
+  (`app/i18n/i18next.d.ts`), and each `vi` catalogue is typed `Translation<typeof en>`, so a missing or extra key
+  fails `tsc`.
+* **Layers**: domain and application code stay framework free, so they return codes (e.g. `OfferProblem`) that
+  presentation turns into text. Dates and numbers use `currentLocale()` (`en-GB` or `vi-VN`).
+* Messages coming from the API (errors, notifications) are written by the backend, in English.
+* Adding a language: add its code to `LANGUAGES` and `LOCALES` (`shared/presentation/i18n/types.ts`), its name under
+  `language` in `common`, a catalogue per namespace, and its entry in `resources.ts`; the switcher lists `LANGUAGES`.
 
 ### Status
 Backend: every monolith package follows the four layers (`shared`, `access`, `auth`, `chat`, `company`, `digest`,

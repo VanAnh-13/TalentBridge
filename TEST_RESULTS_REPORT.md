@@ -1,12 +1,12 @@
-# BÁO CÁO KẾT QUẢ TESTING TALENTBRIDGE
+# TALENTBRIDGE TEST RESULTS REPORT
 
-## TỔNG QUAN
+## OVERVIEW
 
-- **Tổng số test cases**: 126
+- **Total test cases**: 126
 - **Pass**: 108 (85.7%)
 - **Fail**: 12 (9.5%)
 - **Skip**: 6 (4.8%)
-- **Thời gian thực thi**: 4 phút 32 giây
+- **Execution time**: 4 minutes 32 seconds
 - **Coverage**: 78.5%
 
 ## I. BACKEND TEST RESULTS (60 Test Cases)
@@ -14,23 +14,23 @@
 ### 1. Authentication & Authorization Tests (12/12 PASSED ✅)
 | Test ID | Test Case | Status | Time (ms) | Notes |
 |---------|-----------|--------|-----------|-------|
-| AUTH_01 | Đăng ký user mới | ✅ PASS | 245 | |
-| AUTH_02 | Đăng ký email trùng | ✅ PASS | 125 | Expected fail |
-| AUTH_03 | Đăng nhập thành công | ✅ PASS | 180 | |
-| AUTH_04 | Đăng nhập sai password | ✅ PASS | 95 | Expected 401 |
-| AUTH_05 | Email không tồn tại | ✅ PASS | 88 | Expected 401 |
-| AUTH_06 | Refresh token hợp lệ | ✅ PASS | 156 | |
-| AUTH_07 | Refresh token hết hạn | ✅ PASS | 72 | Expected fail |
+| AUTH_01 | Register a new user | ✅ PASS | 245 | |
+| AUTH_02 | Register a duplicate email | ✅ PASS | 125 | Expected fail |
+| AUTH_03 | Successful login | ✅ PASS | 180 | |
+| AUTH_04 | Login with a wrong password | ✅ PASS | 95 | Expected 401 |
+| AUTH_05 | Unknown email | ✅ PASS | 88 | Expected 401 |
+| AUTH_06 | Valid refresh token | ✅ PASS | 156 | |
+| AUTH_07 | Expired refresh token | ✅ PASS | 72 | Expected fail |
 | AUTH_08 | Logout | ✅ PASS | 68 | |
-| AUTH_09 | Access với JWT hợp lệ | ✅ PASS | 92 | |
-| AUTH_10 | JWT không hợp lệ | ✅ PASS | 45 | Expected 401 |
-| AUTH_11 | Không có quyền | ✅ PASS | 78 | Expected 403 |
+| AUTH_09 | Access with a valid JWT | ✅ PASS | 92 | |
+| AUTH_10 | Invalid JWT | ✅ PASS | 45 | Expected 401 |
+| AUTH_11 | Missing permission | ✅ PASS | 78 | Expected 403 |
 | AUTH_12 | Session management | ✅ PASS | 210 | |
 
 ### 2. User Management Tests (8/10 - 2 FAILED ❌)
 | Test ID | Test Case | Status | Time (ms) | Notes |
 |---------|-----------|--------|-----------|-------|
-| USER_01 | Get users với pagination | ✅ PASS | 156 | |
+| USER_01 | Get users with pagination | ✅ PASS | 156 | |
 | USER_02 | Search user by email | ✅ PASS | 98 | |
 | USER_03 | Get user by ID | ✅ PASS | 67 | |
 | USER_04 | Update profile | ✅ PASS | 134 | |
