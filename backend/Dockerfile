@@ -1,9 +1,10 @@
 # One image recipe for every backend deployable (monolith, services, platform).
 #   docker build -f backend/Dockerfile --build-arg MODULE=monolith backend
-# MODULE is the module's path inside backend/ (e.g. monolith, platform/api-gateway, services/notification-service).
+# MODULE is the module's path inside backend/ (e.g. monolith, platform/api-gateway, services/notification-service);
+# it defaults to the monolith so tools that cannot pass build arguments (gcloud run deploy --source) still work.
 
 FROM maven:3.9.11-eclipse-temurin-21-alpine AS build
-ARG MODULE
+ARG MODULE=monolith
 WORKDIR /src
 COPY . .
 RUN --mount=type=cache,target=/root/.m2 \

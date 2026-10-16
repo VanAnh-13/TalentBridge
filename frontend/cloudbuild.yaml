@@ -1,14 +1,20 @@
 # Cloud Build configuration for Vite React app
-# Build Docker image and deploy to Cloud Run
+# Build Docker image and deploy to Cloud Run. The API address is baked into the bundle, so it must be given:
+#   gcloud builds submit --config cloudbuild.yaml --substitutions=_API_BASE_URL=https://api.example.com
 
 substitutions:
-  _API_BASE_URL: "https://talentbridge-273039906673.asia-southeast1.run.app"  # Backend URL đã xác nhận
+  _API_BASE_URL: ""  # public address of the API gateway the browser calls (required)
   _REGION: "asia-southeast1"
   _REPO: "talentbridge"
   _SERVICE_NAME: "talentbridge-frontend"
 
 steps:
-  # Build Docker image với API_BASE_URL
+  # Stop early when the API address is missing: the app would call nothing
+  - name: 'bash'
+    args: ['-c', 'test -n "${_API_BASE_URL}" || { echo "Set _API_BASE_URL (--substitutions=_API_BASE_URL=https://...)"; exit 1; }']
+    id: 'check-substitutions'
+
+  # Build the Docker image with API_BASE_URL
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
@@ -23,14 +29,14 @@ steps:
       - '.'
     id: 'build-image'
 
-  # Push image lên Artifact Registry
+  # Push the image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:$BUILD_ID'
     id: 'push-image'
 
-  # Deploy lên Cloud Run
+  # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -43,7 +49,7 @@ steps:
       - '${_REGION}'
       - '--platform'
       - 'managed'
-      - '--allow-unauthenticated'  # Public access cho frontend
+      - '--allow-unauthenticated'  # the frontend is public
       - '--port'
       - '8080'
       - '--memory'
@@ -54,7 +60,7 @@ steps:
       - '10'
     id: 'deploy-cloud-run'
 
-# Images để push lên Artifact Registry
+# Images pushed to Artifact Registry
 images:
   - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:$BUILD_ID'
   - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE_NAME}:latest'

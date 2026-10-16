@@ -22,16 +22,17 @@ public class SmtpDigestMailer implements DigestMailer {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
-    @Value("${mail.from:noreply@talentbridge.com}")
+    @Value("${mail.from}")
     private String sender;
 
-    @Value("${app.frontend-url:http://localhost:5173}")
+    @Value("${app.frontend-url}")
     private String frontendUrl;
 
     @Override
     public void send(JobDigest digest) {
         Context context = new Context();
         context.setVariable("jobs", digest.jobs().stream().map(j -> DigestJobView.of(j, frontendUrl)).toList());
+        context.setVariable("homePageUrl", frontendUrl);
         String html = templateEngine.process("job-notification-email.html", context);
 
         try {

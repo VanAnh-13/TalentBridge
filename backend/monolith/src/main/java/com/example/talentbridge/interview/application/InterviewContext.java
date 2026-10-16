@@ -9,8 +9,6 @@ import com.example.talentbridge.shared.domain.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 
 /** Who is calling, which application an interview is about, and the wording shared by the use cases. */
@@ -18,12 +16,10 @@ import java.time.Instant;
 @RequiredArgsConstructor
 class InterviewContext {
 
-    private static final DateTimeFormatter WHEN = DateTimeFormatter.ofPattern("HH:mm 'on' dd/MM/yyyy")
-            .withZone(ZoneId.of("Asia/Ho_Chi_Minh"));
-
     private final Accounts accounts;
     private final Applications applications;
     private final CurrentUser currentUser;
+    private final InterviewTimeFormat timeFormat;
 
     Accounts.Account caller() {
         return accounts.findByEmail(currentUser.email())
@@ -50,7 +46,7 @@ class InterviewContext {
         return me;
     }
 
-    static String when(Instant instant) {
-        return WHEN.format(instant);
+    String when(Instant instant) {
+        return timeFormat.format(instant);
     }
 }

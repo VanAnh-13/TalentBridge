@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME:-talentbridge}
       MYSQL_USER: ${DB_USER:-talentbridge_user}
       MYSQL_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
-      TZ: Asia/Ho_Chi_Minh
+      TZ: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
     ports:
       - "${DB_PORT:-3306}:3306"
     volumes:
@@ -48,8 +48,10 @@ services:
   # TalentBridge Application
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      # The image recipe is shared by every backend module (backend/Dockerfile)
+      context: ..
+      args:
+        MODULE: monolith
     container_name: talentbridge-app
     restart: unless-stopped
     ports:
@@ -69,8 +71,8 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_password}
       SPRING_CACHE_TYPE: redis
       
-      # JWT Configuration
-      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      # JWT: RSA key that signs access tokens (base64 of the PEM)
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:?JWT_PRIVATE_KEY must be set}
       JWT_ACCESS_TOKEN_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-900}
       JWT_REFRESH_TOKEN_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-86400}
       
@@ -86,12 +88,17 @@ services:
       SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-}
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-noreply@talentbridge.com}
+
+      # Web app address: allowed CORS origin(s) and the base of links in e-mails
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      APP_TIME_ZONE: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
       
       # JVM Options
       JAVA_OPTS: -Xms512m -Xmx1024m -XX:+UseG1GC
       
       # Timezone
-      TZ: Asia/Ho_Chi_Minh
+      TZ: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
     volumes:
       - app-uploads:/app/uploads
       - app-logs:/app/logs

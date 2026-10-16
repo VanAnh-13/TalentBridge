@@ -24,6 +24,7 @@ public class RemindInterviews {
     private final Applications applications;
     private final Notifier notifier;
     private final Clock clock;
+    private final InterviewTimeFormat timeFormat;
 
     /** @return how many reminders were sent */
     public int run() {
@@ -51,7 +52,7 @@ public class RemindInterviews {
     private void remind(Interview interview, String lead) {
         String job = applications.find(interview.getResumeId()).map(Applications.Application::jobName).orElse("");
         String text = "The interview for " + job + " starts in " + lead + " ("
-                + InterviewContext.when(interview.getConfirmedSlot()) + ").";
+                + timeFormat.format(interview.getConfirmedSlot()) + ").";
         notifier.notify(interview.getCandidateId(), "INTERVIEW_REMINDER", "Interview reminder", text, "/user/interviews");
         notifier.notify(interview.getRecruiterId(), "INTERVIEW_REMINDER", "Interview reminder", text, "/recruiter/interviews");
     }

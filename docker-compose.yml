@@ -11,7 +11,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME:-talentbridge}
       MYSQL_USER: ${DB_USER:-talentbridge_user}
       MYSQL_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
-      TZ: Asia/Ho_Chi_Minh
+      TZ: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
     volumes:
       - mariadb-data:/var/lib/mysql
       - ./infra/mariadb/initdb:/docker-entrypoint-initdb.d:ro
@@ -133,7 +133,9 @@ services:
       SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-}
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-noreply@talentbridge.com}
-      TZ: Asia/Ho_Chi_Minh
+      FRONTEND_URL: ${WEB_ORIGIN:-http://localhost:3000}
+      APP_TIME_ZONE: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
+      TZ: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
     volumes:
       - uploads:/app/uploads
     depends_on:
@@ -167,7 +169,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-talentbridge_pass}
       JWKS_URI: http://monolith:8081/.well-known/jwks.json
       ALLOWED_ORIGINS: ${WEB_ORIGIN:-http://localhost:3000}
-      TZ: Asia/Ho_Chi_Minh
+      TZ: ${TIME_ZONE:-Asia/Ho_Chi_Minh}
     depends_on:
       mariadb:
         condition: service_healthy

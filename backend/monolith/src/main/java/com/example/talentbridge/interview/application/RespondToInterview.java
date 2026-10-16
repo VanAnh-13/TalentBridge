@@ -31,7 +31,7 @@ public class RespondToInterview {
         Interview saved = interviews.save(interview);
 
         notifier.notify(saved.getRecruiterId(), "INTERVIEW_CONFIRMED", "Interview confirmed by the candidate",
-                me.name() + " confirmed the interview at " + InterviewContext.when(slot) + " for "
+                me.name() + " confirmed the interview at " + context.when(slot) + " for "
                         + context.application(saved.getResumeId()).jobName(), "/recruiter/interviews");
         return saved;
     }

@@ -24,13 +24,13 @@ public class SmtpResetMailer implements ResetMailer {
     private final SpringTemplateEngine templateEngine;
     private final JavaMailSender mailSender;     // absent when mail is not configured
 
-    @Value("${app.frontend-url:http://localhost:5173}")
+    @Value("${app.frontend-url}")
     private String frontendUrl;
 
     @Value("${spring.mail.host:}")
     private String mailHost;
 
-    @Value("${mail.from:noreply@talentbridge.com}")
+    @Value("${mail.from}")
     private String mailFrom;
 
     @Value("${app.mail.log-reset-links:false}")

@@ -38,7 +38,7 @@ check_env_file() {
         print_warning "At minimum, update:"
         echo "  - Database passwords"
         echo "  - Redis password"
-        echo "  - JWT secret"
+        echo "  - JWT private key (JWT_PRIVATE_KEY)"
         read -p "Press Enter after updating .env file to continue..."
     fi
 }

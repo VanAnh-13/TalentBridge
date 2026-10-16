@@ -17,6 +17,10 @@ data:
   REDIS_HOST: "talentbridge-redis"
   REDIS_PORT: "6379"
   SPRING_CACHE_TYPE: "redis"
+  # Web app address: allowed CORS origin(s) and the base of links in e-mails. Set them to your domain.
+  ALLOWED_ORIGINS: "https://talentbridge.example.com"
+  FRONTEND_URL: "https://talentbridge.example.com"
+  TIME_ZONE: "Asia/Ho_Chi_Minh"
   JWT_ACCESS_TOKEN_EXPIRATION: "900"
   JWT_REFRESH_TOKEN_EXPIRATION: "86400"
 
@@ -32,7 +36,9 @@ stringData:
   DB_PASSWORD: "change_this_password"
   DB_ROOT_PASSWORD: "change_this_root_password"
   REDIS_PASSWORD: "change_this_redis_password"
-  JWT_SECRET: "change-this-to-a-secure-random-key-at-least-256-bits"
+  # RSA key that signs access tokens, base64 of the PEM:
+  #   openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 | base64 -w0
+  JWT_PRIVATE_KEY: "change-this-to-a-base64-rsa-private-key"
   # Optional AWS credentials
   AWS_ACCESS_KEY: ""
   AWS_SECRET_KEY: ""
@@ -119,7 +125,10 @@ spec:
               name: talentbridge-secrets
               key: DB_ROOT_PASSWORD
         - name: TZ
-          value: "Asia/Ho_Chi_Minh"
+          valueFrom:
+            configMapKeyRef:
+              name: talentbridge-config
+              key: TIME_ZONE
         volumeMounts:
         - name: mariadb-storage
           mountPath: /var/lib/mysql
@@ -303,11 +312,26 @@ spec:
             configMapKeyRef:
               name: talentbridge-config
               key: SPRING_CACHE_TYPE
-        - name: JWT_SECRET
+        - name: JWT_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
               name: talentbridge-secrets
-              key: JWT_SECRET
+              key: JWT_PRIVATE_KEY
+        - name: ALLOWED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: talentbridge-config
+              key: ALLOWED_ORIGINS
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: talentbridge-config
+              key: FRONTEND_URL
+        - name: APP_TIME_ZONE
+          valueFrom:
+            configMapKeyRef:
+              name: talentbridge-config
+              key: TIME_ZONE
         - name: JWT_ACCESS_TOKEN_EXPIRATION
           valueFrom:
             configMapKeyRef:

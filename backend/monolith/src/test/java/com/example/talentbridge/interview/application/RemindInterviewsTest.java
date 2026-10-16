@@ -45,7 +45,8 @@ class RemindInterviewsTest {
     private final Applications applications = id -> Optional.of(new Applications.Application(id, 4L, "c@x.com", "Java Dev", 2L, "Acme"));
 
     private RemindInterviews at(Instant now) {
-        return new RemindInterviews(repository, applications, notifier, Clock.fixed(now, ZoneOffset.UTC));
+        return new RemindInterviews(repository, applications, notifier, Clock.fixed(now, ZoneOffset.UTC),
+                new InterviewTimeFormat("Asia/Ho_Chi_Minh"));
     }
 
     private Interview confirmedFor(Instant slot) {
